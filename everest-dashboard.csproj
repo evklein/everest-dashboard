@@ -7,4 +7,8 @@
     <RootNamespace>everest_dashboard</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="6.0.10" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,11 @@
+<div class="markdown-editor">
+    <MudTextField T="string" Label="Filled" Variant="Variant.Filled" Text=@_text Lines=@NumberOfLines />
+</div>
+
+@code
+{
+    [Parameter]
+    public int NumberOfLines { get; set; } = 5;
+
+    private string _text = "";
+}
