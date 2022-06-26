@@ -31,8 +31,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Shared/markdown/MarkdownEditor.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL21hcmtkb3duL01hcmtkb3duRWRpdG9yLnJhem9y
+[/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Shared/MarkdownEditor/MarkdownEditor.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01hcmtkb3duRWRpdG9yL01hcmtkb3duRWRpdG9yLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Shared/SurveyPrompt.razor]
