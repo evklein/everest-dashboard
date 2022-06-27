@@ -1,0 +1,35 @@
+@page "/Notes"
+
+<MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined" >
+    <MudButton @onclick=@clearCurrentMarkdown>
+        <MudIcon Icon="@Icons.Filled.Clear" Title="Clear" Color=@Color.Error/>&nbsp;Clear
+    </MudButton>
+    <MudButton @onclick=@saveCurrentMarkdown>
+        <MudIcon Icon="@Icons.Material.Filled.Save" Title="Save" Color=@Color.Success />&nbsp;Save
+    </MudButton>
+</MudButtonGroup>
+<MudTabs Elevation="2" Rounded="true" Position=@Position.Top ApplyEffectsToContainer="true" PanelClass="pa-6">
+    <MudTabPanel Icon=@Icons.Material.Filled.Create Text="Outline">
+        <MudTextField T="string" Label="Markdown" Variant="Variant.Filled" @bind-Text=@_markdown Lines=20 />
+    </MudTabPanel>
+    <MudTabPanel Icon=@Icons.Filled.RemoveRedEye Text="Markdown">
+        <MudTextField Disabled=true T="string" Label="Markdown" Variant="Variant.Filled" @bind-Text=@_markdown Lines=20 />
+    </MudTabPanel>
+</MudTabs>
+
+
+@code
+{
+    private string _currentNoteTitle = "New note";
+    private string _markdown = string.Empty;
+
+    private async Task clearCurrentMarkdown()
+    {
+        _markdown = string.Empty;
+    }
+
+    private async Task saveCurrentMarkdown()
+    {
+        return;
+    }
+}

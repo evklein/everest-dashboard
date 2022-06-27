@@ -111,6 +111,39 @@
         }
       },
       {
+        "HashCode": -382690910,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Pages.Notes.NotesPage",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "NotesPage"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Pages.Notes.NotesPage"
+        }
+      },
+      {
+        "HashCode": -1793806977,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Pages.Notes.NotesPage",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "everest_dashboard.Pages.Notes.NotesPage"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Pages.Notes.NotesPage",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
         "HashCode": -1193967710,
         "Kind": "Components.Component",
         "Name": "everest_dashboard.Shared.SurveyPrompt",
@@ -193,59 +226,6 @@
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
           "Common.TypeName": "everest_dashboard.Shared.NavMenu",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
-        }
-      },
-      {
-        "HashCode": -1951303129,
-        "Kind": "Components.Component",
-        "Name": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
-        "AssemblyName": "everest-dashboard",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "MarkdownEditor"
-          }
-        ],
-        "BoundAttributes": [
-          {
-            "Kind": "Components.Component",
-            "Name": "NumberOfLines",
-            "TypeName": "System.Int32",
-            "Metadata": {
-              "Common.PropertyName": "NumberOfLines"
-            }
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor"
-        }
-      },
-      {
-        "HashCode": 1332189155,
-        "Kind": "Components.Component",
-        "Name": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
-        "AssemblyName": "everest-dashboard",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor"
-          }
-        ],
-        "BoundAttributes": [
-          {
-            "Kind": "Components.Component",
-            "Name": "NumberOfLines",
-            "TypeName": "System.Int32",
-            "Metadata": {
-              "Common.PropertyName": "NumberOfLines"
-            }
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
@@ -342,6 +322,59 @@
           "Runtime.Name": "Components.None",
           "Common.TypeName": "everest_dashboard.Shared.MainLayout.Body",
           "Components.IsSpecialKind": "Components.ChildContent",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
+        "HashCode": -1951303129,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "MarkdownEditor"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "NumberOfLines",
+            "TypeName": "System.Int32",
+            "Metadata": {
+              "Common.PropertyName": "NumberOfLines"
+            }
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor"
+        }
+      },
+      {
+        "HashCode": 1332189155,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "NumberOfLines",
+            "TypeName": "System.Int32",
+            "Metadata": {
+              "Common.PropertyName": "NumberOfLines"
+            }
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
@@ -88660,6 +88693,11 @@
     {
       "FilePath": "/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Pages/FetchData.razor",
       "TargetPath": "Pages\\FetchData.razor",
+      "FileKind": "component"
+    },
+    {
+      "FilePath": "/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Pages/Notes/NotesPage.razor",
+      "TargetPath": "Pages\\Notes\\NotesPage.razor",
       "FileKind": "component"
     },
     {
