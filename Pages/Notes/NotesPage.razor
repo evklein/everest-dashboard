@@ -13,7 +13,7 @@
         <MudTextField T="string" Label="Markdown" Variant="Variant.Filled" @bind-Text=@_markdown Lines=20 />
     </MudTabPanel>
     <MudTabPanel Icon=@Icons.Filled.RemoveRedEye Text="Markdown">
-        <MudTextField Disabled=true T="string" Label="Markdown" Variant="Variant.Filled" @bind-Text=@_markdown Lines=20 />
+        @generateMarkdown()
     </MudTabPanel>
 </MudTabs>
 
@@ -22,6 +22,11 @@
 {
     private string _currentNoteTitle = "New note";
     private string _markdown = string.Empty;
+
+    private RenderFragment generateMarkdown() => builder =>
+    {
+        builder.AddMarkupContent(0, Markdown.ToHtml(_markdown));
+    };
 
     private async Task clearCurrentMarkdown()
     {

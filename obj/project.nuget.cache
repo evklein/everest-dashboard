@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "F86rMn8Pkf5w6qYPQ1YyN4+Q+IfJvaRxNSLWaaKWZon3JWk+HJ1qrq279AAkKIK1k7VZuReSI9c0x5gzGzfIZw==",
+  "dgSpecHash": "/YJPmby7svaVchY4t3PJ5n1Xj779JaWG15TrHxRtwxQ4jifmSJtUCfcxQpUExKVEFewtNzMwD0w5AdEG8xdCmA==",
   "success": true,
   "projectFilePath": "/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/everest-dashboard.csproj",
   "expectedPackageFiles": [
+    "/Users/evan/.nuget/packages/markdig/0.30.2/markdig.0.30.2.nupkg.sha512",
     "/Users/evan/.nuget/packages/microsoft.aspnetcore.authorization/6.0.4/microsoft.aspnetcore.authorization.6.0.4.nupkg.sha512",
     "/Users/evan/.nuget/packages/microsoft.aspnetcore.components/6.0.4/microsoft.aspnetcore.components.6.0.4.nupkg.sha512",
     "/Users/evan/.nuget/packages/microsoft.aspnetcore.components.analyzers/6.0.4/microsoft.aspnetcore.components.analyzers.6.0.4.nupkg.sha512",

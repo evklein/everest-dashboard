@@ -35,3 +35,4 @@
 /Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/bin/Debug/net6.0/MudBlazor.dll
 /Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/bin/Debug/net6.0/System.IO.Pipelines.dll
 /Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/obj/Debug/net6.0/everest-dashboard.csproj.CopyComplete
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/bin/Debug/net6.0/Markdig.dll

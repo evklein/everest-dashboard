@@ -8,10 +8,19 @@
     ".NETCoreApp,Version=v6.0": {
       "everest-dashboard/1.0.0": {
         "dependencies": {
+          "Markdig": "0.30.2",
           "MudBlazor": "6.0.10"
         },
         "runtime": {
           "everest-dashboard.dll": {}
+        }
+      },
+      "Markdig/0.30.2": {
+        "runtime": {
+          "lib/net6.0/Markdig.dll": {
+            "assemblyVersion": "0.30.0.0",
+            "fileVersion": "0.30.2.0"
+          }
         }
       },
       "Microsoft.AspNetCore.Authorization/6.0.4": {
@@ -136,6 +145,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Markdig/0.30.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rm5rfHGP0BZtcB31CmQeWLLPdpG6xA6xN92x2KcNrl+9MPJONq9u4dfG7VgnTOxdjDnuEkX6GCxMYS+LpoKGOQ==",
+      "path": "markdig/0.30.2",
+      "hashPath": "markdig.0.30.2.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authorization/6.0.4": {
       "type": "package",

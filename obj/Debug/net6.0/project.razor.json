@@ -12,35 +12,35 @@
   "ProjectWorkspaceState": {
     "TagHelpers": [
       {
-        "HashCode": 1229346749,
+        "HashCode": -63695118,
         "Kind": "Components.Component",
-        "Name": "everest_dashboard.Pages.Counter",
+        "Name": "everest_dashboard.Pages.Index",
         "AssemblyName": "everest-dashboard",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "Counter"
+            "TagName": "Index"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Pages.Counter"
+          "Common.TypeName": "everest_dashboard.Pages.Index"
         }
       },
       {
-        "HashCode": -1898814919,
+        "HashCode": 1483619646,
         "Kind": "Components.Component",
-        "Name": "everest_dashboard.Pages.Counter",
+        "Name": "everest_dashboard.Pages.Index",
         "AssemblyName": "everest-dashboard",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "everest_dashboard.Pages.Counter"
+            "TagName": "everest_dashboard.Pages.Index"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Pages.Counter",
+          "Common.TypeName": "everest_dashboard.Pages.Index",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
@@ -78,35 +78,35 @@
         }
       },
       {
-        "HashCode": -63695118,
+        "HashCode": 1229346749,
         "Kind": "Components.Component",
-        "Name": "everest_dashboard.Pages.Index",
+        "Name": "everest_dashboard.Pages.Counter",
         "AssemblyName": "everest-dashboard",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "Index"
+            "TagName": "Counter"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Pages.Index"
+          "Common.TypeName": "everest_dashboard.Pages.Counter"
         }
       },
       {
-        "HashCode": 1483619646,
+        "HashCode": -1898814919,
         "Kind": "Components.Component",
-        "Name": "everest_dashboard.Pages.Index",
+        "Name": "everest_dashboard.Pages.Counter",
         "AssemblyName": "everest-dashboard",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "everest_dashboard.Pages.Index"
+            "TagName": "everest_dashboard.Pages.Counter"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Pages.Index",
+          "Common.TypeName": "everest_dashboard.Pages.Counter",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
@@ -144,88 +144,35 @@
         }
       },
       {
-        "HashCode": -1193967710,
+        "HashCode": 1432167779,
         "Kind": "Components.Component",
-        "Name": "everest_dashboard.Shared.SurveyPrompt",
+        "Name": "everest_dashboard.App",
         "AssemblyName": "everest-dashboard",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "SurveyPrompt"
-          }
-        ],
-        "BoundAttributes": [
-          {
-            "Kind": "Components.Component",
-            "Name": "Title",
-            "TypeName": "System.String",
-            "Metadata": {
-              "Common.PropertyName": "Title"
-            }
+            "TagName": "App"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Shared.SurveyPrompt"
+          "Common.TypeName": "everest_dashboard.App"
         }
       },
       {
-        "HashCode": 969406321,
+        "HashCode": 1903168666,
         "Kind": "Components.Component",
-        "Name": "everest_dashboard.Shared.SurveyPrompt",
+        "Name": "everest_dashboard.App",
         "AssemblyName": "everest-dashboard",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "everest_dashboard.Shared.SurveyPrompt"
-          }
-        ],
-        "BoundAttributes": [
-          {
-            "Kind": "Components.Component",
-            "Name": "Title",
-            "TypeName": "System.String",
-            "Metadata": {
-              "Common.PropertyName": "Title"
-            }
+            "TagName": "everest_dashboard.App"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Shared.SurveyPrompt",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
-        }
-      },
-      {
-        "HashCode": 1520279135,
-        "Kind": "Components.Component",
-        "Name": "everest_dashboard.Shared.NavMenu",
-        "AssemblyName": "everest-dashboard",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "NavMenu"
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Shared.NavMenu"
-        }
-      },
-      {
-        "HashCode": -2041523639,
-        "Kind": "Components.Component",
-        "Name": "everest_dashboard.Shared.NavMenu",
-        "AssemblyName": "everest-dashboard",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "everest_dashboard.Shared.NavMenu"
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Shared.NavMenu",
+          "Common.TypeName": "everest_dashboard.App",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
@@ -379,35 +326,88 @@
         }
       },
       {
-        "HashCode": 1432167779,
+        "HashCode": 1520279135,
         "Kind": "Components.Component",
-        "Name": "everest_dashboard.App",
+        "Name": "everest_dashboard.Shared.NavMenu",
         "AssemblyName": "everest-dashboard",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "App"
+            "TagName": "NavMenu"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.App"
+          "Common.TypeName": "everest_dashboard.Shared.NavMenu"
         }
       },
       {
-        "HashCode": 1903168666,
+        "HashCode": -2041523639,
         "Kind": "Components.Component",
-        "Name": "everest_dashboard.App",
+        "Name": "everest_dashboard.Shared.NavMenu",
         "AssemblyName": "everest-dashboard",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "everest_dashboard.App"
+            "TagName": "everest_dashboard.Shared.NavMenu"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.App",
+          "Common.TypeName": "everest_dashboard.Shared.NavMenu",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
+        "HashCode": -1193967710,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Shared.SurveyPrompt",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "SurveyPrompt"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "Title",
+            "TypeName": "System.String",
+            "Metadata": {
+              "Common.PropertyName": "Title"
+            }
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Shared.SurveyPrompt"
+        }
+      },
+      {
+        "HashCode": 969406321,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Shared.SurveyPrompt",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "everest_dashboard.Shared.SurveyPrompt"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "Title",
+            "TypeName": "System.String",
+            "Metadata": {
+              "Common.PropertyName": "Title"
+            }
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Shared.SurveyPrompt",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },

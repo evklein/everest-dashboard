@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "Markdig/0.30.2": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/Markdig.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Markdig.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Authorization/6.0.4": {
         "type": "package",
         "dependencies": {
@@ -195,6 +204,29 @@
     }
   },
   "libraries": {
+    "Markdig/0.30.2": {
+      "sha512": "rm5rfHGP0BZtcB31CmQeWLLPdpG6xA6xN92x2KcNrl+9MPJONq9u4dfG7VgnTOxdjDnuEkX6GCxMYS+LpoKGOQ==",
+      "type": "package",
+      "path": "markdig/0.30.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net452/Markdig.dll",
+        "lib/net452/Markdig.xml",
+        "lib/net6.0/Markdig.dll",
+        "lib/net6.0/Markdig.xml",
+        "lib/netcoreapp3.1/Markdig.dll",
+        "lib/netcoreapp3.1/Markdig.xml",
+        "lib/netstandard2.0/Markdig.dll",
+        "lib/netstandard2.0/Markdig.xml",
+        "lib/netstandard2.1/Markdig.dll",
+        "lib/netstandard2.1/Markdig.xml",
+        "markdig.0.30.2.nupkg.sha512",
+        "markdig.nuspec",
+        "markdig.png",
+        "readme.md"
+      ]
+    },
     "Microsoft.AspNetCore.Authorization/6.0.4": {
       "sha512": "ZufyK5u4rneCu7Xq9Dan4XggNANWgGpj4BvHhOof5tIZQgjWTU18oRlg5xtuBDHsfl03BwnxxWgNjN5TO59wEw==",
       "type": "package",
@@ -531,6 +563,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "Markdig >= 0.30.2",
       "MudBlazor >= 6.0.10"
     ]
   },
@@ -571,6 +604,10 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "Markdig": {
+            "target": "Package",
+            "version": "[0.30.2, )"
+          },
           "MudBlazor": {
             "target": "Package",
             "version": "[6.0.10, )"
