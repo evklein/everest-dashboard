@@ -273,59 +273,6 @@
         }
       },
       {
-        "HashCode": -1951303129,
-        "Kind": "Components.Component",
-        "Name": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
-        "AssemblyName": "everest-dashboard",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "MarkdownEditor"
-          }
-        ],
-        "BoundAttributes": [
-          {
-            "Kind": "Components.Component",
-            "Name": "NumberOfLines",
-            "TypeName": "System.Int32",
-            "Metadata": {
-              "Common.PropertyName": "NumberOfLines"
-            }
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor"
-        }
-      },
-      {
-        "HashCode": 1332189155,
-        "Kind": "Components.Component",
-        "Name": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
-        "AssemblyName": "everest-dashboard",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor"
-          }
-        ],
-        "BoundAttributes": [
-          {
-            "Kind": "Components.Component",
-            "Name": "NumberOfLines",
-            "TypeName": "System.Int32",
-            "Metadata": {
-              "Common.PropertyName": "NumberOfLines"
-            }
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
-        }
-      },
-      {
         "HashCode": 1520279135,
         "Kind": "Components.Component",
         "Name": "everest_dashboard.Shared.NavMenu",
@@ -408,6 +355,59 @@
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
           "Common.TypeName": "everest_dashboard.Shared.SurveyPrompt",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
+        "HashCode": -1951303129,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "MarkdownEditor"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "NumberOfLines",
+            "TypeName": "System.Int32",
+            "Metadata": {
+              "Common.PropertyName": "NumberOfLines"
+            }
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor"
+        }
+      },
+      {
+        "HashCode": 1332189155,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "NumberOfLines",
+            "TypeName": "System.Int32",
+            "Metadata": {
+              "Common.PropertyName": "NumberOfLines"
+            }
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
