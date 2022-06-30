@@ -11,6 +11,7 @@
                     Dense=true
                     Text=@note.Title
                     Icon=@(noteIsOpen(note) ? Icons.Material.Filled.FileOpen : Icons.Material.Filled.Feed)
+                    IconColor=@(_tabs.Where(tab => tab.Note.Id == note.Id).Single().IconColor)
                     OnClick=@(() => addNoteTab(note))
                 />
             }
@@ -72,6 +73,7 @@
     private string _lastSavedMarkdown = string.Empty; // todo on page load
     private bool _indexChanged = false;
     private string _fileSearchValue = string.Empty;
+    private string _uneditedNoteContents = string.Empty;
 
     private string currentMarkdown => string.IsNullOrEmpty(_selectedNoteTab.Note.Content)
         ? "Nothing to show." : Markdown.ToHtml(_selectedNoteTab.Note.Content);
@@ -86,6 +88,14 @@
         string content = !markdownHasChangedSinceLastSave() ? "Nothing to show." : Markdown.ToHtml(_currentMarkdown); // todo make this like a git diff.
         renderFragmentBuilder.AddMarkupContent(0, content);
     };
+
+    private bool  markdownHasChanged()
+    {
+        bool hasChanged = _selectedNoteTab is not null &&
+               !_selectedNoteTab.Note.Content.Equals(_uneditedNoteContents);
+        if (hasChanged)
+        return hasChanged;
+    } 
 
     private async Task clearCurrentMarkdown()
     {
@@ -108,7 +118,7 @@
 
     private bool markdownHasChangedSinceLastSave()
     {
-        return !_lastSavedMarkdown.Equals(_currentMarkdown);
+        return false;
     }
 
     private void addNewNoteTab()
@@ -125,7 +135,8 @@
     }
 
     private void doCommonTabAddLogic(NoteTab tab)
-    {
+    {   
+        _uneditedNoteContents = tab.Note.Content;
         _tabs.Add(tab);
         _selectedNoteTab = tab;
         _indexChanged = true;
