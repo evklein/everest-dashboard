@@ -12,39 +12,6 @@
   "ProjectWorkspaceState": {
     "TagHelpers": [
       {
-        "HashCode": -63695118,
-        "Kind": "Components.Component",
-        "Name": "everest_dashboard.Pages.Index",
-        "AssemblyName": "everest-dashboard",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "Index"
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Pages.Index"
-        }
-      },
-      {
-        "HashCode": 1483619646,
-        "Kind": "Components.Component",
-        "Name": "everest_dashboard.Pages.Index",
-        "AssemblyName": "everest-dashboard",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "everest_dashboard.Pages.Index"
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Pages.Index",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
-        }
-      },
-      {
         "HashCode": -972984236,
         "Kind": "Components.Component",
         "Name": "everest_dashboard.Pages.FetchData",
@@ -144,6 +111,39 @@
         }
       },
       {
+        "HashCode": -63695118,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Pages.Index",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "Index"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Pages.Index"
+        }
+      },
+      {
+        "HashCode": 1483619646,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Pages.Index",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "everest_dashboard.Pages.Index"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Pages.Index",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
         "HashCode": 1432167779,
         "Kind": "Components.Component",
         "Name": "everest_dashboard.App",
@@ -173,39 +173,6 @@
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
           "Common.TypeName": "everest_dashboard.App",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
-        }
-      },
-      {
-        "HashCode": 1520279135,
-        "Kind": "Components.Component",
-        "Name": "everest_dashboard.Shared.NavMenu",
-        "AssemblyName": "everest-dashboard",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "NavMenu"
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Shared.NavMenu"
-        }
-      },
-      {
-        "HashCode": -2041523639,
-        "Kind": "Components.Component",
-        "Name": "everest_dashboard.Shared.NavMenu",
-        "AssemblyName": "everest-dashboard",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "everest_dashboard.Shared.NavMenu"
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "everest_dashboard.Shared.NavMenu",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
@@ -312,6 +279,39 @@
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
           "Common.TypeName": "everest_dashboard.Shared.MarkdownEditor.MarkdownEditor",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
+        "HashCode": 1520279135,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Shared.NavMenu",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "NavMenu"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Shared.NavMenu"
+        }
+      },
+      {
+        "HashCode": -2041523639,
+        "Kind": "Components.Component",
+        "Name": "everest_dashboard.Shared.NavMenu",
+        "AssemblyName": "everest-dashboard",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "everest_dashboard.Shared.NavMenu"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "everest_dashboard.Shared.NavMenu",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
