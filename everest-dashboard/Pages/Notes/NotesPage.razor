@@ -32,22 +32,45 @@
             <MudDynamicTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" AddTab=@addNewNoteTab CloseTab=@((panel) => closeNoteTab(panel)) AddIconToolTip="Click here to add a new tab" CloseIconToolTip="Close this tab. All data will be lost">
             @foreach (NoteTab tab in _tabs)
             {
-                <MudTabPanel Text=@(tab.Note.ContentHasChanged ? $"{tab.Note.Title}*" : tab.Note.Title) Tag=@tab.Note.Id>
-                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined" Class="pa-2">
-                        <MudButton @onclick=@(() => switchNoteView(NoteViewEnum.Outline)) Disabled=@(_noteView == NoteViewEnum.Outline) StartIcon=@Icons.Material.Filled.Create Variant=@Variant.Filled>Outline</MudButton>
-                        <MudButton @onclick=@(() => switchNoteView(NoteViewEnum.Markdown)) Disabled=@(_noteView == NoteViewEnum.Markdown) StartIcon=@Icons.Material.Filled.RemoveRedEye Variant=@Variant.Filled>Markdown</MudButton>
-                    </MudButtonGroup>
-                        <MudButton Variant=@Variant.Filled Color=@Color.Success @onclick=@(() => saveNote(tab.Note)) Disabled=@(!tab.Note.ContentHasChanged) Class="ma-2" Style="float: right" StartIcon=@Icons.Material.Filled.Save>Save</MudButton>
-                    <MudItem Class="pa-6">
-                        @if (_noteView == NoteViewEnum.Outline)
-                        {
-                            <MudTextField Immediate="true" T="string" Label="Markdown" Variant="Variant.Filled" @bind-Text=@tab.Note.UpdatedContent Lines=20 />
-                        }
-                        @if (_noteView == NoteViewEnum.Markdown)
-                        {
-                            @((MarkupString) currentMarkdown)
-                        }
-                    </MudItem>
+                <MudTabPanel Tag=@tab.Note.Id>
+                    <TabContent>
+                        <MudText Typo="Typo.h6">
+                            @if (tab.Note.ContentHasChanged)
+                            {
+                                <i>@tab.Note.Title*</i>
+                            }
+                            else
+                            {
+                                @tab.Note.Title
+                            }
+                        </MudText>
+                    </TabContent>
+                    <ChildContent>
+                        <MudGrid Spacing="2">
+                            <MudItem xs="4">
+                                <MudTextField Adornment=@Adornment.Start AdornmentIcon=@Icons.Filled.Title @bind-Value=@tab.Note.Title Label="Title" Variant="Variant.Outlined" Immediate="true" Class="pa-2" />
+                            </MudItem>
+                            <MudItem xs="3" Class="mt-4">
+                                <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined" Class="pa-2">
+                                    <MudButton @onclick=@(() => switchNoteView(NoteViewEnum.Outline)) Disabled=@(_noteView == NoteViewEnum.Outline) StartIcon=@Icons.Material.Filled.Create Variant=@Variant.Filled>Outline</MudButton>
+                                    <MudButton @onclick=@(() => switchNoteView(NoteViewEnum.Markdown)) Disabled=@(_noteView == NoteViewEnum.Markdown) StartIcon=@Icons.Material.Filled.RemoveRedEye Variant=@Variant.Filled>Markdown</MudButton>
+                                </MudButtonGroup>
+                            </MudItem>
+                            <MudItem xs="5" Class="mt-4">
+                                <MudButton Variant=@Variant.Filled Color=@Color.Success @onclick=@(() => saveNote(tab.Note)) Disabled=@(!tab.Note.ContentHasChanged) Class="ma-2" Style="float: right" StartIcon=@Icons.Material.Filled.Save>Save</MudButton>
+                            </MudItem>
+                        </MudGrid>
+                        <MudItem Class="pa-6">
+                            @if (_noteView == NoteViewEnum.Outline)
+                            {
+                                <MudTextField Immediate="true" Label="Markdown" Variant="Variant.Outlined" @bind-Value=@tab.Note.UpdatedContent Lines=20 />
+                            }
+                            @if (_noteView == NoteViewEnum.Markdown)
+                            {
+                                @((MarkupString) currentMarkdown)
+                            }
+                        </MudItem>
+                    </ChildContent>
                 </MudTabPanel>
             }
             </MudDynamicTabs>
