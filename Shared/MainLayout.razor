@@ -1,23 +1,37 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>everest-dashboard</PageTitle>
+<PageTitle>Everest</PageTitle>
 
 <MudThemeProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudLayout>
+    <MudAppBar Color="Color.Primary" Fixed="false">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick=@toggleDrawer/>
+        <MudSpacer />
+        <MudText Typo="Typo.h5" Class="ml-3"><b>Ev</b>erest</MudText>
+    </MudAppBar>
+    <MudDrawer @bind-Open=@_open Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo=@Typo.h6>Pages</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <MudNavLink Href="/Notes" Icon=@Icons.Material.Filled.Feed>Notes</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+@code
+{
+    private bool _open = false;
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    private void toggleDrawer()
+    {
+        _open = !_open;
+    }
+}
+
