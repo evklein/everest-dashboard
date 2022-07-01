@@ -34,7 +34,7 @@
             {
                 <MudTabPanel Tag=@tab.Note.Id>
                     <TabContent>
-                        <MudText Typo="Typo.h6">
+                        <MudText Typo="Typo.body1">
                             @if (tab.Note.NoteHasChanged)
                             {
                                 <i>@tab.Note.UpdatedTitle*</i>
@@ -121,8 +121,8 @@
     private string _fileSearchValue = string.Empty;
     private NoteViewEnum _noteView = NoteViewEnum.Outline;
 
-    private string currentMarkdown => string.IsNullOrEmpty(_selectedNoteTab.Note.Content)
-        ? "Nothing to show." : Markdown.ToHtml(_selectedNoteTab.Note.Content);
+    private string currentMarkdown => string.IsNullOrEmpty(_selectedNoteTab.Note.UpdatedContent)
+        ? "Nothing to show." : Markdown.ToHtml(_selectedNoteTab.Note.UpdatedContent);
 
     private bool noteIsOpen(Note note)
     {
