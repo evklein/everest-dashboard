@@ -13,13 +13,20 @@
                         @foreach (var note in _notes.Where(n => n.Title.Contains(_fileSearchValue, StringComparison.InvariantCultureIgnoreCase)))
                         {
                             <MudListItem
-                                xs="12"
                                 Dense=true
-                                Text=@note.Title
-                                Icon=@(noteIsOpen(note) ? Icons.Material.Filled.FileOpen : Icons.Material.Filled.Feed)
-                                IconColor=@(note.NoteHasChanged ? Color.Success : Color.Default)
                                 OnClick=@(() => addNoteTab(note))
-                            />
+                            >
+                                @if (noteIsOpen(note))
+                                {
+                                    <MudIcon Class="pr-2" Icon=@Icons.Material.Filled.FileOpen Color=@(note.NoteHasChanged ? Color.Success : Color.Default) />
+                                }
+                                else
+                                {
+                                    <MudIcon Class="pr-2" Icon=@Icons.Material.Filled.Feed Color=@(note.NoteHasChanged ? Color.Success : Color.Default) />
+                                }
+                                @note.Title
+                                <MudIconButton Icon=@Icons.Material.Filled.Delete Color=@Color.Error Size=@Size.Small Style="float:right" OnClick=@(() => deleteNote(note)) />
+                            </MudListItem>
                         }
                         </MudList>
                     </MudItem>
@@ -158,6 +165,15 @@
 		}    
     }
 
+    private void closeNoteTab(Note note)
+    {
+        var tabView = _tabs.FirstOrDefault(x => x.Note.Id == note.Id);
+        if (tabView != null)
+        {
+            _tabs.Remove(tabView);
+        }
+    }
+
     private void saveNote(Note note)
     {
         // Do save logic here.
@@ -176,5 +192,13 @@
     private void switchNoteView(NoteViewEnum noteView)
     {
         _noteView = noteView;
+    }
+
+    private void deleteNote(Note note)
+    {
+        // Call API
+
+        closeNoteTab(note);
+        _notes.Remove(note);
     }
 }
