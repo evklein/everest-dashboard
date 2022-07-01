@@ -17,7 +17,7 @@
                                 Dense=true
                                 Text=@note.Title
                                 Icon=@(noteIsOpen(note) ? Icons.Material.Filled.FileOpen : Icons.Material.Filled.Feed)
-                                IconColor=@(note.ContentHasChanged ? Color.Success : Color.Default)
+                                IconColor=@(note.NoteHasChanged ? Color.Success : Color.Default)
                                 OnClick=@(() => addNoteTab(note))
                             />
                         }
@@ -35,9 +35,13 @@
                 <MudTabPanel Tag=@tab.Note.Id>
                     <TabContent>
                         <MudText Typo="Typo.h6">
-                            @if (tab.Note.ContentHasChanged)
+                            @if (tab.Note.NoteHasChanged)
                             {
-                                <i>@tab.Note.Title*</i>
+                                <i>@tab.Note.UpdatedTitle*</i>
+                            }
+                            else if (string.IsNullOrEmpty(tab.Note.Title))
+                            {
+                                <i>New note</i>
                             }
                             else
                             {
@@ -48,7 +52,7 @@
                     <ChildContent>
                         <MudGrid Spacing="2">
                             <MudItem xs="4">
-                                <MudTextField Adornment=@Adornment.Start AdornmentIcon=@Icons.Filled.Title @bind-Value=@tab.Note.Title Label="Title" Variant="Variant.Outlined" Immediate="true" Class="pa-2" />
+                                <MudTextField Adornment=@Adornment.Start AdornmentIcon=@Icons.Filled.Title @bind-Value=@tab.Note.UpdatedTitle Label="Title" Variant="Variant.Outlined" Immediate="true" Class="pa-2" />
                             </MudItem>
                             <MudItem xs="3" Class="mt-4">
                                 <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined" Class="pa-2">
@@ -57,7 +61,7 @@
                                 </MudButtonGroup>
                             </MudItem>
                             <MudItem xs="5" Class="mt-4">
-                                <MudButton Variant=@Variant.Filled Color=@Color.Success @onclick=@(() => saveNote(tab.Note)) Disabled=@(!tab.Note.ContentHasChanged) Class="ma-2" Style="float: right" StartIcon=@Icons.Material.Filled.Save>Save</MudButton>
+                                <MudButton Variant=@Variant.Filled Color=@Color.Success @onclick=@(() => saveNote(tab.Note)) Disabled=@(!tab.Note.NoteHasChanged) Class="ma-2" Style="float: right" StartIcon=@Icons.Material.Filled.Save>Save</MudButton>
                             </MudItem>
                         </MudGrid>
                         <MudItem Class="pa-6">
@@ -74,6 +78,10 @@
                 </MudTabPanel>
             }
             </MudDynamicTabs>
+        }
+        else
+        {
+            <MudButton @onclick=addNewNoteTab StartIcon=@Icons.Material.Filled.Create Variant=@Variant.Filled>Start new note</MudButton>
         }
         </MudItem>
     </MudGrid>

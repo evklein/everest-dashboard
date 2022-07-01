@@ -4,6 +4,7 @@ public class Note
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
 
+    public string UpdatedTitle { get; set; } = string.Empty;
     public string UpdatedContent { get; set; } = string.Empty;
     public DateTime LastModified { get; set; }
 
@@ -12,9 +13,10 @@ public class Note
     public Note(string title, string content)
     {
         Title = title;
+        UpdatedTitle = title;
         Content = content;
         UpdatedContent = content;
     }
 
-    public bool ContentHasChanged => !Content.Equals(UpdatedContent);
+    public bool NoteHasChanged => !Title.Equals(UpdatedTitle) || !Content.Equals(UpdatedContent);
 }
