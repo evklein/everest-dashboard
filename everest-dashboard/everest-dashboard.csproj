@@ -7,6 +7,7 @@
     <RootNamespace>everest_dashboard</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'everest-dashboard' " />
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.30.2" />
     <PackageReference Include="MudBlazor" Version="6.0.10" />
