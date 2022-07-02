@@ -11,6 +11,6 @@
 # Built Visual Studio Code Extensions
 *.vsix
 
-/Data/
-/obj/
-/bin/
+.Data/*
+.obj/*
+.bin/*

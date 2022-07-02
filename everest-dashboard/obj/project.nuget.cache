@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "dgSpecHash": "/YJPmby7svaVchY4t3PJ5n1Xj779JaWG15TrHxRtwxQ4jifmSJtUCfcxQpUExKVEFewtNzMwD0w5AdEG8xdCmA==",
+  "success": true,
+  "projectFilePath": "/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/everest-dashboard.csproj",
+  "expectedPackageFiles": [
+    "/Users/evan/.nuget/packages/markdig/0.30.2/markdig.0.30.2.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.aspnetcore.authorization/6.0.4/microsoft.aspnetcore.authorization.6.0.4.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.aspnetcore.components/6.0.4/microsoft.aspnetcore.components.6.0.4.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.aspnetcore.components.analyzers/6.0.4/microsoft.aspnetcore.components.analyzers.6.0.4.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.aspnetcore.components.forms/6.0.4/microsoft.aspnetcore.components.forms.6.0.4.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.aspnetcore.components.web/6.0.4/microsoft.aspnetcore.components.web.6.0.4.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.aspnetcore.metadata/6.0.4/microsoft.aspnetcore.metadata.6.0.4.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.extensions.dependencyinjection/6.0.0/microsoft.extensions.dependencyinjection.6.0.0.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/6.0.0/microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.extensions.logging.abstractions/6.0.1/microsoft.extensions.logging.abstractions.6.0.1.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.extensions.options/6.0.0/microsoft.extensions.options.6.0.0.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.extensions.primitives/6.0.0/microsoft.extensions.primitives.6.0.0.nupkg.sha512",
+    "/Users/evan/.nuget/packages/microsoft.jsinterop/6.0.4/microsoft.jsinterop.6.0.4.nupkg.sha512",
+    "/Users/evan/.nuget/packages/mudblazor/6.0.10/mudblazor.6.0.10.nupkg.sha512",
+    "/Users/evan/.nuget/packages/system.io.pipelines/6.0.2/system.io.pipelines.6.0.2.nupkg.sha512",
+    "/Users/evan/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
