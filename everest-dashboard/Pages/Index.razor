@@ -1,11 +1,10 @@
 ﻿@page "/"
 
-<MudPaper Elevation="0" Class="pa-4" Style="height:100px; width:180px;">
-    <div class="d-none d-sm-flex d-md-none mud-theme-primary rounded" style="height:100%; width:100%;"></div>
-</MudPaper>
-<MudPaper Elevation="0" Class="pa-4" Style="height:100px; width:180px;">
-    <div class="d-lg-none mud-theme-secondary rounded" style="height:100%; width:100%;"></div>
-</MudPaper>
-<MudPaper Elevation="0" Class="pa-4" Style="height:100px; width:180px;">
-    <div class="d-none d-lg-block mud-theme-tertiary rounded" style="height:100%; width:100%;"></div>
-</MudPaper>
+<MudGrid Class="mt-4 px-8" Spacing="2">
+    <MudItem xs="12">
+        <MudText Typo="Typo.h3">Dashboard</MudText>
+    </MudItem>
+    <MudItem xs="6">
+        <MudText Typo="Typo.body1">Welcome to the Everest Dashboard. There's currently no pinned modules.</MudText>
+    </MudItem>
+</MudGrid>
