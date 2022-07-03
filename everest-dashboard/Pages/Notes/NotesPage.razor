@@ -1,5 +1,7 @@
 @page "/Notes"
+@inject IHttpService httpService
 
+@mystring
 <MudContainer MaxWidth=@MaxWidth.ExtraLarge>
     <MudGrid Spacing="2">
         <MudItem xs="3">
@@ -119,6 +121,7 @@
         new Note("Note #2", "Content #2"),
         new Note("Note #3", "Content #3"),
     };
+    private string mystring;
 
     private List<string> _notesToShow = new();
     private NoteTab _selectedNoteTab;
@@ -131,6 +134,10 @@
     private string currentMarkdown => string.IsNullOrEmpty(_selectedNoteTab.Note.UpdatedContent)
         ? "Nothing to show." : Markdown.ToHtml(_selectedNoteTab.Note.UpdatedContent);
 
+    protected override async Task OnInitializedAsync()
+    {
+        mystring = await httpService.DoNetworkTest();
+    }
     private bool noteIsOpen(Note note)
     {
         return _tabs.Where(tab => tab.Note.Id == note.Id).Any();
@@ -150,7 +157,7 @@
     }
 
     private void doCommonTabAddLogic(NoteTab tab)
-    {   
+    {
         _tabs.Add(tab);
         _selectedNoteTab = tab;
         _indexChanged = true;
@@ -158,11 +165,11 @@
 
     private void closeNoteTab(MudTabPanel panel)
     {
-		var tabView = _tabs.FirstOrDefault(x => x.Note.Id == (Guid) panel.Tag);
-		if(tabView != null)
-		{
-			_tabs.Remove(tabView);
-		}    
+        var tabView = _tabs.FirstOrDefault(x => x.Note.Id == (Guid) panel.Tag);
+        if(tabView != null)
+        {
+            _tabs.Remove(tabView);
+        }
     }
 
     private void closeNoteTab(Note note)
@@ -180,14 +187,14 @@
     }
 
     protected override void OnAfterRender(bool firstRender)
-	{
-		if(_indexChanged == true)
-		{
-			_index = _tabs.Count - 1;
+    {
+        if(_indexChanged == true)
+        {
+            _index = _tabs.Count - 1;
             StateHasChanged();
-			_indexChanged = false;
-		}
-	}
+            _indexChanged = false;
+        }
+    }
 
     private void switchNoteView(NoteViewEnum noteView)
     {
@@ -201,4 +208,4 @@
         closeNoteTab(note);
         _notes.Remove(note);
     }
-}
+    }

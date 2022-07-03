@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1700.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "everest-server", "everest-server\everest-server.csproj", "{2EA46717-4B30-4F9A-AD2F-037C66ACB0E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "everest-dashboard", "..\everest-dashboard\everest-dashboard.csproj", "{6254172F-3188-430A-9387-480FC199DD4B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2EA46717-4B30-4F9A-AD2F-037C66ACB0E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EA46717-4B30-4F9A-AD2F-037C66ACB0E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EA46717-4B30-4F9A-AD2F-037C66ACB0E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EA46717-4B30-4F9A-AD2F-037C66ACB0E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6254172F-3188-430A-9387-480FC199DD4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6254172F-3188-430A-9387-480FC199DD4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6254172F-3188-430A-9387-480FC199DD4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6254172F-3188-430A-9387-480FC199DD4B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC1AFEF3-2960-4CD9-95E5-8465BEB7C8D2}
+	EndGlobalSection
+EndGlobal
