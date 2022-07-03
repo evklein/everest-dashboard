@@ -200,6 +200,16 @@
         "build": {
           "buildTransitive/netcoreapp3.1/_._": {}
         }
+      },
+      "everest-common/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/everest-common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/everest-common.dll": {}
+        }
       }
     }
   },
@@ -559,12 +569,18 @@
         "system.runtime.compilerservices.unsafe.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "everest-common/1.0.0": {
+      "type": "project",
+      "path": "../everest-common/everest-common.csproj",
+      "msbuildProject": "../everest-common/everest-common.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
       "Markdig >= 0.30.2",
-      "MudBlazor >= 6.0.10"
+      "MudBlazor >= 6.0.10",
+      "everest-common >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -591,7 +607,11 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/everest-common.csproj": {
+              "projectPath": "/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/everest-common.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

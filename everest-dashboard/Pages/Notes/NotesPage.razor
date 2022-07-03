@@ -1,7 +1,6 @@
 @page "/Notes"
 @inject IHttpService httpService
 
-@mystring
 <MudContainer MaxWidth=@MaxWidth.ExtraLarge>
     <MudGrid Spacing="2">
         <MudItem xs="3">
@@ -121,7 +120,6 @@
         new Note("Note #2", "Content #2"),
         new Note("Note #3", "Content #3"),
     };
-    private string mystring;
 
     private List<string> _notesToShow = new();
     private NoteTab _selectedNoteTab;
@@ -134,10 +132,6 @@
     private string currentMarkdown => string.IsNullOrEmpty(_selectedNoteTab.Note.UpdatedContent)
         ? "Nothing to show." : Markdown.ToHtml(_selectedNoteTab.Note.UpdatedContent);
 
-    protected override async Task OnInitializedAsync()
-    {
-        mystring = await httpService.DoNetworkTest();
-    }
     private bool noteIsOpen(Note note)
     {
         return _tabs.Where(tab => tab.Note.Id == note.Id).Any();

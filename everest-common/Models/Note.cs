@@ -1,9 +1,10 @@
+namespace everest_common.Models;
+
 public class Note
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
-
     public string UpdatedTitle { get; set; } = string.Empty;
     public string UpdatedContent { get; set; } = string.Empty;
     public DateTime LastModified { get; set; }

@@ -1,0 +1,12 @@
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/bin/Debug/net6.0/everest-common.deps.json
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/bin/Debug/net6.0/everest-common.dll
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/bin/Debug/net6.0/everest-common.pdb
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/obj/Debug/net6.0/everest-common.csproj.AssemblyReference.cache
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/obj/Debug/net6.0/everest-common.GeneratedMSBuildEditorConfig.editorconfig
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/obj/Debug/net6.0/everest-common.AssemblyInfoInputs.cache
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/obj/Debug/net6.0/everest-common.AssemblyInfo.cs
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/obj/Debug/net6.0/everest-common.csproj.CoreCompileInputs.cache
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/obj/Debug/net6.0/everest-common.dll
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/obj/Debug/net6.0/refint/everest-common.dll
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/obj/Debug/net6.0/everest-common.pdb
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-common/obj/Debug/net6.0/ref/everest-common.dll

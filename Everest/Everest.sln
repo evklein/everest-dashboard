@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "everest-server", "everest-s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "everest-dashboard", "..\everest-dashboard\everest-dashboard.csproj", "{6254172F-3188-430A-9387-480FC199DD4B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "everest-common", "..\everest-common\everest-common.csproj", "{65B1767D-04E0-417F-AC65-746849EA8AAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6254172F-3188-430A-9387-480FC199DD4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6254172F-3188-430A-9387-480FC199DD4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6254172F-3188-430A-9387-480FC199DD4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65B1767D-04E0-417F-AC65-746849EA8AAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65B1767D-04E0-417F-AC65-746849EA8AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65B1767D-04E0-417F-AC65-746849EA8AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65B1767D-04E0-417F-AC65-746849EA8AAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

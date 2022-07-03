@@ -19,28 +19,12 @@ build_property._RazorSourceGeneratorDebug =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ291bnRlci5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Pages/FetchData.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRmV0Y2hEYXRhLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Pages/Notes/NotesPage.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTm90ZXMvTm90ZXNQYWdlLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Shared/MarkdownEditor/MarkdownEditor.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01hcmtkb3duRWRpdG9yL01hcmtkb3duRWRpdG9yLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Shared/SurveyPrompt.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1N1cnZleVByb21wdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/_Imports.razor]
@@ -50,14 +34,6 @@ build_metadata.AdditionalFiles.CssScope =
 [/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-dugjkyiwxm
-
-[/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Shared/NavMenu.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdk1lbnUucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = b-f7u8wa7yke
-
-[/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Pages/Error.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/Pages/_Host.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0hvc3QuY3NodG1s

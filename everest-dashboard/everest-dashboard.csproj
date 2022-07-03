@@ -18,4 +18,9 @@
   <ItemGroup>
     <Folder Include="Shared\Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\everest-common\everest-common.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
