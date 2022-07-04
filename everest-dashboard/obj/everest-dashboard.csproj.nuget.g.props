@@ -14,5 +14,6 @@
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)mudblazor/6.0.10/buildTransitive/MudBlazor.props" Condition="Exists('$(NuGetPackageRoot)mudblazor/6.0.10/buildTransitive/MudBlazor.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.entityframeworkcore/6.0.6/buildTransitive/net6.0/Microsoft.EntityFrameworkCore.props" Condition="Exists('$(NuGetPackageRoot)microsoft.entityframeworkcore/6.0.6/buildTransitive/net6.0/Microsoft.EntityFrameworkCore.props')" />
   </ImportGroup>
 </Project>
