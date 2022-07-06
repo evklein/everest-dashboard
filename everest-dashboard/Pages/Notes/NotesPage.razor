@@ -39,7 +39,7 @@
         <MudItem xs="9" Class="pt-0">
         @if (_tabs.Any())
         {
-            <MudDynamicTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" AddTab=@addNewNoteTab CloseTab=@((panel) => closeNoteTab(panel)) AddIconToolTip="Click here to add a new tab" CloseIconToolTip="Close this tab. All data will be lost">
+            <MudDynamicTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" @bind-ActivePanelIndex=@_index AddTab=@addNewNoteTab CloseTab=@((panel) => closeNoteTab(panel)) AddIconToolTip="Click here to add a new tab" CloseIconToolTip="Close this tab. All data will be lost">
             @foreach (NoteTab tab in _tabs)
             {
                 <MudTabPanel Tag=@tab.Note.Id>
@@ -148,12 +148,10 @@
     private void closeNoteTab(MudTabPanel panel)
     {
         var tabView = _tabs.FirstOrDefault(tv => tv.Note.Id == (Guid) panel.Tag);
-        var tabNote = _notes.First(n => n.Id == (Guid)panel.Tag);
-        tabNote.ResetToLastSavedState();
-        if(tabView != null)
-        {
-            _tabs.Remove(tabView);
-        }
+        var tabNote = _notes.FirstOrDefault(n => n.Id == (Guid)panel.Tag);
+
+        if (tabNote is not null) tabNote.ResetToLastSavedState(); // Note is new and has not been saved, so does not exist in global notes list.
+        if(tabView is not null) _tabs.Remove(tabView);
 
         StateHasChanged();
     }
