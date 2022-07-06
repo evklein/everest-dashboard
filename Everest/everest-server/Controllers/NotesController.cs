@@ -32,12 +32,6 @@ public class NotesController : ControllerBase
         return notes;
     }
 
-    [HttpGet("{id}")]
-    public Note GetNoteById(Guid id)
-    {
-        return _dbContext.Notes.Where(n => n.Id == id).FirstOrDefault();
-    }
-
     [HttpPost]
     public async Task<IEnumerable<Note>> SaveNote(Note note)
     {
@@ -75,7 +69,7 @@ public class NotesController : ControllerBase
             var x = ex;
         }
 
-        return null; // todo
+        return null;
     }
 
     [HttpDelete("{id}")]

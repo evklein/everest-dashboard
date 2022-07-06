@@ -403,7 +403,3 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
-
-# My stuff
-*/bin
-*/obj
