@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hgqAJZuqkaJh9pLPfGB78y7idMIdUMB0O/IHlS20RKOV6bAEGBL4iWb++i0dK+7/zePhJMNX4z1FA3JqMeZJgA==",
+  "dgSpecHash": "C0ShGgeN75nU2+ZdHtQIczJbkF7ZLnzTlWc1Oz4Sb8ObvKcmunx9ip45Tlm+54Tmgw+NTWxUvr271BxBkLgeJg==",
   "success": true,
   "projectFilePath": "/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/everest-dashboard.csproj",
   "expectedPackageFiles": [
@@ -24,6 +24,7 @@
     "/Users/evan/.nuget/packages/microsoft.extensions.primitives/6.0.0/microsoft.extensions.primitives.6.0.0.nupkg.sha512",
     "/Users/evan/.nuget/packages/microsoft.jsinterop/6.0.4/microsoft.jsinterop.6.0.4.nupkg.sha512",
     "/Users/evan/.nuget/packages/mudblazor/6.0.10/mudblazor.6.0.10.nupkg.sha512",
+    "/Users/evan/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512",
     "/Users/evan/.nuget/packages/system.collections.immutable/6.0.0/system.collections.immutable.6.0.0.nupkg.sha512",
     "/Users/evan/.nuget/packages/system.diagnostics.diagnosticsource/6.0.0/system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
     "/Users/evan/.nuget/packages/system.io.pipelines/6.0.2/system.io.pipelines.6.0.2.nupkg.sha512",

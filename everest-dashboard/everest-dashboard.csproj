@@ -10,13 +10,19 @@
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.30.2" />
     <PackageReference Include="MudBlazor" Version="6.0.10" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Shared\Services\" />
+    <None Remove="Shared\Services\Http\" />
+    <None Remove="Shared\Services\Http\Notes\" />
+    <None Remove="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Shared\Services\" />
+    <Folder Include="Shared\Services\Http\" />
+    <Folder Include="Shared\Services\Http\Notes\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\everest-common\everest-common.csproj">

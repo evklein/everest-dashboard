@@ -18,6 +18,7 @@
 /Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/bin/Debug/net6.0/Microsoft.Extensions.Logging.Abstractions.dll
 /Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/bin/Debug/net6.0/Microsoft.JSInterop.dll
 /Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/bin/Debug/net6.0/MudBlazor.dll
+/Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/bin/Debug/net6.0/Newtonsoft.Json.dll
 /Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/bin/Debug/net6.0/System.IO.Pipelines.dll
 /Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/bin/Debug/net6.0/everest-common.dll
 /Users/evan/Google Drive/Development/everest/everest-dashboard/everest-dashboard/bin/Debug/net6.0/everest-common.pdb

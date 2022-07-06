@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using everest_dashboard.Data;
 using everest_dashboard.Shared.Services;
+using everest_dashboard.Shared.Services.Http;
+using everest_dashboard.Shared.Services.Http.Notes;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,11 +17,11 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
-builder.Services.AddHttpClient<IHttpService, HttpService>(s =>
-{
-    s.BaseAddress = new Uri(@"http://localhost:5001/");
-});
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(@"http://localhost:5001/") });
 
+
+builder.Services.AddScoped<IHttpService, HttpService>();
+builder.Services.AddScoped<INotesService, NotesService>();
 
 var app = builder.Build();
 

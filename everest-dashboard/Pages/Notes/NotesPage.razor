@@ -1,5 +1,7 @@
 @page "/Notes"
-@inject IHttpService httpService
+@using System.Linq
+
+@inject INotesService notesService
 
 <MudContainer MaxWidth=@MaxWidth.ExtraLarge>
     <MudGrid Spacing="2">
@@ -99,27 +101,7 @@
 {
     private int _index = 0;
     private List<NoteTab> _tabs = new();
-    private List<Note> _notes = new()
-    {
-        new Note("Note #1", "Content #1"),
-        new Note("Note #2", "Content #2"),
-        new Note("Note #3", "Content #3"),
-        new Note("Note #1", "Content #1"),
-        new Note("Note #2", "Content #2"),
-        new Note("Note #3", "Content #3"),
-        new Note("Note #1", "Content #1"),
-        new Note("Note #2", "Content #2"),
-        new Note("Note #3", "Content #3"),
-        new Note("Note #1", "Content #1"),
-        new Note("Note #2", "Content #2"),
-        new Note("Note #3", "Content #3"),
-        new Note("Note #1", "Content #1"),
-        new Note("Note #2", "Content #2"),
-        new Note("Note #3", "Content #3"),
-        new Note("Note #1", "Content #1"),
-        new Note("Note #2", "Content #2"),
-        new Note("Note #3", "Content #3"),
-    };
+    private List<Note> _notes = new();
 
     private List<string> _notesToShow = new();
     private NoteTab _selectedNoteTab;
@@ -131,6 +113,12 @@
 
     private string currentMarkdown => string.IsNullOrEmpty(_selectedNoteTab.Note.UpdatedContent)
         ? "Nothing to show." : Markdown.ToHtml(_selectedNoteTab.Note.UpdatedContent);
+
+    protected override async Task OnInitializedAsync()
+    {
+        IEnumerable<Note> notes = await notesService.GetNotesAsync();
+        _notes = notes.ToList();
+    }
 
     private bool noteIsOpen(Note note)
     {
@@ -159,11 +147,15 @@
 
     private void closeNoteTab(MudTabPanel panel)
     {
-        var tabView = _tabs.FirstOrDefault(x => x.Note.Id == (Guid) panel.Tag);
+        var tabView = _tabs.FirstOrDefault(tv => tv.Note.Id == (Guid) panel.Tag);
+        var tabNote = _notes.First(n => n.Id == (Guid)panel.Tag);
+        tabNote.ResetToLastSavedState();
         if(tabView != null)
         {
             _tabs.Remove(tabView);
         }
+
+        StateHasChanged();
     }
 
     private void closeNoteTab(Note note)
@@ -175,9 +167,14 @@
         }
     }
 
-    private void saveNote(Note note)
+    private async void saveNote(Note note)
     {
-        // Do save logic here.
+        var updatedNotesList = await notesService.SaveNoteAsync(note);
+        _notes = updatedNotesList.ToList();
+        var updatedNote = _notes.FirstOrDefault(n => n.Id == note.Id);
+        var selectedTab = _tabs.FirstOrDefault(t => t.Note.Id == note.Id);
+        if (selectedTab is not null && updatedNote is not null) selectedTab.Note = updatedNote;
+        StateHasChanged();
     }
 
     protected override void OnAfterRender(bool firstRender)

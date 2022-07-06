@@ -1,3 +1,4 @@
+
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace everest_common.Models;
@@ -9,7 +10,7 @@ public class Note
     public string Title { get; set; } = string.Empty;
 
     [NotMapped]
-    public string UpdatedTitle { get; set; } = string.Empty;
+    public string UpdatedTitle { get; set; }
 
     public string Content { get; set; } = string.Empty;
 
@@ -29,5 +30,12 @@ public class Note
         UpdatedContent = content;
     }
 
+    [NotMapped]
     public bool NoteHasChanged => !Title.Equals(UpdatedTitle) || !Content.Equals(UpdatedContent);
+
+    public void ResetToLastSavedState()
+    {
+        UpdatedTitle = Title;
+        UpdatedContent = Content;
+    }
 }
