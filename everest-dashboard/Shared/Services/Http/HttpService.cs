@@ -47,9 +47,19 @@ namespace everest_dashboard.Shared.Services.Http
             }
         }
 
-        public Task<HttpResponseWrapper<T>> DeleteAsync<T>(string endpoint, T requestObject)
+        public async Task<HttpResponseWrapper<TResponse>> DeleteAsync<TResponse>(string endpoint)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.DeleteAsync(endpoint);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseObject = await deserializeHttpResponse<TResponse>(response);
+                return new HttpResponseWrapper<TResponse>(responseObject, true, response);
+            }
+            else
+            {
+                return new HttpResponseWrapper<TResponse>(default, false, response);
+            }
         }
 
         private async Task<T> deserializeHttpResponse<T>(HttpResponseMessage httpResponseMessage)

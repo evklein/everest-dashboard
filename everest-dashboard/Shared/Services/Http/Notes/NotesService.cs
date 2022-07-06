@@ -34,6 +34,18 @@ namespace everest_dashboard.Shared.Services.Http.Notes
 
             return new List<Note>();
         }
+
+
+        public async Task<IEnumerable<Note>> DeleteNoteAsync(Note note)
+        {
+            var deleteNoteResponse = await _httpService.DeleteAsync<IEnumerable<Note>>($"{_endpoint}/{note.Id}");
+            if (deleteNoteResponse.Success)
+            {
+                return deleteNoteResponse.ResponseObject;
+            }
+
+            return new List<Note>();
+        }
     }
 }
 

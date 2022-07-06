@@ -192,11 +192,13 @@
         _noteView = noteView;
     }
 
-    private void deleteNote(Note note)
+    private async void deleteNote(Note note)
     {
         // Call API
 
         closeNoteTab(note);
-        _notes.Remove(note);
+        var updatedNotesList = await notesService.DeleteNoteAsync(note);
+        _notes = updatedNotesList.ToList();
+        StateHasChanged();
     }
-    }
+}

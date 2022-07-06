@@ -79,9 +79,25 @@ public class NotesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task DeleteNote(Note note)
+    public async Task<IEnumerable<Note>> DeleteNote(Guid id)
     {
-        _dbContext.Notes.Remove(note);
-        await _dbContext.SaveChangesAsync();
+        Note noteToDelete = await _dbContext.Notes.FindAsync(id);
+
+        if (noteToDelete is not null)
+        {
+            _dbContext.Notes.Remove(noteToDelete);
+            await _dbContext.SaveChangesAsync();
+
+            var updatedNotesList = _dbContext.Notes.ToList();
+            updatedNotesList.ForEach((note) =>
+            {
+                note.UpdatedTitle = note.Title;
+                note.UpdatedContent = note.Content;
+            });
+
+            return updatedNotesList;
+        }
+
+        return null; // todo
     }
 }
