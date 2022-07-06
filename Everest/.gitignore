@@ -405,5 +405,5 @@ ASALocalRun/
 .localhistory/
 
 # My stuff
-bin/
-obj/
+*/bin
+*/obj
