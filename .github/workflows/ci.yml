@@ -19,5 +19,6 @@ jobs:
           ls -a
       - name: Build Application
         run: |
+          cd Everest/everest-app
           dotnet restore
           dotnet build
