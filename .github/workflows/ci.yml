@@ -16,6 +16,7 @@ jobs:
         run: |
           cd Everest/everest-app
           pwd
+          ls -a
       - name: Build Application
         run: |
           dotnet restore
