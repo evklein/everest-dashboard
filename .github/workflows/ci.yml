@@ -15,7 +15,7 @@ jobs:
       - run: |
           echo "Begin Build"
           ls -a
-          cd Everest/
+          cd Everest/everest-app
           echo "Install EF Tooling"
           dotnet tool install --global dotnet-ef
           dotnet tool restore
