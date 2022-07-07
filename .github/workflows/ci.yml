@@ -13,5 +13,6 @@ jobs:
         with:
           dotnet-version: '6.0.3'
       - run: |
-        cd Everest
+        ls -a
+        cd Everest/
         dotnet build
