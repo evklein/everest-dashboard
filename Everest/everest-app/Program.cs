@@ -9,6 +9,7 @@ using everest_app.Data;
 using MudBlazor.Services;
 using everest_app.Shared.Services.Http;
 using everest_app.Shared.Services.Http.Notes;
+using everest_app.Shared.Services.Repository.Notes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,9 +26,8 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 
 // New stuff here.
 builder.Services.AddMudServices();
-builder.Services.AddScoped<HttpClient>();
-builder.Services.AddScoped<IHttpService, HttpService>();
-builder.Services.AddScoped<INotesService, NotesService>();
+//builder.Services.AddScoped<HttpClient>();
+builder.Services.AddScoped<INotesRepository, NotesRepository>();
 
 var app = builder.Build();
 

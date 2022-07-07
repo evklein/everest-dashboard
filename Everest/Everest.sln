@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 25.0.1700.5
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "everest-server", "everest-server\everest-server.csproj", "{2EA46717-4B30-4F9A-AD2F-037C66ACB0E4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "everest-common", "..\everest-common\everest-common.csproj", "{65B1767D-04E0-417F-AC65-746849EA8AAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "everest-app", "everest-app\everest-app.csproj", "{31A36FB6-76BC-416C-9F0A-A49DEDABA877}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2EA46717-4B30-4F9A-AD2F-037C66ACB0E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EA46717-4B30-4F9A-AD2F-037C66ACB0E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2EA46717-4B30-4F9A-AD2F-037C66ACB0E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2EA46717-4B30-4F9A-AD2F-037C66ACB0E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{65B1767D-04E0-417F-AC65-746849EA8AAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{65B1767D-04E0-417F-AC65-746849EA8AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65B1767D-04E0-417F-AC65-746849EA8AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU

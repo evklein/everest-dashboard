@@ -1,5 +1,5 @@
 @page "/Notes"
-@inject INotesService notesService
+@inject INotesRepository notesRepository
 
 @using System.Linq
 
@@ -201,8 +201,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //IEnumerable<Note> notes = await notesService.GetNotesAsync();
-        //_notes = notes.ToList();
+        IEnumerable<Note> notes = notesRepository.ListNotes();
+        _notes = notes.ToList();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -281,7 +281,7 @@
     #region Page requests
     private async void saveNote(Note note)
     {
-        var updatedNotesList = await notesService.SaveNoteAsync(note);
+        var updatedNotesList = await notesRepository.SaveNoteAsync(note);
         _notes = updatedNotesList.ToList();
         var updatedNote = _notes.FirstOrDefault(n => n.Id == note.Id);
         var selectedTab = _tabs.FirstOrDefault(t => t.Note.Id == note.Id);
@@ -292,7 +292,7 @@
     private async void deleteNote(Note note)
     {
         closeNoteTab(note);
-        var updatedNotesList = await notesService.DeleteNoteAsync(note);
+        var updatedNotesList = await notesRepository.DeleteNoteAsync(note);
         _notes = updatedNotesList.ToList();
         StateHasChanged();
     }

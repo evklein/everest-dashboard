@@ -31,9 +31,13 @@
     <None Remove="Markdig" />
     <None Remove="MudBlazor" />
     <None Remove="Shared\Services\" />
+    <None Remove="Shared\Services\Repository\" />
+    <None Remove="Shared\Services\Repository\Notes\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\Notes\" />
     <Folder Include="Shared\Services\" />
+    <Folder Include="Shared\Services\Repository\" />
+    <Folder Include="Shared\Services\Repository\Notes\" />
   </ItemGroup>
 </Project>
