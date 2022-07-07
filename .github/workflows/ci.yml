@@ -13,8 +13,13 @@ jobs:
         with:
           dotnet-version: '6.0.301'
       - run: |
-          echo "Everest Build"
+          echo "Begin Build"
           ls -a
           cd Everest/
+          echo "Install EF Tooling"
+          dotnet tool install --global dotnet-ef
+          dotnet tool restore
+          echo "Build DB"
           dotnet ef database update
+          echo "Build Application"
           dotnet build
