@@ -20,6 +20,6 @@ jobs:
           dotnet tool install --global dotnet-ef
           dotnet tool restore
           echo "Build DB"
-          dotnet ef database update
+          dotnet ef database update --verbose
           echo "Build Application"
           dotnet build
