@@ -16,4 +16,5 @@ jobs:
           echo "Everest Build"
           ls -a
           cd Everest/
+          dotnet ef database update
           dotnet build
