@@ -8,19 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Build
+      - name: Checkout setup-dotnet@v2
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '6.0.301'
-      - run: |
-          echo "Begin Build"
-          # ls -a
-          cd Everest/everest-app
-          #echo "Install EF Tooling"
-          #dotnet tool install --global dotnet-ef
-          #dotnet tool restore
-          #echo "Build DB"
-          #dotnet ef database update --verbose
-          #echo "Build Application"
+      - name: Navigate
+        run: cd Everest/everest-app
+      - name: Build Application
+        run: |
           dotnet restore
           dotnet build
