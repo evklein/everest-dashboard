@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace everest_common.Models;
@@ -7,6 +8,7 @@ public class Note
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 
+    [Required]
     public string Title { get; set; } = string.Empty;
 
     [NotMapped]
