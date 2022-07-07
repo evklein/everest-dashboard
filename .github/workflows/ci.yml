@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Build
@@ -16,10 +16,11 @@ jobs:
           echo "Begin Build"
           # ls -a
           cd Everest/everest-app
-          echo "Install EF Tooling"
-          dotnet tool install --global dotnet-ef
-          dotnet tool restore
-          echo "Build DB"
-          dotnet ef database update --verbose
-          echo "Build Application"
+          #echo "Install EF Tooling"
+          #dotnet tool install --global dotnet-ef
+          #dotnet tool restore
+          #echo "Build DB"
+          #dotnet ef database update --verbose
+          #echo "Build Application"
+          dotnet restore
           dotnet build
