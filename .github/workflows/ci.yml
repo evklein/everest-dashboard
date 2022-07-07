@@ -13,7 +13,9 @@ jobs:
         with:
           dotnet-version: '6.0.301'
       - name: Navigate
-        run: cd Everest/everest-app
+        run: |
+          cd Everest/everest-app
+          pwd
       - name: Build Application
         run: |
           dotnet restore
