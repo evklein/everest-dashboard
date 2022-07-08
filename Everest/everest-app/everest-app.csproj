@@ -42,6 +42,7 @@
     <None Remove="MySql.Data.EntityFrameworkCore" />
     <None Remove="Shared\Services\Alerts\" />
     <None Remove="Shared\Services\Repository\ToDo\" />
+    <None Remove="Pages\ToDo\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\Notes\" />
@@ -50,5 +51,6 @@
     <Folder Include="Shared\Services\Repository\Notes\" />
     <Folder Include="Shared\Services\Alerts\" />
     <Folder Include="Shared\Services\Repository\ToDo\" />
+    <Folder Include="Pages\ToDo\" />
   </ItemGroup>
 </Project>
