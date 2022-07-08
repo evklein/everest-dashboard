@@ -10,6 +10,7 @@ using MudBlazor.Services;
 using everest_app.Shared.Services.Http;
 using everest_app.Shared.Services.Http.Notes;
 using everest_app.Shared.Services.Repository.Notes;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ var connectionString = Environment.GetEnvironmentVariable("db-connection-string"
     builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
