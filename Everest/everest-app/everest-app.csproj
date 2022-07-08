@@ -40,11 +40,13 @@
     <None Remove="EntityFramework" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="MySql.Data.EntityFrameworkCore" />
+    <None Remove="Shared\Services\Alerts\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\Notes\" />
     <Folder Include="Shared\Services\" />
     <Folder Include="Shared\Services\Repository\" />
     <Folder Include="Shared\Services\Repository\Notes\" />
+    <Folder Include="Shared\Services\Alerts\" />
   </ItemGroup>
 </Project>

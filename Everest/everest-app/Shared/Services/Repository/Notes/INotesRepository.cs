@@ -5,9 +5,9 @@ namespace everest_app.Shared.Services.Repository.Notes
 {
     public interface INotesRepository
     {
-        public abstract IEnumerable<Note> ListNotes();
-        public abstract Task<IEnumerable<Note>> SaveNoteAsync(Note note);
-        public abstract Task<IEnumerable<Note>> DeleteNoteAsync(Note note);
+        public abstract RepositoryResponseWrapper<List<Note>> ListNotes();
+        public abstract Task<RepositoryResponseWrapper<List<Note>>> SaveNoteAsync(Note note);
+        public abstract Task<RepositoryResponseWrapper<List<Note>>> DeleteNoteAsync(Note note);
     }
 }
 
