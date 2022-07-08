@@ -16,7 +16,8 @@ namespace everest_common.Models
 
         public bool Complete { get; set; } = false;
 
-        public DateTime TimeCompleted { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateCompleted { get; set; }
 
         public ToDoItem()
         {

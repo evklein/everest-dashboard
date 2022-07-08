@@ -12,6 +12,7 @@ using everest_app.Shared.Services.Http.Notes;
 using everest_app.Shared.Services.Repository.Notes;
 using System.Configuration;
 using MudBlazor;
+using everest_app.Shared.Services.Repository.ToDo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,7 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
 });
 builder.Services.AddScoped<INotesRepository, NotesRepository>();
+builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
 
 var app = builder.Build();
 

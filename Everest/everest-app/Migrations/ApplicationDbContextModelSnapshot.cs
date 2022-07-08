@@ -53,12 +53,15 @@ namespace everest_app.Migrations
                     b.Property<bool>("Complete")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("DateCompleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TimeCompleted")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

@@ -12,8 +12,8 @@ using everest_app.Data;
 namespace everest_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220708190905_AddToDoItems")]
-    partial class AddToDoItems
+    [Migration("20220708193852_AddToDo")]
+    partial class AddToDo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -55,12 +55,15 @@ namespace everest_app.Migrations
                     b.Property<bool>("Complete")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("DateCompleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TimeCompleted")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
