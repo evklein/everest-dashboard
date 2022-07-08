@@ -5,11 +5,6 @@ namespace everest_app.Shared.Services.Repository
     {
         public string ErrorMessage { get; set; }
         public Exception? InnerException { get; set; }
-
-        public RepositoryResponseError(string message)
-        {
-            ErrorMessage = message;
-        }
     }
 }
 

@@ -40,7 +40,10 @@ namespace everest_app.Shared.Services.Repository.Notes
                 return new RepositoryResponseWrapper<List<Note>>()
                 {
                     Success = false,
-                    Error = new RepositoryResponseError("Error saving note: Note must have a title"),
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error saving note: Note must have a title",
+                    },
                 };
             }
 
@@ -66,8 +69,9 @@ namespace everest_app.Shared.Services.Repository.Notes
                 return new RepositoryResponseWrapper<List<Note>>()
                 {
                     Success = false,
-                    Error = new RepositoryResponseError("Error saving note: Unexpected exception")
+                    Error = new RepositoryResponseError()
                     {
+                        ErrorMessage = "Error saving note: Unexpected exception",
                         InnerException = ex,
                     },
                 };
@@ -83,7 +87,10 @@ namespace everest_app.Shared.Services.Repository.Notes
                 return new RepositoryResponseWrapper<List<Note>>()
                 {
                     Success = false,
-                    Error = new RepositoryResponseError("Error deleting note: note could not be found"),
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error deleting note: note could not be found",
+                    },
                 };
             }
 
@@ -98,8 +105,9 @@ namespace everest_app.Shared.Services.Repository.Notes
                 return new RepositoryResponseWrapper<List<Note>>()
                 {
                     Success = false,
-                    Error = new RepositoryResponseError("Error deleting note: Unexpected exception")
+                    Error = new RepositoryResponseError()
                     {
+                        ErrorMessage = "Error deleting note: Unexpected exception",
                         InnerException = ex,
                     },
                 };
