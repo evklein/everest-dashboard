@@ -20,11 +20,11 @@
                 Variant="Variant.Outlined"
                 Dense="true"
             >
-                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneDay>One days</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneDay>Day</MudSelectItem>
                 <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.ThreeDays>Three days</MudSelectItem>
                 <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneWeek>Week</MudSelectItem>
                 <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneMonth>Month</MudSelectItem>
-                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneYear>Last year</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneYear>Year</MudSelectItem>
                 <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.All>All</MudSelectItem>
             </MudSelect>
         </MudItem>
@@ -41,7 +41,7 @@
                 AutoFocus="true"
              />
         </MudItem>
-        @foreach (var toDoItem in _toDoItems)
+        @foreach (var toDoItem in _filteredtoDoItems)
         {
             <MudItem xs="10">
                 <MudPaper Elevation="2">
@@ -87,6 +87,7 @@
     private string _newToDoItemName = string.Empty;
     private List<ToDoItem> _toDoItems;
     private int _textFieldKey = 0;
+    private List<ToDoItem> _filteredtoDoItems => _showCompletedItems ? _toDoItems : _toDoItems.Where(t => !t.Complete).ToList();
 
     protected override async Task OnInitializedAsync()
     {

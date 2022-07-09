@@ -16,7 +16,9 @@
             <MudAppBar Color="Color.Primary" Fixed="false">
                 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick=@toggleDrawer />
                 <MudSpacer />
-                <MudText Typo="Typo.h5" Class="ml-3"><b>Ev</b>erest</MudText>
+                <MudText Typo="Typo.h4" Class="ml-3">
+                    <MudIcon Size="Size.Large" Icon=@Icons.Filled.FilterHdr /> <b>Ev</b>erest
+                </MudText>
             </MudAppBar>
             <MudDrawer @bind-Open=@_open Elevation="1" Variant=@DrawerVariant.Temporary>
                 <MudDrawerHeader>
