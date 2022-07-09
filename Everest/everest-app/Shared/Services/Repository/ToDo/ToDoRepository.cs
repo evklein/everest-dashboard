@@ -46,7 +46,17 @@ namespace everest_app.Shared.Services.Repository.ToDo
         {
             try
             {
-                await _everestDbContext.ToDoItems.AddAsync(toDoItem);
+                var existingToDoItem = await _everestDbContext.ToDoItems.FindAsync(toDoItem.Id);
+
+                if (existingToDoItem is not null)
+                {
+                    existingToDoItem.Complete = toDoItem.Complete;
+                    existingToDoItem.DateCompleted = toDoItem.Complete ? DateTime.UtcNow : DateTime.MinValue;
+                }
+                else
+                {
+                    await _everestDbContext.ToDoItems.AddAsync(toDoItem);
+                }
                 await _everestDbContext.SaveChangesAsync();
                 return ListToDoItems(displayPolicy);
             }
