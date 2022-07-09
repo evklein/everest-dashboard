@@ -63,3 +63,15 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
+@font-face {
+    font-family: 'BespokeSlab-Regular';
+    src: url('../Fonts/BespokeSlab-Regular.otf');
+}
+@font-face {
+    font-family: 'BespokeSlab-Bold';
+    src: url('../Fonts/BespokeSlab-Bold.otf');
+}
+@font-face {
+    font-family: 'BespokeSlab-Extrabold';
+    src: url('../Fonts/BespokeSlab-Extrabold.otf');
+}

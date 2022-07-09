@@ -52,5 +52,9 @@
     <Folder Include="Shared\Services\Alerts\" />
     <Folder Include="Shared\Services\Repository\ToDo\" />
     <Folder Include="Pages\ToDo\" />
+    <Folder Include="wwwroot\Fonts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\Fonts\" />
   </ItemGroup>
 </Project>
