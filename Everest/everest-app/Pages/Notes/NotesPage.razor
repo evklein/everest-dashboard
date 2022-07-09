@@ -16,6 +16,9 @@
                                       Immediate=true
                                       Label="Search Files"
                                       Variant=@Variant.Filled
+                                      Adornment=@Adornment.Start
+                                      AdornmentIcon=@Icons.Filled.Search
+                                      AdornmentColor=@Color.Primary
                                       Class="pa-2" />
                     </MudItem>
                     <MudItem xs="12"
@@ -30,13 +33,13 @@
                                     {
                                         <MudIcon Class="pr-2"
                                                  Icon=@Icons.Material.Filled.FileOpen
-                                                 Color=@(note.NoteHasChanged ? Color.Success : Color.Default) />
+                                                 Color=@(note.NoteHasChanged ? Color.Secondary : Color.Primary) />
                                     }
                                     else
                                     {
                                         <MudIcon Class="pr-2"
                                                  Icon=@Icons.Material.Filled.Feed
-                                                 Color=@(note.NoteHasChanged ? Color.Success : Color.Default) />
+                                                 Color=@(note.NoteHasChanged ? Color.Secondary : Color.Primary) />
                                     }
 
                                     @note.Title
@@ -63,6 +66,7 @@
                                 AddTab=@addNewNoteTab
                                 CloseTab=@((panel) => closeNoteTab(panel))
                                 AddIconToolTip="Click here to add a new tab"
+                                addico
                                 CloseIconToolTip="Close this tab. All data will be lost">
                     @foreach (NoteTab tab in _tabs)
                     {
@@ -88,6 +92,7 @@
                                     <MudItem xs="4">
                                         <MudTextField Adornment=@Adornment.Start
                                                       AdornmentIcon=@Icons.Filled.Title
+                                                      AdornmentColor=@Color.Primary
                                                       @bind-Value=@tab.Note.UpdatedTitle
                                                       Label="Title"
                                                       Variant=@Variant.Outlined
@@ -117,7 +122,7 @@
                                     <MudItem xs="5"
                                              Class="mt-4">
                                         <MudButton Variant=@Variant.Filled
-                                                   Color=@Color.Success
+                                                   Color=@Color.Secondary
                                                    @onclick=@(() => saveNote(tab.Note))
                                                    Disabled=@(!tab.Note.NoteHasChanged || string.IsNullOrEmpty(tab.Note.UpdatedTitle))
                                                    Class="ma-2"
@@ -150,7 +155,9 @@
             {
                 <MudButton @onclick=addNewNoteTab
                            StartIcon=@Icons.Material.Filled.Create
-                           Variant=@Variant.Filled>
+                           Variant=@Variant.Filled
+                           Color=@Color.Primary
+                >
                     Start new note
                 </MudButton>
             }

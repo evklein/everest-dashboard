@@ -9,6 +9,7 @@
                 @bind-Checked=@_showCompletedItems
                 Label="Show completed tasks"
                 Dense="true"
+                Color=@Color.Secondary
             />
         </MudItem>
         <MudItem xs="6">
@@ -32,6 +33,8 @@
             <MudTextField
                 @key="_textFieldKey"
                 AdornmentIcon=@Icons.Filled.Checklist
+                AdornmentColor=@Color.Primary
+                Adornment=@Adornment.Start
                 Label="Enter a task"
                 Class="pa-2"
                 @bind-Value=_newToDoItemName
