@@ -17,7 +17,7 @@ namespace everest_app.Shared.Services.Repository.ToDo
         {
             try
             {
-                var toDoItems = _everestDbContext.ToDoItems.ToList();
+                var toDoItems = _everestDbContext.ToDoItems.OrderByDescending(t => t.DateCreated).ToList();
                 toDoItems.ForEach(todoItem => todoItem.UpdatedName = todoItem.Name);
                 return new RepositoryResponseWrapper<List<ToDoItem>>()
                 {
@@ -43,6 +43,7 @@ namespace everest_app.Shared.Services.Repository.ToDo
             try
             {
                 await _everestDbContext.ToDoItems.AddAsync(toDoItem);
+                await _everestDbContext.SaveChangesAsync();
                 return ListToDoItems();
             }
             catch (Exception ex)

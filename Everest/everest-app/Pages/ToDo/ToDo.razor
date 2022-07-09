@@ -1,8 +1,107 @@
 ﻿@page "/ToDo"
+@inject IToDoRepository ToDoRepository
+@inject ISnackbar MudSnackbar
+ 
+<MudContainer MaxWidth=@MaxWidth.Medium>
+    <MudGrid Spacing="2">
+        <MudItem xs="10">
+            <MudTextField
+                @key="_textFieldKey"
+                AdornmentIcon=@Icons.Filled.Checklist
+                Label="Enter a task"
+                Class="pa-2"
+                @bind-Value="_formModel.ToDoItemName"
+                OnKeyDown=@createNewToDoItem
+                Immediate="true"
+                Variant=@Variant.Outlined
+                AutoFocus="true"
+             />
+        </MudItem>
+        @foreach (var toDoItem in _toDoItems)
+        {
+            <MudItem xs="10">
+                <MudPaper Elevation="1">
+                    <MudCheckBox
+                        @bind-Checked=@toDoItem.Complete
+                        Label=@toDoItem.Name
+                    />
+                    <MudIconButton
+                        Icon=@Icons.Material.Filled.Delete
+                        Color=@Color.Error
+                        Size=@Size.Small
+                        Style="float:right"
+                        OnClick=@(() => deleteToDoItem(toDoItem))
+                        Class="mt-3 mr-2"
+                    />
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
 
-<h3>Component1</h3>
+@code
+{
+    private List<ToDoItem> _toDoItems;
+    private ToDoFormModel _formModel = new ToDoFormModel();
+    private int _textFieldKey = 0;
 
-@code {
+    private class ToDoFormModel
+    {
+        public string ToDoItemName { get; set; } = String.Empty;
+    }
 
+    protected override async Task OnInitializedAsync()
+    {
+        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = ToDoRepository.ListToDoItems();
+        if (responseWrapper.Success)
+        {
+            _toDoItems = responseWrapper.Value;
+        }
+        else
+        {
+            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
+    }
+
+    private async Task createNewToDoItem(KeyboardEventArgs eventArgs)
+    {
+        if (eventArgs.Code == "Enter")
+        {
+            if (string.IsNullOrEmpty(_formModel.ToDoItemName)) return;
+
+            RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = await ToDoRepository.SaveToDoItem(
+                new ToDoItem()
+                {
+                    Name = _formModel.ToDoItemName,
+                    DateCreated = DateTime.UtcNow,
+                }
+            );
+            if (responseWrapper.Success)
+            {
+                _formModel.ToDoItemName = string.Empty;
+                _toDoItems = responseWrapper.Value;
+                _textFieldKey++; // Hack: Updates MudTextField on Enter
+                StateHasChanged();
+            }
+            else
+            {
+                MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+            }
+        }
+    }
+
+    private async Task deleteToDoItem(ToDoItem toDoItem)
+    {
+        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = await ToDoRepository.DeleteToDoItem(toDoItem);
+        if (responseWrapper.Success)
+        {
+            _toDoItems = responseWrapper.Value;
+            StateHasChanged();
+        }
+        else
+        {
+            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
+    }
 }
 
