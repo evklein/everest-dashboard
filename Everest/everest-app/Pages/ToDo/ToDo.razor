@@ -4,6 +4,30 @@
  
 <MudContainer MaxWidth=@MaxWidth.Medium>
     <MudGrid Spacing="2">
+        <MudItem xs="4">
+            <MudCheckBox
+                @bind-Checked=@_showCompletedItems
+                Label="Show completed tasks"
+                Dense="true"
+            />
+        </MudItem>
+        <MudItem xs="6">
+            <MudSelect
+                @bind-Value=@_selectedDisplayPolicy
+                Label="Show tasks completed in last..."
+                Placeholder="Select value"
+                AdornmentIcon=@Icons.Filled.CalendarMonth
+                Variant="Variant.Outlined"
+                Dense="true"
+            >
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneDay>One days</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.ThreeDays>Three days</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneWeek>Week</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneMonth>Month</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneYear>Last year</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.All>All</MudSelectItem>
+            </MudSelect>
+        </MudItem>
         <MudItem xs="10">
             <MudTextField
                 @key="_textFieldKey"
@@ -41,6 +65,8 @@
 
 @code
 {
+    private bool _showCompletedItems = true;
+    private ToDoHistoricalDisplayPolicy _selectedDisplayPolicy = ToDoHistoricalDisplayPolicy.OneWeek;
     private List<ToDoItem> _toDoItems;
     private ToDoFormModel _formModel = new ToDoFormModel();
     private int _textFieldKey = 0;
@@ -52,7 +78,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = ToDoRepository.ListToDoItems();
+        updateToDoList();
+    }
+
+    private async Task updateToDoList()
+    {
+        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = ToDoRepository.ListToDoItems(_selectedDisplayPolicy);
         if (responseWrapper.Success)
         {
             _toDoItems = responseWrapper.Value;
@@ -74,7 +105,8 @@
                 {
                     Name = _formModel.ToDoItemName,
                     DateCreated = DateTime.UtcNow,
-                }
+                },
+                _selectedDisplayPolicy
             );
             if (responseWrapper.Success)
             {
@@ -92,7 +124,7 @@
 
     private async Task deleteToDoItem(ToDoItem toDoItem)
     {
-        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = await ToDoRepository.DeleteToDoItem(toDoItem);
+        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = await ToDoRepository.DeleteToDoItem(toDoItem, _selectedDisplayPolicy);
         if (responseWrapper.Success)
         {
             _toDoItems = responseWrapper.Value;

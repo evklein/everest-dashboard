@@ -1,5 +1,6 @@
 ﻿using System;
 using everest_app.Data;
+using everest_common.Enumerations;
 using everest_common.Models;
 
 namespace everest_app.Shared.Services.Repository.ToDo
@@ -13,11 +14,14 @@ namespace everest_app.Shared.Services.Repository.ToDo
             _everestDbContext = dbContext;
         }
 
-        public RepositoryResponseWrapper<List<ToDoItem>> ListToDoItems()
+        public RepositoryResponseWrapper<List<ToDoItem>> ListToDoItems(ToDoHistoricalDisplayPolicy displayPolicy)
         {
+            DateTime availableDateMinimum = convertHistoricalDisplayPolicyIntoDate(displayPolicy);
             try
             {
-                var toDoItems = _everestDbContext.ToDoItems.OrderByDescending(t => t.DateCreated).ToList();
+                var toDoItems = _everestDbContext.ToDoItems
+                    .Where(t => !t.Complete || t.Complete && t.DateCompleted > availableDateMinimum)
+                    .OrderByDescending(t => t.DateCreated).ToList();
                 toDoItems.ForEach(todoItem => todoItem.UpdatedName = todoItem.Name);
                 return new RepositoryResponseWrapper<List<ToDoItem>>()
                 {
@@ -38,13 +42,13 @@ namespace everest_app.Shared.Services.Repository.ToDo
             }
         }
 
-        public async Task<RepositoryResponseWrapper<List<ToDoItem>>> SaveToDoItem(ToDoItem toDoItem)
+        public async Task<RepositoryResponseWrapper<List<ToDoItem>>> SaveToDoItem(ToDoItem toDoItem, ToDoHistoricalDisplayPolicy displayPolicy)
         {
             try
             {
                 await _everestDbContext.ToDoItems.AddAsync(toDoItem);
                 await _everestDbContext.SaveChangesAsync();
-                return ListToDoItems();
+                return ListToDoItems(displayPolicy);
             }
             catch (Exception ex)
             {
@@ -60,7 +64,7 @@ namespace everest_app.Shared.Services.Repository.ToDo
             }
         }
 
-        public async Task<RepositoryResponseWrapper<List<ToDoItem>>> DeleteToDoItem(ToDoItem toDoItem)
+        public async Task<RepositoryResponseWrapper<List<ToDoItem>>> DeleteToDoItem(ToDoItem toDoItem, ToDoHistoricalDisplayPolicy displayPolicy)
         {
             ToDoItem toDoItemToDelete = await _everestDbContext.ToDoItems.FindAsync(toDoItem.Id);
 
@@ -80,7 +84,7 @@ namespace everest_app.Shared.Services.Repository.ToDo
             {
                 _everestDbContext.ToDoItems.Remove(toDoItem);
                 await _everestDbContext.SaveChangesAsync();
-                return ListToDoItems();
+                return ListToDoItems(displayPolicy);
             }
             catch (Exception ex)
             {
@@ -95,6 +99,17 @@ namespace everest_app.Shared.Services.Repository.ToDo
                 };
             }
         }
+
+        private DateTime convertHistoricalDisplayPolicyIntoDate(ToDoHistoricalDisplayPolicy displayPolicy) =>
+             displayPolicy switch
+             {
+                 ToDoHistoricalDisplayPolicy.OneDay => DateTime.UtcNow.AddDays(-1),
+                 ToDoHistoricalDisplayPolicy.ThreeDays => DateTime.UtcNow.AddDays(-3),
+                 ToDoHistoricalDisplayPolicy.OneWeek => DateTime.UtcNow.AddDays(-7),
+                 ToDoHistoricalDisplayPolicy.OneMonth => DateTime.UtcNow.AddMonths(-1),
+                 ToDoHistoricalDisplayPolicy.OneYear => DateTime.UtcNow.AddYears(-1),
+                 ToDoHistoricalDisplayPolicy.All => DateTime.MinValue,
+             };
     }
 }
 
