@@ -1,8 +1,9 @@
 ﻿@inherits LayoutComponentBase
+@using Shared.UI.Themes
 
 <PageTitle>Everest</PageTitle>
 
-<MudThemeProvider @bind-IsDarkMode=_isDarkTheme />
+<MudThemeProvider Theme=@EverestThemes.Classic @bind-IsDarkMode=_isDarkTheme />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
