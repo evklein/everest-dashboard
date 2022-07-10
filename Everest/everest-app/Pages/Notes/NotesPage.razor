@@ -175,7 +175,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        RepositoryResponseWrapper<List<Note>> responseWrapper = NotesRepository.ListNotes();
+        RepositoryResponseWrapper<List<Note>> responseWrapper = await NotesRepository.ListNotes();
         if (responseWrapper.Success)
         {
             _notes = responseWrapper.Value;

@@ -1,5 +1,9 @@
 ﻿@inherits LayoutComponentBase
 @using Shared.UI.Themes
+@using Microsoft.AspNetCore.Identity;
+
+@inject NavigationManager NavManager
+@inject SignInManager<IdentityUser> SignInManager
 
 <PageTitle>Everest</PageTitle>
 
@@ -8,11 +12,7 @@
 <MudSnackbarProvider />
 
 <AuthorizeView>
-    <NotAuthorized>
-        <a href="Identity/Account/Login">Log in</a>
-    </NotAuthorized>
     <Authorized>
-        <LoginDisplay />
         <MudLayout>
             <MudAppBar Color="Color.Primary" Fixed="false">
                 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick=@toggleDrawer />
@@ -29,11 +29,20 @@
                 <MudNavLink Href="/ToDo" Icon=@Icons.Filled.Checklist>To-Do</MudNavLink>
                 <MudNavLink Href="/Notes" Icon=@Icons.Material.Filled.Feed>Notes</MudNavLink>
                 <MudSwitch @bind-Checked=@_isDarkTheme Color=@Color.Primary Label=@_themeLabel Class="ma-2" />
+                <form method="post" action="Identity/Account/LogOut" style="margin-left:15px;position:fixed;bottom:20px;color:white;">
+                    <button type="submit">
+                        <MudIcon Icon=@Icons.Filled.Logout />&nbsp;
+                        Log out
+                    </button>
+                </form>
             </MudDrawer>
             <MudMainContent>
                 @Body
             </MudMainContent>
         </MudLayout>
+        <MudText Style="position:fixed;bottom:5px;right:5px;font-family:'BespokeSlab-Regular';font-size:14px;" Color=@Color.Secondary>
+            Everest v0.2.0 | © Evan Klein, 2022 | <MudLink Color=@Color.Secondary style="font-family:'BespokeSlab-Regular';font-size:14px;" Href="https://github.com/evklein/everest-dashboard">Source</MudLink>
+        </MudText>
     </Authorized>
 </AuthorizeView>
 
@@ -42,6 +51,18 @@
     private bool _open = false;
     private bool _isDarkTheme = true;
     private string _themeLabel => _isDarkTheme ? "Switch to light mode" : "Switch to dark mode";
+
+    [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+        var user = (await AuthStat).User;
+        if (!user.Identity.IsAuthenticated)
+        {
+            NavManager.NavigateTo("/Identity/Account/Login");
+        }
+    }
 
     private void toggleDrawer()
     {

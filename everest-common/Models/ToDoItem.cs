@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace everest_common.Models
 {
@@ -18,6 +19,9 @@ namespace everest_common.Models
 
         public DateTime DateCreated { get; set; }
         public DateTime DateCompleted { get; set; }
+
+        public string OwnerId { get; set; }
+        public IdentityUser Owner { get; set; }
 
         public ToDoItem()
         {

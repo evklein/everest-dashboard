@@ -88,18 +88,18 @@
     private bool _showCompletedItems = true;
     private ToDoHistoricalDisplayPolicy _selectedDisplayPolicy = ToDoHistoricalDisplayPolicy.OneWeek;
     private string _newToDoItemName = string.Empty;
-    private List<ToDoItem> _toDoItems;
+    private List<ToDoItem> _toDoItems = new();
     private int _textFieldKey = 0;
     private List<ToDoItem> _filteredtoDoItems => _showCompletedItems ? _toDoItems : _toDoItems.Where(t => !t.Complete).ToList();
 
     protected override async Task OnInitializedAsync()
     {
-        updateToDoList();
+        await updateToDoList();
     }
 
     private async Task updateToDoList()
     {
-        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = ToDoRepository.ListToDoItems(_selectedDisplayPolicy);
+        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = await ToDoRepository.ListToDoItems(_selectedDisplayPolicy);
         if (responseWrapper.Success)
         {
             _toDoItems = responseWrapper.Value;

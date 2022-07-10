@@ -1,6 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace everest_common.Models;
 
@@ -22,6 +23,9 @@ public class Note
     public DateTime LastModified { get; set; }
 
     public Note() : this(string.Empty, string.Empty) { }
+
+    public string OwnerId { get; set; }
+    public IdentityUser Owner { get; set; }
 
     public Note(string title, string content)
     {
