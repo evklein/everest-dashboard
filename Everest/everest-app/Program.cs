@@ -35,6 +35,7 @@ builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
 });
+builder.Services.AddMudMarkdownServices();
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<INotesRepository, NotesRepository>();
