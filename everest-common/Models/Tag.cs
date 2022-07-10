@@ -11,6 +11,9 @@ namespace everest_common.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
+        [Required]
+        public string ColorHexadecimal = string.Empty;
+
         public DateTime DateCreated { get; set; }
 
         public string OwnerId { get; set; }

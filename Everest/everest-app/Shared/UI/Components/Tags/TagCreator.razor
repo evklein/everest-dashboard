@@ -1,0 +1,44 @@
+﻿@if (_isActivated)
+{
+    <MudIconButton Icon=@Icons.Filled.Add OnClick=@activateComponent Variant=@Variant.Text />
+}
+else
+{
+}
+<MudChipSet AllClosable="true" OnClose=@removeTagFromList>
+    @foreach (var tag in Tags)
+    {
+        <MudChip Tag=@tag Text=@tag.Name Color=@Color.Secondary></MudChip>
+    }
+</MudChipSet>
+
+@code {
+    [Parameter]
+    public List<Tag> Tags { get; set; }
+
+    [Parameter]
+    public EventCallback AddTagCallback { get; set; }
+
+    [Parameter]
+    public EventCallback RemoveTagCallback { get; set; }
+
+    private bool _isActivated = false;
+
+    private void activateComponent()
+    {
+        _isActivated = true;
+    }
+
+    private async Task addTagToList(MudChip chip)
+    {
+        Tags.Add((Tag)chip.Tag);
+        await AddTagCallback.InvokeAsync();
+    }
+
+    private async Task removeTagFromList(MudChip chip)
+    {
+        Tags.Remove((Tag) chip.Tag);
+        await RemoveTagCallback.InvokeAsync();
+    }
+}
+

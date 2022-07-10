@@ -44,6 +44,8 @@
     <None Remove="Pages\ToDo\" />
     <None Remove="Shared\UI\" />
     <None Remove="Shared\UI\Themes\" />
+    <None Remove="Shared\UI\Components\" />
+    <None Remove="Shared\UI\Components\Tags\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\Notes\" />
@@ -55,6 +57,8 @@
     <Folder Include="wwwroot\Fonts\" />
     <Folder Include="Shared\UI\" />
     <Folder Include="Shared\UI\Themes\" />
+    <Folder Include="Shared\UI\Components\" />
+    <Folder Include="Shared\UI\Components\Tags\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\Fonts\" />
