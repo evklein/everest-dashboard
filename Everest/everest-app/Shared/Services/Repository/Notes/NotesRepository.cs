@@ -1,21 +1,27 @@
 ﻿using System;
 using everest_app.Data;
 using everest_common.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace everest_app.Shared.Services.Repository.Notes
 {
     public class NotesRepository : INotesRepository
     {
         private readonly ApplicationDbContext _everestDbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public NotesRepository(ApplicationDbContext dbContext)
+        public NotesRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager)
         {
             _everestDbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
 
-        public RepositoryResponseWrapper<List<Note>> ListNotes()
+        public async Task<RepositoryResponseWrapper<List<Note>>> ListNotes()
         {
-            var notes = _everestDbContext.Notes.ToList();
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+            var notes = _everestDbContext.Notes.Where(n => n.OwnerId.Equals(currentUser.Id)).ToList();
             notes.ForEach((note) =>
             {
                 note.UpdatedTitle = note.Title;
@@ -31,9 +37,11 @@ namespace everest_app.Shared.Services.Repository.Notes
 
         public async Task<RepositoryResponseWrapper<List<Note>>> SaveNoteAsync(Note note)
         {
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
             note.LastModified = DateTime.UtcNow;
             note.Title = note.UpdatedTitle;
             note.Content = note.UpdatedContent;
+            note.OwnerId = currentUser.Id;
 
             if (string.IsNullOrEmpty(note.Title))
             {
@@ -53,6 +61,17 @@ namespace everest_app.Shared.Services.Repository.Notes
 
                 if (existingNote is not null)
                 {
+                    if (!existingNote.OwnerId.Equals(currentUser.Id))
+                    {
+                        return new RepositoryResponseWrapper<List<Note>>()
+                        {
+                            Success = false,
+                            Error = new RepositoryResponseError()
+                            {
+                                ErrorMessage = "Error saving note: you are not the owner of this note",
+                            },
+                        };
+                    }
                     existingNote.Title = note.UpdatedTitle;
                     existingNote.Content = note.UpdatedContent;
                 }
@@ -62,7 +81,7 @@ namespace everest_app.Shared.Services.Repository.Notes
                 }
                 await _everestDbContext.SaveChangesAsync();
 
-                return ListNotes();
+                return await ListNotes();
             }
             catch (Exception ex)
             {
@@ -80,6 +99,19 @@ namespace everest_app.Shared.Services.Repository.Notes
 
         public async Task<RepositoryResponseWrapper<List<Note>>> DeleteNoteAsync(Note note)
         {
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+            if (!note.OwnerId.Equals(currentUser.Id))
+            {
+                return new RepositoryResponseWrapper<List<Note>>()
+                {
+                    Success = false,
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error deleting note: Note does not belong to your user",
+                    },
+                };
+            }
+
             Note noteToDelete = await _everestDbContext.Notes.FindAsync(note.Id);
 
             if (noteToDelete is null)
@@ -98,7 +130,7 @@ namespace everest_app.Shared.Services.Repository.Notes
             {
                 _everestDbContext.Notes.Remove(noteToDelete);
                 await _everestDbContext.SaveChangesAsync();
-                return ListNotes();
+                return await ListNotes();
             }
             catch (Exception ex)
             {
