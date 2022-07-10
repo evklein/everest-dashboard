@@ -29,8 +29,11 @@
                 <MudNavLink Href="/ToDo" Icon=@Icons.Filled.Checklist>To-Do</MudNavLink>
                 <MudNavLink Href="/Notes" Icon=@Icons.Material.Filled.Feed>Notes</MudNavLink>
                 <MudSwitch @bind-Checked=@_isDarkTheme Color=@Color.Primary Label=@_themeLabel Class="ma-2" />
-                <form method="post" action="Identity/Account/LogOut" class="position:fixed;bottom:20px;color:white;">
-                    <button type="submit" class="nav-link btn btn-link">Log out</button>
+                <form method="post" action="Identity/Account/LogOut" style="margin-left:15px;position:fixed;bottom:20px;color:white;">
+                    <button type="submit">
+                        <MudIcon Icon=@Icons.Filled.Logout />&nbsp;
+                        Log out
+                    </button>
                 </form>
             </MudDrawer>
             <MudMainContent>
