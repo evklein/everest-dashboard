@@ -61,6 +61,17 @@ namespace everest_app.Shared.Services.Repository.Notes
 
                 if (existingNote is not null)
                 {
+                    if (!existingNote.OwnerId.Equals(currentUser.Id))
+                    {
+                        return new RepositoryResponseWrapper<List<Note>>()
+                        {
+                            Success = false,
+                            Error = new RepositoryResponseError()
+                            {
+                                ErrorMessage = "Error saving note: you are not the owner of this note",
+                            },
+                        };
+                    }
                     existingNote.Title = note.UpdatedTitle;
                     existingNote.Content = note.UpdatedContent;
                 }

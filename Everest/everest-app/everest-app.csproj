@@ -40,7 +40,6 @@
     <None Remove="EntityFramework" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="MySql.Data.EntityFrameworkCore" />
-    <None Remove="Shared\Services\Alerts\" />
     <None Remove="Shared\Services\Repository\ToDo\" />
     <None Remove="Pages\ToDo\" />
     <None Remove="Shared\UI\" />
@@ -51,7 +50,6 @@
     <Folder Include="Shared\Services\" />
     <Folder Include="Shared\Services\Repository\" />
     <Folder Include="Shared\Services\Repository\Notes\" />
-    <Folder Include="Shared\Services\Alerts\" />
     <Folder Include="Shared\Services\Repository\ToDo\" />
     <Folder Include="Pages\ToDo\" />
     <Folder Include="wwwroot\Fonts\" />
