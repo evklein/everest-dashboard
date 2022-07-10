@@ -1,7 +1,9 @@
 ﻿@inherits LayoutComponentBase
 @using Shared.UI.Themes
+@using Microsoft.AspNetCore.Identity;
 
 @inject NavigationManager NavManager
+@inject SignInManager<IdentityUser> SignInManager
 
 <PageTitle>Everest</PageTitle>
 
@@ -11,7 +13,6 @@
 
 <AuthorizeView>
     <Authorized>
-        <LoginDisplay />
         <MudLayout>
             <MudAppBar Color="Color.Primary" Fixed="false">
                 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick=@toggleDrawer />
@@ -28,6 +29,9 @@
                 <MudNavLink Href="/ToDo" Icon=@Icons.Filled.Checklist>To-Do</MudNavLink>
                 <MudNavLink Href="/Notes" Icon=@Icons.Material.Filled.Feed>Notes</MudNavLink>
                 <MudSwitch @bind-Checked=@_isDarkTheme Color=@Color.Primary Label=@_themeLabel Class="ma-2" />
+                <form method="post" action="Identity/Account/LogOut" class="position:fixed;bottom:20px;color:white;">
+                    <button type="submit" class="nav-link btn btn-link">Log out</button>
+                </form>
             </MudDrawer>
             <MudMainContent>
                 @Body
@@ -42,18 +46,17 @@
     private bool _isDarkTheme = true;
     private string _themeLabel => _isDarkTheme ? "Switch to light mode" : "Switch to dark mode";
 
-
     [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
         base.OnInitialized();
         var user = (await AuthStat).User;
-        if(!user.Identity.IsAuthenticated)
+        if (!user.Identity.IsAuthenticated)
         {
             NavManager.NavigateTo("/Identity/Account/Login");
         }
-   }
+    }
 
     private void toggleDrawer()
     {
