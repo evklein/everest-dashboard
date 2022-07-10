@@ -1,0 +1,171 @@
+﻿@page "/ToDo"
+@inject IToDoRepository ToDoRepository
+@inject ISnackbar MudSnackbar
+ 
+<MudContainer MaxWidth=@MaxWidth.Medium>
+    <MudGrid Spacing="2">
+        <MudItem xs="4">
+            <MudCheckBox
+                @bind-Checked=@_showCompletedItems
+                Label="Show completed tasks"
+                Dense="true"
+                Color=@Color.Secondary
+            />
+        </MudItem>
+        <MudItem xs="6">
+            <MudSelect
+                @bind-Value=@_selectedDisplayPolicy
+                Label="Show tasks completed in last..."
+                Placeholder="Select value"
+                AdornmentIcon=@Icons.Filled.CalendarMonth
+                Variant="Variant.Outlined"
+                Dense="true"
+            >
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneDay>Day</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.ThreeDays>Three days</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneWeek>Week</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneMonth>Month</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneYear>Year</MudSelectItem>
+                <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.All>All</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="10">
+            <MudTextField
+                @key="_textFieldKey"
+                AdornmentIcon=@Icons.Filled.Checklist
+                AdornmentColor=@Color.Primary
+                Adornment=@Adornment.Start
+                Label="Enter a task"
+                Class="pa-2"
+                @bind-Value=_newToDoItemName
+                OnKeyDown=@createNewToDoItem
+                Immediate="true"
+                Variant=@Variant.Outlined
+                AutoFocus="true"
+             />
+        </MudItem>
+        @foreach (var toDoItem in _filteredtoDoItems)
+        {
+            <MudItem xs="10">
+                <MudPaper Elevation="2">
+                    <MudCheckBox
+                        T="string"
+                        Label=@toDoItem.Name
+                        Checked="@toDoItem.Complete.ToString()"
+                        CheckedChanged=@(() => updateToDoItem(toDoItem))
+                        Color=@Color.Primary
+                    />
+                    <MudIconButton
+                        Icon=@Icons.Material.Filled.Delete
+                        Color=@Color.Error
+                        Size=@Size.Small
+                        Style="float:right;"
+                        OnClick=@(() => deleteToDoItem(toDoItem))
+                        Class="mt-3 mr-2"
+                    />
+                    @if (toDoItem.Complete)
+                    {
+                        <MudChip
+                            Class="mt-3"
+                            Style="float:right;"
+                            Icon=@Icons.Filled.Check
+                            IconColor=@Color.Success
+                            Label="true"
+                            Color=@Color.Default
+                        >
+                            Completed on @toDoItem.DateCompleted.ToShortDateString()
+                        </MudChip>
+                    }
+
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
+
+@code
+{
+    private bool _showCompletedItems = true;
+    private ToDoHistoricalDisplayPolicy _selectedDisplayPolicy = ToDoHistoricalDisplayPolicy.OneWeek;
+    private string _newToDoItemName = string.Empty;
+    private List<ToDoItem> _toDoItems;
+    private int _textFieldKey = 0;
+    private List<ToDoItem> _filteredtoDoItems => _showCompletedItems ? _toDoItems : _toDoItems.Where(t => !t.Complete).ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        updateToDoList();
+    }
+
+    private async Task updateToDoList()
+    {
+        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = ToDoRepository.ListToDoItems(_selectedDisplayPolicy);
+        if (responseWrapper.Success)
+        {
+            _toDoItems = responseWrapper.Value;
+            StateHasChanged();
+        }
+        else
+        {
+            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
+    }
+
+    private async Task createNewToDoItem(KeyboardEventArgs eventArgs)
+    {
+        if (eventArgs.Code == "Enter")
+        {
+            if (string.IsNullOrEmpty(_newToDoItemName)) return;
+
+            RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = await ToDoRepository.SaveToDoItem(
+                new ToDoItem()
+                {
+                    Name = _newToDoItemName,
+                    DateCreated = DateTime.UtcNow,
+                },
+                _selectedDisplayPolicy
+            );
+            if (responseWrapper.Success)
+            {
+                _newToDoItemName = string.Empty;
+                _toDoItems = responseWrapper.Value;
+                _textFieldKey++; // Hack: Updates MudTextField on Enter
+                StateHasChanged();
+            }
+            else
+            {
+                MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+            }
+        }
+    }
+
+    private async Task updateToDoItem(ToDoItem toDoItem)
+    {
+        toDoItem.Complete = !toDoItem.Complete;
+        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = await ToDoRepository.SaveToDoItem(toDoItem, _selectedDisplayPolicy);
+        if (responseWrapper.Success)
+        {
+            _toDoItems = responseWrapper.Value;
+            StateHasChanged();
+        }
+        else
+        {
+            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
+    }
+
+    private async Task deleteToDoItem(ToDoItem toDoItem)
+    {
+        RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = await ToDoRepository.DeleteToDoItem(toDoItem, _selectedDisplayPolicy);
+        if (responseWrapper.Success)
+        {
+            _toDoItems = responseWrapper.Value;
+            StateHasChanged();
+        }
+        else
+        {
+            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
+    }
+}
+

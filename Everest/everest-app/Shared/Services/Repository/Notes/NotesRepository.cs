@@ -13,7 +13,7 @@ namespace everest_app.Shared.Services.Repository.Notes
             _everestDbContext = dbContext;
         }
 
-        public IEnumerable<Note> ListNotes()
+        public RepositoryResponseWrapper<List<Note>> ListNotes()
         {
             var notes = _everestDbContext.Notes.ToList();
             notes.ForEach((note) =>
@@ -21,14 +21,31 @@ namespace everest_app.Shared.Services.Repository.Notes
                 note.UpdatedTitle = note.Title;
                 note.UpdatedContent = note.Content;
             });
-            return notes;
+
+            RepositoryResponseWrapper<List<Note>> responseWrapper = new()
+            {
+                Value = notes,
+            };
+            return responseWrapper;
         }
 
-        public async Task<IEnumerable<Note>> SaveNoteAsync(Note note)
+        public async Task<RepositoryResponseWrapper<List<Note>>> SaveNoteAsync(Note note)
         {
             note.LastModified = DateTime.UtcNow;
             note.Title = note.UpdatedTitle;
             note.Content = note.UpdatedContent;
+
+            if (string.IsNullOrEmpty(note.Title))
+            {
+                return new RepositoryResponseWrapper<List<Note>>()
+                {
+                    Success = false,
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error saving note: Note must have a title",
+                    },
+                };
+            }
 
             try
             {
@@ -43,46 +60,58 @@ namespace everest_app.Shared.Services.Repository.Notes
                 {
                     await _everestDbContext.Notes.AddAsync(note);
                 }
-
                 await _everestDbContext.SaveChangesAsync();
 
-                var updatedNotesList = _everestDbContext.Notes.ToList();
-                updatedNotesList.ForEach((note) =>
-                {
-                    note.UpdatedTitle = note.Title;
-                    note.UpdatedContent = note.Content;
-                });
-
-                return updatedNotesList;
+                return ListNotes();
             }
             catch (Exception ex)
             {
-                var x = ex;
+                return new RepositoryResponseWrapper<List<Note>>()
+                {
+                    Success = false,
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error saving note: Unexpected exception",
+                        InnerException = ex,
+                    },
+                };
             }
-
-            return null;
         }
 
-        public async Task<IEnumerable<Note>> DeleteNoteAsync(Note note)
+        public async Task<RepositoryResponseWrapper<List<Note>>> DeleteNoteAsync(Note note)
         {
             Note noteToDelete = await _everestDbContext.Notes.FindAsync(note.Id);
 
-            if (noteToDelete is not null)
+            if (noteToDelete is null)
+            {
+                return new RepositoryResponseWrapper<List<Note>>()
+                {
+                    Success = false,
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error deleting note: note could not be found",
+                    },
+                };
+            }
+
+            try
             {
                 _everestDbContext.Notes.Remove(noteToDelete);
                 await _everestDbContext.SaveChangesAsync();
-
-                var updatedNotesList = _everestDbContext.Notes.ToList();
-                updatedNotesList.ForEach((note) =>
-                {
-                    note.UpdatedTitle = note.Title;
-                    note.UpdatedContent = note.Content;
-                });
-
-                return updatedNotesList;
+                return ListNotes();
             }
-
-            return null; // todo
+            catch (Exception ex)
+            {
+                return new RepositoryResponseWrapper<List<Note>>()
+                {
+                    Success = false,
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error deleting note: Unexpected exception",
+                        InnerException = ex,
+                    },
+                };
+            }
         }
     }
 }

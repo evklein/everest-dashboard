@@ -1,8 +1,9 @@
 ﻿@inherits LayoutComponentBase
+@using Shared.UI.Themes
 
 <PageTitle>Everest</PageTitle>
 
-<MudThemeProvider />
+<MudThemeProvider Theme=@EverestThemes.Classic @bind-IsDarkMode=_isDarkTheme />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -16,14 +17,18 @@
             <MudAppBar Color="Color.Primary" Fixed="false">
                 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick=@toggleDrawer />
                 <MudSpacer />
-                <MudText Typo="Typo.h5" Class="ml-3"><b>Ev</b>erest</MudText>
+                <MudText Typo="Typo.h4" Class="ml-3" Style="font-family: 'BespokeSlab-Regular'">
+                    <MudIcon Size="Size.Large" Icon=@Icons.Filled.FilterHdr /> <b>Ev</b>erest
+                </MudText>
             </MudAppBar>
             <MudDrawer @bind-Open=@_open Elevation="1" Variant=@DrawerVariant.Temporary>
                 <MudDrawerHeader>
                     <MudText Typo=@Typo.h6>Pages</MudText>
                 </MudDrawerHeader>
                 <MudNavLink Href="/" Icon=@Icons.Filled.Dashboard>Dashboard</MudNavLink>
+                <MudNavLink Href="/ToDo" Icon=@Icons.Filled.Checklist>To-Do</MudNavLink>
                 <MudNavLink Href="/Notes" Icon=@Icons.Material.Filled.Feed>Notes</MudNavLink>
+                <MudSwitch @bind-Checked=@_isDarkTheme Color=@Color.Primary Label=@_themeLabel Class="ma-2" />
             </MudDrawer>
             <MudMainContent>
                 @Body
@@ -35,6 +40,8 @@
 @code
 {
     private bool _open = false;
+    private bool _isDarkTheme = true;
+    private string _themeLabel => _isDarkTheme ? "Switch to light mode" : "Switch to dark mode";
 
     private void toggleDrawer()
     {

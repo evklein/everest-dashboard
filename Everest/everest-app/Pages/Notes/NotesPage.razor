@@ -1,192 +1,166 @@
 @page "/Notes"
-@inject INotesRepository notesRepository
+@inject INotesRepository NotesRepository
+@inject ISnackbar MudSnackbar
 
 @using System.Linq
 
 <MudContainer MaxWidth=@MaxWidth.ExtraLarge>
     <MudGrid Spacing="2">
-        <MudItem
-            xs="3"
-            Style="margin-top: 2px !important;"
-        >
+        <MudItem xs="3"
+                 Style="margin-top: 2px !important;">
             <MudPaper Elevation="2">
                 <MudGrid>
-                    <MudItem
-                        xs="12"
-                        Class="pb-1"
-                    >
-                        <MudTextField
-                            @bind-Value=@_fileSearchValue
-                            Immediate=true
-                            Label="Search Files"
-                            Variant=@Variant.Filled
-                            Class="pa-2"
-                        />
+                    <MudItem xs="12"
+                             Class="pb-1">
+                        <MudTextField @bind-Value=@_fileSearchValue
+                                      Immediate=true
+                                      Label="Search Files"
+                                      Variant=@Variant.Filled
+                                      Adornment=@Adornment.Start
+                                      AdornmentIcon=@Icons.Filled.Search
+                                      AdornmentColor=@Color.Primary
+                                      Class="pa-2" />
                     </MudItem>
-                    <MudItem
-                        xs="12"
-                        Style="height:70vh;"
-                        Class="pt-0 mr-3 overflow-auto"
-                    >
+                    <MudItem xs="12"
+                             Style="height:70vh;"
+                             Class="pt-0 mr-3 overflow-auto">
                         <MudList Clickable=true>
-                        @foreach (var note in _notes.Where(n => n.Title.Contains(_fileSearchValue, StringComparison.InvariantCultureIgnoreCase)))
-                        {
-                            <MudListItem
-                                Dense=true
-                                OnClick=@(() => addNoteTab(note))
-                            >
-                                @if (noteIsOpen(note))
-                                {
-                                    <MudIcon
-                                        Class="pr-2"
-                                        Icon=@Icons.Material.Filled.FileOpen
-                                        Color=@(note.NoteHasChanged ? Color.Success : Color.Default)
-                                    />
-                                }
-                                else
-                                {
-                                    <MudIcon
-                                        Class="pr-2"
-                                        Icon=@Icons.Material.Filled.Feed
-                                        Color=@(note.NoteHasChanged ? Color.Success : Color.Default)
-                                    />
-                                }
+                            @foreach (var note in _notes.Where(n => n.Title.Contains(_fileSearchValue, StringComparison.InvariantCultureIgnoreCase)))
+                            {
+                                <MudListItem Dense=true
+                                             OnClick=@(() => addNoteTab(note))>
+                                    @if (noteIsOpen(note))
+                                    {
+                                        <MudIcon Class="pr-2"
+                                                 Icon=@Icons.Material.Filled.FileOpen
+                                                 Color=@(note.NoteHasChanged ? Color.Secondary : Color.Primary) />
+                                    }
+                                    else
+                                    {
+                                        <MudIcon Class="pr-2"
+                                                 Icon=@Icons.Material.Filled.Feed
+                                                 Color=@(note.NoteHasChanged ? Color.Secondary : Color.Primary) />
+                                    }
 
-                                @note.Title
-                                <MudIconButton
-                                    Icon=@Icons.Material.Filled.Delete
-                                    Color=@Color.Error
-                                    Size=@Size.Small
-                                    Style="float:right"
-                                    OnClick=@(() => deleteNote(note))
-                                />
-                            </MudListItem>
-                        }
+                                    @note.Title
+                                    <MudIconButton Icon=@Icons.Material.Filled.Delete
+                                                   Color=@Color.Error
+                                                   Size=@Size.Small
+                                                   Style="float:right"
+                                                   OnClick=@(() => deleteNote(note)) />
+                                </MudListItem>
+                            }
                         </MudList>
                     </MudItem>
                 </MudGrid>
             </MudPaper>
         </MudItem>
-        <MudItem
-            xs="9"
-            Class="pt-0"
-        >
-        @if (_tabs.Any())
-        {
-            <MudDynamicTabs
-                Elevation="2"
-                Rounded=true
-                ApplyEffectsToContainer=true
-                @bind-ActivePanelIndex=@_latestTabIndex
-                AddTab=@addNewNoteTab
-                CloseTab=@((panel) => closeNoteTab(panel))
-                AddIconToolTip="Click here to add a new tab"
-                CloseIconToolTip="Close this tab. All data will be lost"
-            >
-            @foreach (NoteTab tab in _tabs)
+        <MudItem xs="9"
+                 Class="pt-0">
+            @if (_tabs.Any())
             {
-                <MudTabPanel Tag=@tab.Note.Id>
-                    <TabContent>
-                        <MudText Typo="Typo.body1">
-                            @if (tab.Note.NoteHasChanged)
-                            {
-                                <i>@tab.Note.UpdatedTitle*</i>
-                            }
-                            else if (string.IsNullOrEmpty(tab.Note.Title))
-                            {
-                                <i>New note</i>
-                            }
-                            else
-                            {
-                                @tab.Note.Title
-                            }
-                        </MudText>
-                    </TabContent>
-                    <ChildContent>
-                        <MudGrid Spacing="2">
-                            <MudItem xs="4">
-                                <MudTextField
-                                    Adornment=@Adornment.Start
-                                    AdornmentIcon=@Icons.Filled.Title
-                                    @bind-Value=@tab.Note.UpdatedTitle
-                                    Label="Title"
-                                    Variant=@Variant.Outlined
-                                    Immediate=true
-                                    Class="pa-2"
-                                />
-                            </MudItem>
-                            <MudItem xs="3" Class="mt-4">
-                                <MudButtonGroup
-                                    Color=@Color.Primary
-                                    Variant=@Variant.Outlined
-                                    Class="pa-2"
-                                >
-                                    <MudButton
-                                        @onclick=@(() => tab.NoteView = NoteViewEnum.Outline)
-                                        Disabled=@(tab.NoteView == NoteViewEnum.Outline)
-                                        StartIcon=@Icons.Material.Filled.Create
-                                        Variant=@Variant.Filled
-                                    >
-                                        Outline
-                                    </MudButton>
-                                    <MudButton
-                                        @onclick=@(() => tab.NoteView = NoteViewEnum.Markdown)
-                                        Disabled=@(tab.NoteView == NoteViewEnum.Markdown)
-                                        StartIcon=@Icons.Material.Filled.RemoveRedEye
-                                        Variant=@Variant.Filled
-                                    >
-                                        Markdown
-                                    </MudButton>
-                                </MudButtonGroup>
-                            </MudItem>
-                            <MudItem
-                                xs="5"
-                                Class="mt-4"
-                            >
-                                <MudButton
-                                    Variant=@Variant.Filled
-                                    Color=@Color.Success
-                                    @onclick=@(() => saveNote(tab.Note))
-                                    Disabled=@(!tab.Note.NoteHasChanged)
-                                    Class="ma-2"
-                                    Style="float: right"
-                                    StartIcon=@Icons.Material.Filled.Save
-                                >
-                                    Save
-                                </MudButton>
-                            </MudItem>
-                        </MudGrid>
-                        <MudItem Class="pa-6">
-                            @if (tab.NoteView == NoteViewEnum.Outline)
-                            {
-                                <MudTextField
-                                    Immediate=true
-                                    Label="Markdown"
-                                    Variant=@Variant.Outlined
-                                    @bind-Value=@tab.Note.UpdatedContent
-                                    Lines=27
-                                 />
-                            }
-                            @if (tab.NoteView == NoteViewEnum.Markdown)
-                            {
-                                @((MarkupString) getCurrentMarkdown(tab.Note.UpdatedContent))
-                            }
-                        </MudItem>
-                    </ChildContent>
-                </MudTabPanel>
+                <MudDynamicTabs Elevation="2"
+                                Rounded=true
+                                ApplyEffectsToContainer=true
+                                @bind-ActivePanelIndex=@_latestTabIndex
+                                AddTab=@addNewNoteTab
+                                CloseTab=@((panel) => closeNoteTab(panel))
+                                AddIconToolTip="Click here to add a new tab"
+                                addico
+                                CloseIconToolTip="Close this tab. All data will be lost">
+                    @foreach (NoteTab tab in _tabs)
+                    {
+                        <MudTabPanel Tag=@tab.Note.Id>
+                            <TabContent>
+                                <MudText Typo="Typo.body1">
+                                    @if (tab.Note.NoteHasChanged)
+                                    {
+                                        <i>@tab.Note.UpdatedTitle*</i>
+                                    }
+                                    else if (string.IsNullOrEmpty(tab.Note.Title))
+                                    {
+                                        <i>New note</i>
+                                    }
+                                    else
+                                    {
+                                        @tab.Note.Title
+                                    }
+                                </MudText>
+                            </TabContent>
+                            <ChildContent>
+                                <MudGrid Spacing="2">
+                                    <MudItem xs="4">
+                                        <MudTextField Adornment=@Adornment.Start
+                                                      AdornmentIcon=@Icons.Filled.Title
+                                                      AdornmentColor=@Color.Primary
+                                                      @bind-Value=@tab.Note.UpdatedTitle
+                                                      Label="Title"
+                                                      Variant=@Variant.Outlined
+                                                      Immediate=true
+                                                      Class="pa-2"
+                                                      Required="true"
+                                                      RequiredError="Note must have a title" />
+                                    </MudItem>
+                                    <MudItem xs="3" Class="mt-4">
+                                        <MudButtonGroup Color=@Color.Primary
+                                                        Variant=@Variant.Outlined
+                                                        Class="pa-2">
+                                            <MudButton @onclick=@(() => tab.NoteView = NoteViewEnum.Outline)
+                                                       Disabled=@(tab.NoteView == NoteViewEnum.Outline)
+                                                       StartIcon=@Icons.Material.Filled.Create
+                                                       Variant=@Variant.Filled>
+                                                Outline
+                                            </MudButton>
+                                            <MudButton @onclick=@(() => tab.NoteView = NoteViewEnum.Markdown)
+                                                       Disabled=@(tab.NoteView == NoteViewEnum.Markdown)
+                                                       StartIcon=@Icons.Material.Filled.RemoveRedEye
+                                                       Variant=@Variant.Filled>
+                                                Markdown
+                                            </MudButton>
+                                        </MudButtonGroup>
+                                    </MudItem>
+                                    <MudItem xs="5"
+                                             Class="mt-4">
+                                        <MudButton Variant=@Variant.Filled
+                                                   Color=@Color.Secondary
+                                                   @onclick=@(() => saveNote(tab.Note))
+                                                   Disabled=@(!tab.Note.NoteHasChanged || string.IsNullOrEmpty(tab.Note.UpdatedTitle))
+                                                   Class="ma-2"
+                                                   Style="float: right"
+                                                   StartIcon=@Icons.Material.Filled.Save>
+                                            Save
+                                        </MudButton>
+                                    </MudItem>
+                                </MudGrid>
+                                <MudItem Class="pa-6">
+                                    @if (tab.NoteView == NoteViewEnum.Outline)
+                                    {
+                                        <MudTextField Immediate=true
+                                                      Label="Markdown"
+                                                      Variant=@Variant.Outlined
+                                                      @bind-Value=@tab.Note.UpdatedContent
+                                                      Lines=27 />
+                                    }
+                                    @if (tab.NoteView == NoteViewEnum.Markdown)
+                                    {
+                                        @((MarkupString) getCurrentMarkdown(tab.Note.UpdatedContent))
+                                    }
+                                </MudItem>
+                            </ChildContent>
+                        </MudTabPanel>
+                    }
+                </MudDynamicTabs>
             }
-            </MudDynamicTabs>
-        }
-        else
-        {
-            <MudButton
-                @onclick=addNewNoteTab
-                StartIcon=@Icons.Material.Filled.Create
-                Variant=@Variant.Filled
-            >
-                Start new note
-            </MudButton>
-        }
+            else
+            {
+                <MudButton @onclick=addNewNoteTab
+                           StartIcon=@Icons.Material.Filled.Create
+                           Variant=@Variant.Filled
+                           Color=@Color.Primary
+                >
+                    Start new note
+                </MudButton>
+            }
         </MudItem>
     </MudGrid>
 </MudContainer>
@@ -201,8 +175,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        IEnumerable<Note> notes = notesRepository.ListNotes();
-        _notes = notes.ToList();
+        RepositoryResponseWrapper<List<Note>> responseWrapper = NotesRepository.ListNotes();
+        if (responseWrapper.Success)
+        {
+            _notes = responseWrapper.Value;
+        }
+        else
+        {
+            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -259,11 +240,11 @@
 
     private void closeNoteTab(MudTabPanel panel)
     {
-        var tabView = _tabs.FirstOrDefault(tv => tv.Note.Id == (Guid) panel.Tag);
+        var tabView = _tabs.FirstOrDefault(tv => tv.Note.Id == (Guid)panel.Tag);
         var tabNote = _notes.FirstOrDefault(n => n.Id == (Guid)panel.Tag);
 
         if (tabNote is not null) tabNote.ResetToLastSavedState(); // Note is new and has not been saved, so does not exist in global notes list.
-        if(tabView is not null) _tabs.Remove(tabView);
+        if (tabView is not null) _tabs.Remove(tabView);
 
         StateHasChanged();
     }
@@ -281,20 +262,34 @@
     #region Page requests
     private async void saveNote(Note note)
     {
-        var updatedNotesList = await notesRepository.SaveNoteAsync(note);
-        _notes = updatedNotesList.ToList();
-        var updatedNote = _notes.FirstOrDefault(n => n.Id == note.Id);
-        var selectedTab = _tabs.FirstOrDefault(t => t.Note.Id == note.Id);
-        if (selectedTab is not null && updatedNote is not null) selectedTab.Note = updatedNote;
-        StateHasChanged();
+        RepositoryResponseWrapper<List<Note>> responseWrapper = await NotesRepository.SaveNoteAsync(note);
+        if (responseWrapper.Success)
+        {
+            _notes = responseWrapper.Value;
+            var updatedNote = _notes.FirstOrDefault(n => n.Id == note.Id);
+            var selectedTab = _tabs.FirstOrDefault(t => t.Note.Id == note.Id);
+            if (selectedTab is not null && updatedNote is not null) selectedTab.Note = updatedNote;
+            StateHasChanged();
+        }
+        else
+        {
+            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
     }
 
     private async void deleteNote(Note note)
     {
-        closeNoteTab(note);
-        var updatedNotesList = await notesRepository.DeleteNoteAsync(note);
-        _notes = updatedNotesList.ToList();
-        StateHasChanged();
+        RepositoryResponseWrapper<List<Note>> responseWrapper = await NotesRepository.DeleteNoteAsync(note);
+        if (responseWrapper.Success)
+        {
+            closeNoteTab(note);
+            _notes = responseWrapper.Value;
+            StateHasChanged();
+        }
+        else
+        {
+            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
     }
     #endregion
 }
