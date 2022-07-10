@@ -1,6 +1,8 @@
 ﻿@inherits LayoutComponentBase
 @using Shared.UI.Themes
 
+@inject NavigationManager NavigationManager
+
 <PageTitle>Everest</PageTitle>
 
 <MudThemeProvider Theme=@EverestThemes.Classic @bind-IsDarkMode=_isDarkTheme />
@@ -8,9 +10,6 @@
 <MudSnackbarProvider />
 
 <AuthorizeView>
-    <NotAuthorized>
-        <a href="Identity/Account/Login">Log in</a>
-    </NotAuthorized>
     <Authorized>
         <LoginDisplay />
         <MudLayout>
@@ -42,6 +41,19 @@
     private bool _open = false;
     private bool _isDarkTheme = true;
     private string _themeLabel => _isDarkTheme ? "Switch to light mode" : "Switch to dark mode";
+
+
+    [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+        var user = (await AuthStat).User;
+        if(!user.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/Identity/Account/Login");
+        }
+   }
 
     private void toggleDrawer()
     {
