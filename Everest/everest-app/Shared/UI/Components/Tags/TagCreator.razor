@@ -88,9 +88,10 @@
         // Remove any already selected Tags
         foreach (var selectedTag in SelectedTags)
         {
-            if (tagListToFilter.Where(t => t.Name.Equals(selectedTag.Name, StringComparison.InvariantCultureIgnoreCase)).Any())
+            var tagWithMatchingName = tagListToFilter.Where(t => t.Name.Equals(selectedTag.Name, StringComparison.InvariantCultureIgnoreCase)).SingleOrDefault();
+            if (tagWithMatchingName is not null)
             {
-                tagListToFilter.Remove(selectedTag);
+                tagListToFilter.Remove(tagWithMatchingName);
             }
         }
 
