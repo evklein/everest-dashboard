@@ -1,20 +1,34 @@
-﻿@if (_isActivated)
-{
-    <MudIconButton Icon=@Icons.Filled.Add OnClick=@activateComponent Variant=@Variant.Text />
-}
-else
-{
-}
-<MudChipSet AllClosable="true" OnClose=@removeTagFromList>
-    @foreach (var tag in Tags)
+﻿<MudGrid>
+    @if (_isActivated)
     {
-        <MudChip Tag=@tag Text=@tag.Name Color=@Color.Secondary></MudChip>
+        <MudItem xs="2" Class="pt-1">
+            <MudAutocomplete CoerceText="true" ValueChanged=@addTagToList ResetValueOnEmptyText="true" Margin=@Margin.Dense Dense="true" Variant=@Variant.Text Label="Add tag" T="string" SearchFunc=@searchTags Adornment=@Adornment.Start AdornmentIcon="@Icons.Material.Filled.Add" AdornmentColor="Color.Secondary" />
+        </MudItem>
     }
-</MudChipSet>
+    <MudItem xs="4" Class="pl-0">
+        <MudChipSet AllClosable="true" OnClose=@removeTagFromList>
+            @if (!_isActivated)
+            {
+                <MudIconButton Icon=@Icons.Filled.Add OnClick=@activateComponent Variant=@Variant.Text />
+            }
+            else
+            {
+                <MudIconButton Icon=@Icons.Filled.ArrowBack OnClick=@deactivateComponent Variant=@Variant.Text />
+            }
+            @foreach (var tag in SelectedTags)
+            {
+                <MudChip Tag=@tag Text=@tag.Name Color=@Color.Secondary></MudChip>
+            }
+        </MudChipSet>
+    </MudItem>
+</MudGrid>
 
 @code {
     [Parameter]
-    public List<Tag> Tags { get; set; }
+    public List<Tag> Tags { get; set; } = new List<Tag>();
+
+    [Parameter]
+    public List<Tag> SelectedTags { get; set; } = new List<Tag>();
 
     [Parameter]
     public EventCallback AddTagCallback { get; set; }
@@ -22,6 +36,7 @@ else
     [Parameter]
     public EventCallback RemoveTagCallback { get; set; }
 
+    private Tag _newPlaceholderTag = new Tag();
     private bool _isActivated = false;
 
     private void activateComponent()
@@ -29,16 +44,59 @@ else
         _isActivated = true;
     }
 
-    private async Task addTagToList(MudChip chip)
+    private void deactivateComponent()
     {
-        Tags.Add((Tag)chip.Tag);
-        await AddTagCallback.InvokeAsync();
+        _isActivated = false;
+    }
+
+    private async Task addTagToList(string value)
+    {
+        if (value is not null && !string.IsNullOrEmpty(value) && !SelectedTags.Where(st => st.Name.Equals(value, StringComparison.CurrentCultureIgnoreCase)).Any())
+        {
+            SelectedTags.Add(new Tag() { Name = value });
+        }
     }
 
     private async Task removeTagFromList(MudChip chip)
     {
-        Tags.Remove((Tag) chip.Tag);
+        SelectedTags.Remove((Tag) chip.Tag);
         await RemoveTagCallback.InvokeAsync();
+    }
+
+    private async Task<IEnumerable<string>> searchTags(string searchValue)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(5);
+
+        List<Tag> tagListToFilter = Tags;
+        tagListToFilter.Remove(_newPlaceholderTag);
+
+        // Handle empty search
+        if (string.IsNullOrEmpty(searchValue))
+            return Tags.Select(t => t.Name);
+
+        // Handle new-Tag placeholder
+        if (!tagListToFilter.Where(t => t.Name.Equals(searchValue, StringComparison.InvariantCultureIgnoreCase)).Any())
+        {
+            _newPlaceholderTag.Name = searchValue;
+            if (!tagListToFilter.Contains(_newPlaceholderTag) && !string.IsNullOrEmpty(searchValue))
+            {
+                tagListToFilter.Insert(0, _newPlaceholderTag);
+            }
+        }
+
+        // Remove any already selected Tags
+        foreach (var selectedTag in SelectedTags)
+        {
+            if (tagListToFilter.Where(t => t.Name.Equals(selectedTag.Name, StringComparison.InvariantCultureIgnoreCase)).Any())
+            {
+                tagListToFilter.Remove(selectedTag);
+            }
+        }
+
+        return tagListToFilter.Where(t => t.Name.Contains(searchValue, StringComparison.InvariantCultureIgnoreCase))
+                              .Select(t => t.Name)
+                              .ToList();
     }
 }
 

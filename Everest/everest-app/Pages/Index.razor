@@ -7,4 +7,27 @@
     <MudItem xs="6">
         <MudText Typo="Typo.body1">Welcome to the Everest Dashboard. There's currently no pinned modules.</MudText>
     </MudItem>
+    <MudItem xs="12">
+        <TagCreator
+            Tags=@Tags />
+    </MudItem>
 </MudGrid>
+
+@code
+{
+    public List<Tag> Tags = new()
+    {
+        new Tag()
+        {
+            Name = "Tag 1",
+        },
+        new Tag()
+        {
+            Name = "Tag 2",
+        },
+        new Tag()
+        {
+            Name = "Tag 3",
+        },
+    };
+}
