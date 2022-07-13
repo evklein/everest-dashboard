@@ -1,19 +1,15 @@
-﻿<MudGrid>
+﻿<MudGrid Class="pl-2 py-0" Style="margin-bottom:-36px;margin-top:-28px;margin-left:4px;">
     @if (_isActivated)
     {
         <MudItem xs="2" Class="pt-1">
-            <MudAutocomplete CoerceText="true" ValueChanged=@addTagToList ResetValueOnEmptyText="true" Margin=@Margin.Dense Dense="true" Variant=@Variant.Text Label="Add tag" T="string" SearchFunc=@searchTags Adornment=@Adornment.Start AdornmentIcon="@Icons.Material.Filled.Add" AdornmentColor="Color.Secondary" />
+            <MudAutocomplete CoerceText="true" ValueChanged=@addTagToList ResetValueOnEmptyText="true" Margin=@Margin.Dense Dense="true" Variant=@Variant.Text T="string" SearchFunc=@searchTags Adornment=@Adornment.Start AdornmentIcon="@Icons.Filled.ArrowBack" OnAdornmentClick=@deactivateComponent AdornmentColor="Color.Secondary" />
         </MudItem>
     }
-    <MudItem xs="4" Class="pl-0">
+    <MudItem xs=@(_isActivated ? 10 : 12)  Class="pl-0">
         <MudChipSet AllClosable="true" OnClose=@removeTagFromList>
             @if (!_isActivated)
             {
-                <MudIconButton Icon=@Icons.Filled.Add OnClick=@activateComponent Variant=@Variant.Text />
-            }
-            else
-            {
-                <MudIconButton Icon=@Icons.Filled.ArrowBack OnClick=@deactivateComponent Variant=@Variant.Text />
+                <MudButton OnClick=@activateComponent Variant="Variant.Text" StartIcon=@Icons.Filled.Add IconColor="Color.Secondary" Size="Size.Medium">Add tag</MudButton>
             }
             @foreach (var tag in SelectedTags)
             {
