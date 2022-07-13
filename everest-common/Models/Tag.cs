@@ -12,7 +12,7 @@ namespace everest_common.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string ColorHexadecimal = string.Empty;
+        public string ColorHexadecimal = "#00c2a2";
 
         public DateTime DateCreated { get; set; }
 

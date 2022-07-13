@@ -17,7 +17,7 @@
             }
             @foreach (var tag in SelectedTags)
             {
-                <MudChip Tag=@tag Text=@tag.Name Color=@Color.Secondary></MudChip>
+                <MudChip @ondblclick=@(() => changeTagColor(tag)) Tag=@tag Text=@tag.Name Style="@($"background-color:{tag.ColorHexadecimal} !important;")"></MudChip>
             }
         </MudChipSet>
     </MudItem>
@@ -59,7 +59,7 @@
 
     private async Task removeTagFromList(MudChip chip)
     {
-        SelectedTags.Remove((Tag) chip.Tag);
+        SelectedTags.Remove((Tag)chip.Tag);
         await RemoveTagCallback.InvokeAsync();
     }
 
@@ -94,10 +94,17 @@
                 tagListToFilter.Remove(tagWithMatchingName);
             }
         }
-
         return tagListToFilter.Where(t => t.Name.Contains(searchValue, StringComparison.InvariantCultureIgnoreCase))
-                              .Select(t => t.Name)
-                              .ToList();
+                     .Select(t => t.Name)
+                     .ToList();
+    }
+
+    private void changeTagColor(Tag tag)
+    {
+        Random random = new Random();
+        int newColor = random.Next(16777215);
+        string hexedColorCode = $"#{newColor.ToString("X")}";
+        tag.ColorHexadecimal = hexedColorCode;
     }
 }
 
