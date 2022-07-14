@@ -2,7 +2,7 @@
     @if (_isActivated)
     {
         <MudItem xs="2" Class="pt-1">
-            <MudAutocomplete CoerceText="true" ValueChanged=@addTagToList ResetValueOnEmptyText="true" Margin=@Margin.Dense Dense="true" Variant=@Variant.Text T="string" SearchFunc=@searchTags Adornment=@Adornment.Start AdornmentIcon="@Icons.Filled.ArrowBack" OnAdornmentClick=@deactivateComponent AdornmentColor="Color.Secondary" />
+            <MudAutocomplete CoerceValue="true" ValueChanged=@addTagToList ResetValueOnEmptyText="true" Margin=@Margin.Dense Dense="true" Variant=@Variant.Text T="string" SearchFunc=@searchTags Adornment=@Adornment.Start AdornmentIcon="@Icons.Filled.ArrowBack" OnAdornmentClick=@deactivateComponent AdornmentColor="Color.Secondary" />
         </MudItem>
     }
     <MudItem xs=@(_isActivated ? 10 : 12)  Class="pl-0">
@@ -11,9 +11,12 @@
             {
                 <MudButton OnClick=@activateComponent Variant="Variant.Text" StartIcon=@Icons.Filled.Add IconColor="Color.Secondary" Size="Size.Medium">Add tag</MudButton>
             }
-            @foreach (var tag in SelectedTags)
+            @if (SelectedTags is not null)
             {
-                <MudChip @ondblclick=@(() => changeTagColor(tag)) Tag=@tag Text=@tag.Name Style="@($"background-color:{tag.ColorHexadecimal} !important;")"></MudChip>
+                @foreach (var tag in SelectedTags)
+                {
+                    <MudChip @ondblclick=@(() => changeTagColor(tag)) Tag=@tag Text=@tag.Name Style="@($"background-color:{tag.ColorHexadecimal} !important;")"></MudChip>
+                }
             }
         </MudChipSet>
     </MudItem>
@@ -24,13 +27,7 @@
     public List<Tag> Tags { get; set; } = new List<Tag>();
 
     [Parameter]
-    public List<Tag> SelectedTags { get; set; } = new List<Tag>();
-
-    [Parameter]
-    public EventCallback AddTagCallback { get; set; }
-
-    [Parameter]
-    public EventCallback RemoveTagCallback { get; set; }
+    public ICollection<Tag> SelectedTags { get; set; } = new List<Tag>();
 
     private Tag _newPlaceholderTag = new Tag();
     private bool _isActivated = false;
@@ -49,14 +46,21 @@
     {
         if (value is not null && !string.IsNullOrEmpty(value) && !SelectedTags.Where(st => st.Name.Equals(value, StringComparison.CurrentCultureIgnoreCase)).Any())
         {
-            SelectedTags.Add(new Tag() { Name = value });
+            var existingUserTag = Tags.Where(t => t.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            if (existingUserTag is not null)
+            {
+                SelectedTags.Add(existingUserTag);
+            }
+            else
+            {
+                SelectedTags.Add(new Tag() { Name = value });
+            }
         }
     }
 
     private async Task removeTagFromList(MudChip chip)
     {
         SelectedTags.Remove((Tag)chip.Tag);
-        await RemoveTagCallback.InvokeAsync();
     }
 
     private async Task<IEnumerable<string>> searchTags(string searchValue)
@@ -64,22 +68,10 @@
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(5);
 
-        List<Tag> tagListToFilter = Tags;
+        string parsedSearchValue = EmojiStringParser.ParseEmojisInText(searchValue);
+
+        List<Tag> tagListToFilter = new List<Tag>(Tags);
         tagListToFilter.Remove(_newPlaceholderTag);
-
-        // Handle empty search
-        if (string.IsNullOrEmpty(searchValue))
-            return Tags.Select(t => t.Name);
-
-        // Handle new-Tag placeholder
-        if (!tagListToFilter.Where(t => t.Name.Equals(searchValue, StringComparison.InvariantCultureIgnoreCase)).Any())
-        {
-            _newPlaceholderTag.Name = searchValue;
-            if (!tagListToFilter.Contains(_newPlaceholderTag) && !string.IsNullOrEmpty(searchValue))
-            {
-                tagListToFilter.Insert(0, _newPlaceholderTag);
-            }
-        }
 
         // Remove any already selected Tags
         foreach (var selectedTag in SelectedTags)
@@ -90,7 +82,22 @@
                 tagListToFilter.Remove(tagWithMatchingName);
             }
         }
-        return tagListToFilter.Where(t => t.Name.Contains(searchValue, StringComparison.InvariantCultureIgnoreCase))
+
+        // Handle empty search
+        if (string.IsNullOrEmpty(parsedSearchValue))
+            return tagListToFilter.Select(t => t.Name);
+
+        // Handle new-Tag placeholder
+        if (!tagListToFilter.Where(t => t.Name.Equals(parsedSearchValue, StringComparison.InvariantCultureIgnoreCase)).Any())
+        {
+            _newPlaceholderTag.Name = parsedSearchValue;
+            if (!tagListToFilter.Contains(_newPlaceholderTag) && !string.IsNullOrEmpty(parsedSearchValue))
+            {
+                tagListToFilter.Insert(0, _newPlaceholderTag);
+            }
+        }
+
+        return tagListToFilter.Where(t => t.Name.Contains(parsedSearchValue, StringComparison.InvariantCultureIgnoreCase))
                      .Select(t => t.Name)
                      .ToList();
     }

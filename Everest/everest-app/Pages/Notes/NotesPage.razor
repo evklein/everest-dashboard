@@ -1,5 +1,6 @@
 @page "/Notes"
 @inject INotesRepository NotesRepository
+@inject ITagRepository TagRepository 
 @inject ISnackbar MudSnackbar
 
 @using System.Linq
@@ -132,7 +133,7 @@
                                         </MudButton>
                                     </MudItem>
                                     <MudItem xs="12">
-                                        <TagCreator />
+                                        <TagCreator Tags=@_availableTags SelectedTags=@tab.Note.Tags />
                                     </MudItem>
                                 </MudGrid>
                                 <MudItem Class="pa-6">
@@ -175,17 +176,28 @@
     private bool _indexChanged = false;
     private List<Note> _notes = new();
     private List<NoteTab> _tabs = new();
+    private List<Tag> _availableTags = new();
 
     protected override async Task OnInitializedAsync()
     {
-        RepositoryResponseWrapper<List<Note>> responseWrapper = await NotesRepository.ListNotes();
-        if (responseWrapper.Success)
+        RepositoryResponseWrapper<List<Note>> notesFetchResponseWrapper = await NotesRepository.ListNotes();
+        if (notesFetchResponseWrapper.Success)
         {
-            _notes = responseWrapper.Value;
+            _notes = notesFetchResponseWrapper.Value;
         }
         else
         {
-            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+            MudSnackbar.Add(notesFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
+
+        RepositoryResponseWrapper<List<Tag>> tagsFetchResponseWrapper = await TagRepository.ListTagsForUser();
+        if (tagsFetchResponseWrapper.Success)
+        {
+            _availableTags = tagsFetchResponseWrapper.Value;
+        }
+        else
+        {
+            MudSnackbar.Add(notesFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
         }
     }
 
@@ -215,7 +227,7 @@
 
     private void addNewNoteTab()
     {
-        var newTab = new NoteTab(new Note());
+        var newTab = new NoteTab(new Note() { Tags = new List<Tag>() });
         doCommonTabAddLogic(newTab);
     }
 

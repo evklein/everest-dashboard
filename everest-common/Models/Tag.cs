@@ -11,13 +11,14 @@ namespace everest_common.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
-        [Required]
-        public string ColorHexadecimal = "#00c2a2";
+        public string ColorHexadecimal { get; set; } = "#00c2a2";
 
         public DateTime DateCreated { get; set; }
 
         public string OwnerId { get; set; }
         public IdentityUser Owner { get; set; }
+
+        public virtual ICollection<Note> Note { get; set; }
     }
 }
 
