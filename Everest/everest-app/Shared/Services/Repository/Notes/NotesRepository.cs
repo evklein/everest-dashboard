@@ -2,6 +2,7 @@
 using everest_app.Data;
 using everest_common.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace everest_app.Shared.Services.Repository.Notes
 {
@@ -21,11 +22,12 @@ namespace everest_app.Shared.Services.Repository.Notes
         public async Task<RepositoryResponseWrapper<List<Note>>> ListNotes()
         {
             var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-            var notes = _everestDbContext.Notes.Where(n => n.OwnerId.Equals(currentUser.Id)).ToList();
+            var notes = _everestDbContext.Notes.Include(n => n.Tags).Where(n => n.OwnerId.Equals(currentUser.Id)).ToList();
             notes.ForEach((note) =>
             {
                 note.UpdatedTitle = note.Title;
                 note.UpdatedContent = note.Content;
+                note.Tags = note.Tags ?? new List<Tag>();
             });
 
             RepositoryResponseWrapper<List<Note>> responseWrapper = new()
@@ -43,6 +45,18 @@ namespace everest_app.Shared.Services.Repository.Notes
             note.Content = note.UpdatedContent;
             note.OwnerId = currentUser.Id;
 
+            foreach (var tag in note.Tags)
+            {
+                if (tag.DateCreated == DateTime.MinValue)
+                {
+                    tag.OwnerId = currentUser.Id;
+                    tag.DateCreated = DateTime.UtcNow;
+
+                    _everestDbContext.Tags.Add(tag);
+                }
+            }
+            await _everestDbContext.SaveChangesAsync();
+
             if (string.IsNullOrEmpty(note.Title))
             {
                 return new RepositoryResponseWrapper<List<Note>>()
@@ -57,7 +71,7 @@ namespace everest_app.Shared.Services.Repository.Notes
 
             try
             {
-                var existingNote = await _everestDbContext.Notes.FindAsync(note.Id);
+                var existingNote = await _everestDbContext.Notes.Where(n => n.Id == note.Id).SingleOrDefaultAsync();
 
                 if (existingNote is not null)
                 {
@@ -74,6 +88,7 @@ namespace everest_app.Shared.Services.Repository.Notes
                     }
                     existingNote.Title = note.UpdatedTitle;
                     existingNote.Content = note.UpdatedContent;
+                    existingNote.Tags = note.Tags;
                 }
                 else
                 {
