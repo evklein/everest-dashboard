@@ -49,6 +49,10 @@
                                                    Size=@Size.Small
                                                    Style="float:right"
                                                    OnClick=@(() => deleteNote(note)) />
+                                    @for (int i = 0; i <= (note.Tags.Count <= 2 ? note.Tags.Count : 2); i++)
+                                    {
+                                        <MudChip Text=@note.Tags.ToList()[i].Name Style="@($"background-color:{note.Tags.ToList()[i].ColorHexadecimal} !important;")"></MudChip>
+                                    }
                                 </MudListItem>
                             }
                         </MudList>
