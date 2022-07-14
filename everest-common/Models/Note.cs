@@ -27,6 +27,8 @@ public class Note
     public string OwnerId { get; set; }
     public IdentityUser Owner { get; set; }
 
+    public virtual ICollection<Tag> Tags { get; set; }
+
     public Note(string title, string content)
     {
         Title = title;

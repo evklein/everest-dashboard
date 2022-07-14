@@ -13,6 +13,7 @@ using everest_app.Shared.Services.Repository.Notes;
 using System.Configuration;
 using MudBlazor;
 using everest_app.Shared.Services.Repository.ToDo;
+using everest_app.Shared.Services.Repository.Tags;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<INotesRepository, NotesRepository>();
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
+builder.Services.AddScoped<ITagRepository, TagRepository>();
 
 var app = builder.Build();
 
