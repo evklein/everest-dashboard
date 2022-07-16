@@ -26,11 +26,11 @@
                              Style="height:70vh;"
                              Class="pt-0 mr-3 overflow-auto">
                         <MudList Clickable=true>
-                            @foreach (var note in _notes.Where(n => n.Title.Contains(_fileSearchValue, StringComparison.InvariantCultureIgnoreCase)))
+                            @foreach (var noteListItem in _noteListItems.Where(n => n.NoteTitle.Contains(_fileSearchValue, StringComparison.InvariantCultureIgnoreCase)))
                             {
                                 <MudListItem Dense=true
-                                             OnClick=@(() => addNoteTab(note))>
-                                    @if (noteIsOpen(note))
+                                             OnClick=@(() => addNoteTab(noteListItem.NoteId))>
+                                    @if (noteIsOpen(noteListItem.NoteId))
                                     {
                                         <MudIcon Class="pr-2"
                                                  Icon=@Icons.Material.Filled.FileOpen
@@ -43,15 +43,17 @@
                                                  Color=@(note.NoteHasChanged ? Color.Secondary : Color.Primary) />
                                     }
 
-                                    @note.Title
+                                    @noteListItem.NoteTitle
                                     <MudIconButton Icon=@Icons.Material.Filled.Delete
                                                    Color=@Color.Error
                                                    Size=@Size.Small
                                                    Style="float:right"
                                                    OnClick=@(() => deleteNote(note)) />
-                                    @for (int i = 0; i <= (note.Tags.Count <= 2 ? note.Tags.Count - 1 : 1); i++)
+                                    @for (int i = 0; i <= (noteListItem.NoteTags.Count <= 2 ? noteListItem.NoteTags.Count - 1 : 1); i++)
                                     {
-                                        <MudChip Text=@note.Tags.ToList()[i].Name Style="@($"background-color:{note.Tags.ToList()[i].ColorHexadecimal} !important;")"></MudChip>
+                                        <MudChip Text=@noteListItem.NoteTags.ToList()[i].Name
+                                                 Style="@($"background-color:{noteListItem.NoteTags.ToList()[i].ColorHexadecimal} !important;")"
+                                        />
                                     }
                                 </MudListItem>
                             }
@@ -178,20 +180,22 @@
     private string _fileSearchValue = string.Empty;
     private int _latestTabIndex = 0;
     private bool _indexChanged = false;
-    private List<Note> _notes = new();
+
+    private List<NoteListItem> _noteListItems = new();
     private List<NoteTab> _tabs = new();
+    private List<Note> _openNotes = new();
     private List<Tag> _availableTags = new();
 
     protected override async Task OnInitializedAsync()
     {
-        RepositoryResponseWrapper<List<Note>> notesFetchResponseWrapper = await NotesRepository.ListNotes();
-        if (notesFetchResponseWrapper.Success)
+        RepositoryResponseWrapper<List<NoteListItem>> notesListFetchResponseWrapper = await NotesRepository.ListNotes();
+        if (notesListFetchResponseWrapper.Success)
         {
-            _notes = notesFetchResponseWrapper.Value;
+            _noteListItems = notesListFetchResponseWrapper.Value;
         }
         else
         {
-            MudSnackbar.Add(notesFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
+            MudSnackbar.Add(notesListFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
         }
 
         RepositoryResponseWrapper<List<Tag>> tagsFetchResponseWrapper = await TagRepository.ListTagsForUser();
@@ -201,7 +205,7 @@
         }
         else
         {
-            MudSnackbar.Add(notesFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
+            MudSnackbar.Add(tagsFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
         }
     }
 
@@ -216,11 +220,11 @@
     }
 
     #region Tab Behaviors
-    private bool noteIsOpen(Note note)
+    private bool noteIsOpen(Guid noteId)
     {
         try
         {
-            var tabWithSpecifiedNote = _tabs.Where(tab => tab.Note.Id == note.Id).SingleOrDefault();
+            var tabWithSpecifiedNote = _tabs.Where(tab => tab.Note.Id == noteId).SingleOrDefault();
             return tabWithSpecifiedNote is not null;
         }
         catch (Exception ex)
@@ -235,11 +239,21 @@
         doCommonTabAddLogic(newTab);
     }
 
-    private void addNoteTab(Note note)
+    private async void addNoteTab(Guid noteId)
     {
-        var newTab = new NoteTab(note);
-        if (noteIsOpen(note)) return;
-        doCommonTabAddLogic(newTab);
+        if (noteIsOpen(noteId)) return;
+
+        RepositoryResponseWrapper<Note> responseWrapper = await NotesRepository.GetNoteDetailsAsync(noteId);
+        if (responseWrapper.Success)
+        {
+            var note = responseWrapper.Value;
+            var newTab = new NoteTab(note);
+            doCommonTabAddLogic(newTab);
+        }
+        else
+        {
+            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
     }
 
     private void doCommonTabAddLogic(NoteTab tab)
@@ -287,8 +301,9 @@
         }
     }
 
-    private async void deleteNote(Note note)
+    private async void deleteNote(Guid noteId)
     {
+        // TODO: Amend repository to take a Guid instead of a note.
         RepositoryResponseWrapper<List<Note>> responseWrapper = await NotesRepository.DeleteNoteAsync(note);
         if (responseWrapper.Success)
         {

@@ -13,10 +13,15 @@
     <None Remove="Microsoft.EntityFrameworkCore" />
     <None Remove="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <None Remove="Microsoft.AspNetCore.Identity" />
+    <None Remove="DataTransferObjects %28copy%29\" />
+    <None Remove="DataTransferObjects\" />
+    <None Remove="DataTransferObjects\Notes\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Enumerations\" />
+    <Folder Include="DataTransferObjects\" />
+    <Folder Include="DataTransferObjects\Notes\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
