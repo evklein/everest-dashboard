@@ -1,6 +1,5 @@
 @page "/Notes"
 @inject INotesRepository NotesRepository
-@inject ITagRepository TagRepository 
 @inject ISnackbar MudSnackbar
 
 @using System.Linq
@@ -138,7 +137,7 @@
                                         </MudButton>
                                     </MudItem>
                                     <MudItem xs="12">
-                                        <InlineTagEditor Tags=@_availableTags SelectedTags=@tab.Note.Tags />
+                                        <InlineTagEditor SelectedTags=@tab.Note.Tags />
                                     </MudItem>
                                 </MudGrid>
                                 <MudItem Class="pa-6">
@@ -182,7 +181,6 @@
 
     private List<NoteListItem> _noteListItems = new();
     private List<NoteTab> _tabs = new();
-    private List<Tag> _availableTags = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -194,16 +192,6 @@
         else
         {
             MudSnackbar.Add(notesListFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
-        }
-
-        RepositoryResponseWrapper<List<Tag>> tagsFetchResponseWrapper = await TagRepository.ListTagsForUser();
-        if (tagsFetchResponseWrapper.Success)
-        {
-            _availableTags = tagsFetchResponseWrapper.Value;
-        }
-        else
-        {
-            MudSnackbar.Add(tagsFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
         }
     }
 

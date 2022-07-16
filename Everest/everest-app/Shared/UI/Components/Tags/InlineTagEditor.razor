@@ -1,21 +1,45 @@
-﻿<MudGrid Class="pl-2 py-0" Style="margin-bottom:-36px;margin-top:-28px;margin-left:4px;">
+﻿@inject ITagRepository TagRepository
+
+<MudGrid Class="pl-2 py-0"
+         Style="margin-bottom:-36px;margin-top:-28px;margin-left:4px;">
     @if (_isActivated)
     {
         <MudItem xs="2" Class="pt-1">
-            <MudAutocomplete CoerceValue="true" ValueChanged=@addTagToList ResetValueOnEmptyText="true" Margin=@Margin.Dense Dense="true" Variant=@Variant.Text T="string" SearchFunc=@searchTags Adornment=@Adornment.Start AdornmentIcon="@Icons.Filled.ArrowBack" OnAdornmentClick=@deactivateComponent AdornmentColor="Color.Secondary" />
+            <MudAutocomplete CoerceValue="true"
+                             ValueChanged=@addTagToList
+                             ResetValueOnEmptyText="true"
+                             Margin=@Margin.Dense
+                             Dense="true"
+                             Variant=@Variant.Text
+                             T="string"
+                             SearchFunc=@searchTags
+                             Adornment=@Adornment.Start
+                             AdornmentIcon="@Icons.Filled.ArrowBack"
+                             OnAdornmentClick=@deactivateComponent
+                             AdornmentColor="Color.Secondary"
+                             MaxItems="25" />
         </MudItem>
     }
     <MudItem xs=@(_isActivated ? 10 : 12)  Class="pl-0">
         <MudChipSet AllClosable="true" OnClose=@removeTagFromList>
             @if (!_isActivated)
             {
-                <MudButton OnClick=@activateComponent Variant="Variant.Text" StartIcon=@Icons.Filled.Add IconColor="Color.Secondary" Size="Size.Medium">Add tag</MudButton>
+                <MudButton OnClick=@activateComponent
+                           Variant="Variant.Text"
+                           StartIcon=@Icons.Filled.Add
+                           IconColor="Color.Secondary"
+                           Size="Size.Medium">
+                    Add tag
+                </MudButton>
             }
             @if (SelectedTags is not null)
             {
                 @foreach (var tag in SelectedTags)
                 {
-                    <MudChip @ondblclick=@(() => changeTagColor(tag)) Tag=@tag Text=@tag.Name Style="@($"background-color:{tag.ColorHexadecimal} !important;")"></MudChip>
+                    <MudChip @ondblclick=@(() => changeTagColor(tag))
+                             Tag=@tag
+                             Text=@tag.Name
+                             Style="@($"background-color:{tag.ColorHexadecimal} !important;")" />
                 }
             }
         </MudChipSet>
@@ -23,8 +47,6 @@
 </MudGrid>
 
 @code {
-    [Parameter]
-    public List<Tag> Tags { get; set; } = new List<Tag>();
 
     [Parameter]
     public ICollection<Tag> SelectedTags { get; set; } = new List<Tag>();
@@ -44,43 +66,46 @@
 
     private async Task addTagToList(string value)
     {
-        if (value is not null && !string.IsNullOrEmpty(value) && !SelectedTags.Where(st => st.Name.Equals(value, StringComparison.CurrentCultureIgnoreCase)).Any())
+        if (!string.IsNullOrEmpty(value) && !SelectedTags.Where(st => st.Name.Equals(value, StringComparison.CurrentCultureIgnoreCase)).Any())
         {
-            var existingUserTag = Tags.Where(t => t.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-            if (existingUserTag is not null)
+            var existingTagResponseWrapper = await TagRepository.GetTag(value);
+            if (existingTagResponseWrapper.Success)
             {
-                SelectedTags.Add(existingUserTag);
+                var existingUserTag = existingTagResponseWrapper.Value;
+                if (existingUserTag is not null)
+                {
+                    SelectedTags.Add(existingUserTag);
+                }
+                else
+                {
+                    SelectedTags.Add(new Tag() { Name = value });
+                }
             }
             else
             {
-                SelectedTags.Add(new Tag() { Name = value });
+                // TODO: Log/maybe throw an exception.
             }
         }
     }
 
-    private async Task removeTagFromList(MudChip chip)
+    private void removeTagFromList(MudChip chip)
     {
         SelectedTags.Remove((Tag)chip.Tag);
     }
 
     private async Task<IEnumerable<string>> searchTags(string searchValue)
     {
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(5);
-
+        List<Tag> tagListToFilter = new List<Tag>();
         string parsedSearchValue = EmojiStringParser.ParseEmojisInText(searchValue);
 
-        List<Tag> tagListToFilter = new List<Tag>(Tags);
-        tagListToFilter.Remove(_newPlaceholderTag);
-
-        // Remove any already selected Tags
-        foreach (var selectedTag in SelectedTags)
+        RepositoryResponseWrapper<List<Tag>> tagFetchResponseWrapper = await TagRepository.ListTagsForUserWithExclusionsAndSearchValue(SelectedTags.ToList(), parsedSearchValue);
+        if (tagFetchResponseWrapper.Success)
         {
-            var tagWithMatchingName = tagListToFilter.Where(t => t.Name.Equals(selectedTag.Name, StringComparison.InvariantCultureIgnoreCase)).SingleOrDefault();
-            if (tagWithMatchingName is not null)
-            {
-                tagListToFilter.Remove(tagWithMatchingName);
-            }
+            tagListToFilter = tagFetchResponseWrapper.Value;
+        }
+        else
+        {
+            // TODO: Log/maybe throw an exception.
         }
 
         // Handle empty search
@@ -97,9 +122,7 @@
             }
         }
 
-        return tagListToFilter.Where(t => t.Name.Contains(parsedSearchValue, StringComparison.InvariantCultureIgnoreCase))
-                     .Select(t => t.Name)
-                     .ToList();
+        return tagListToFilter.Select(t => t.Name).ToList();
     }
 
     private void changeTagColor(Tag tag)
