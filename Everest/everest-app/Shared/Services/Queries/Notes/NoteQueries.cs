@@ -20,7 +20,7 @@ namespace everest_app.Shared.Services.Queries.Notes
                                                        NoteDateModified = n.LastModified,
                                                        NoteTags = n.Tags.ToList() ?? new List<Tag>(),
                                                    })
-                                                   .OrderBy(nli => nli.NoteDateModified)
+                                                   .OrderByDescending(nli => nli.NoteDateModified)
                                                    .Take(count)
                                                    .ToListAsync();
         }

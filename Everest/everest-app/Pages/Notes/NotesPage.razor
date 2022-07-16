@@ -32,15 +32,16 @@
                                              OnClick=@(() => addNoteTab(noteListItem.NoteId))>
                                     @if (noteIsOpen(noteListItem.NoteId))
                                     {
-                                        <MudIcon Class="pr-2"
-                                                 Icon=@Icons.Material.Filled.FileOpen
-                                                 Color=@(note.NoteHasChanged ? Color.Secondary : Color.Primary) />
+                                    <MudIcon Class="pr-2"
+                                             Icon=@Icons.Material.Filled.FileOpen
+                                             Color=@Color.Secondary/>
+                                                 <!--Color=@@(note.NoteHasChanged ? Color.Secondary : Color.Primary) TODO-->
                                     }
                                     else
                                     {
                                         <MudIcon Class="pr-2"
-                                                 Icon=@Icons.Material.Filled.Feed
-                                                 Color=@(note.NoteHasChanged ? Color.Secondary : Color.Primary) />
+                                                 Icon=@Icons.Material.Filled.Feed/>
+                                                 <!--Color=@@(note.NoteHasChanged ? Color.Secondary : Color.Primary) TODO-->   
                                     }
 
                                     @noteListItem.NoteTitle
@@ -48,7 +49,7 @@
                                                    Color=@Color.Error
                                                    Size=@Size.Small
                                                    Style="float:right"
-                                                   OnClick=@(() => deleteNote(note)) />
+                                                   OnClick=@(() => deleteNote(noteListItem.NoteId)) />
                                     @for (int i = 0; i <= (noteListItem.NoteTags.Count <= 2 ? noteListItem.NoteTags.Count - 1 : 1); i++)
                                     {
                                         <MudChip Text=@noteListItem.NoteTags.ToList()[i].Name
@@ -71,9 +72,8 @@
                                 ApplyEffectsToContainer=true
                                 @bind-ActivePanelIndex=@_latestTabIndex
                                 AddTab=@addNewNoteTab
-                                CloseTab=@((panel) => closeNoteTab(panel))
+                                CloseTab=@((panel) => closeNoteTab((Guid) panel.Tag))
                                 AddIconToolTip="Click here to add a new tab"
-                                addico
                                 CloseIconToolTip="Close this tab. All data will be lost">
                     @foreach (NoteTab tab in _tabs)
                     {
@@ -183,7 +183,6 @@
 
     private List<NoteListItem> _noteListItems = new();
     private List<NoteTab> _tabs = new();
-    private List<Note> _openNotes = new();
     private List<Tag> _availableTags = new();
 
     protected override async Task OnInitializedAsync()
@@ -260,39 +259,33 @@
     {
         _tabs.Add(tab);
         _indexChanged = true;
-    }
-
-    private void closeNoteTab(MudTabPanel panel)
-    {
-        var tabView = _tabs.FirstOrDefault(tv => tv.Note.Id == (Guid)panel.Tag);
-        var tabNote = _notes.FirstOrDefault(n => n.Id == (Guid)panel.Tag);
-
-        if (tabNote is not null) tabNote.ResetToLastSavedState(); // Note is new and has not been saved, so does not exist in global notes list.
-        if (tabView is not null) _tabs.Remove(tabView);
-
         StateHasChanged();
     }
 
-    private void closeNoteTab(Note note)
+    private void closeNoteTab(Guid noteId)
     {
-        var tabView = _tabs.FirstOrDefault(x => x.Note.Id == note.Id);
+        var tabView = _tabs.FirstOrDefault(x => x.Note.Id == noteId);
         if (tabView is not null)
         {
             _tabs.Remove(tabView);
         }
+
+        StateHasChanged(); // TODO: Is this necessary???
     }
     #endregion
 
     #region Page requests
     private async void saveNote(Note note)
     {
-        RepositoryResponseWrapper<List<Note>> responseWrapper = await NotesRepository.SaveNoteAsync(note);
+        RepositoryResponseWrapper<SaveNoteResponseDataTransferObject> responseWrapper = await NotesRepository.SaveNoteAsync(note);
         if (responseWrapper.Success)
         {
-            _notes = responseWrapper.Value;
-            var updatedNote = _notes.FirstOrDefault(n => n.Id == note.Id);
+            SaveNoteResponseDataTransferObject responseObject = responseWrapper.Value;
+            _noteListItems = responseObject.NoteListItems;
+
+            var updatedNote = _noteListItems.FirstOrDefault(nli => nli.NoteId == note.Id);
             var selectedTab = _tabs.FirstOrDefault(t => t.Note.Id == note.Id);
-            if (selectedTab is not null && updatedNote is not null) selectedTab.Note = updatedNote;
+            if (selectedTab is not null && updatedNote is not null) selectedTab.Note = responseObject.SavedNote;
             StateHasChanged();
         }
         else
@@ -303,12 +296,11 @@
 
     private async void deleteNote(Guid noteId)
     {
-        // TODO: Amend repository to take a Guid instead of a note.
-        RepositoryResponseWrapper<List<Note>> responseWrapper = await NotesRepository.DeleteNoteAsync(note);
+        RepositoryResponseWrapper<List<NoteListItem>> responseWrapper = await NotesRepository.DeleteNoteAsync(noteId);
         if (responseWrapper.Success)
         {
-            closeNoteTab(note);
-            _notes = responseWrapper.Value;
+            closeNoteTab(noteId);
+            _noteListItems = responseWrapper.Value;
             StateHasChanged();
         }
         else

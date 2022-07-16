@@ -57,11 +57,15 @@ namespace everest_app.Shared.Services.Repository.Notes
 
             try
             {
-                var note = await _everestDbContext.Notes.Where(n => n.OwnerId == currentUser.Id)
+                var note = await _everestDbContext.Notes.Include(n => n.Tags)
+                                                        .Where(n => n.OwnerId == currentUser.Id)
                                                         .Where(n => n.Id == noteId)
                                                         .SingleOrDefaultAsync();
                 if (note is not null)
                 {
+                    note.UpdatedTitle = note.Title;
+                    note.UpdatedContent = note.UpdatedContent;
+
                     return new RepositoryResponseWrapper<Note>()
                     {
                         Value = note,
@@ -157,7 +161,7 @@ namespace everest_app.Shared.Services.Repository.Notes
                 {
                     Value = new SaveNoteResponseDataTransferObject()
                     {
-                        SavedNote = existingNote,
+                        SavedNote = note,
                         NoteListItems = await _noteQueries.GetNoteListItemsAsync(_everestDbContext, currentUser.Id),
                     },
                 };
