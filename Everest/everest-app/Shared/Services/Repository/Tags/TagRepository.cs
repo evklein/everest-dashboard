@@ -105,6 +105,32 @@ namespace everest_app.Shared.Services.Repository.Tags
                 };
             }
         }
+
+        public async Task<List<Tag>> AddNewTags(List<Tag> tags)
+        {
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+
+            List<Tag> tagListToReturn = new();
+            foreach (var tag in tags)
+            {
+                var existingTag = await _everestDbContext.Tags.FindAsync(tag.Id);
+                if (existingTag is null) // Add additional info for a brand-new tag.
+                {
+                    tag.OwnerId = currentUser.Id;
+                    tag.DateCreated = DateTime.UtcNow;
+
+                    _everestDbContext.Tags.Add(tag);
+                }
+                else
+                {
+                    existingTag.ColorHexadecimal = tag.ColorHexadecimal;
+                }
+                tagListToReturn.Add(existingTag ?? tag);
+            }
+
+            await _everestDbContext.SaveChangesAsync();
+            return tagListToReturn;
+        }
     }
 }
 
