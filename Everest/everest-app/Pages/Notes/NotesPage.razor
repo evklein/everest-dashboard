@@ -155,6 +155,7 @@
                                     }
                                     @if (tab.NoteView == NoteViewEnum.Markdown)
                                     {
+                                        <MudDivider Class="mb-2" />
                                         <MudMarkdown Value=@(String.IsNullOrEmpty(tab.Note.UpdatedContent) ? "Nothing to show." : tab.Note.UpdatedContent) />
                                     }
                                 </MudItem>
