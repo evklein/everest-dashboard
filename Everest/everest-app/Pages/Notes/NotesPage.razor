@@ -49,10 +49,10 @@
                                                    Size=@Size.Small
                                                    Style="float:right"
                                                    OnClick=@(() => openDeleteDialog(noteListItem.NoteId, noteListItem.NoteTitle)) />
-                                    @for (int i = 0; i <= (noteListItem.NoteTags.Count <= 2 ? noteListItem.NoteTags.Count - 1 : 1); i++)
+                                    @for (int i = 0; i <= noteListItem.NumberOfTagsToShow - 1; i++)
                                     {
                                         <MudChip Text=@noteListItem.NoteTags.ToList()[i].Name
-                                                 Style="@($"background-color:{noteListItem.NoteTags.ToList()[i].ColorHexadecimal} !important;")" />
+                                                 Style="@($"background-color:{noteListItem.NoteTags.ElementAt(i).ColorHexadecimal} !important;")" />
                                     }
                                 </MudListItem>
                             }
@@ -78,7 +78,7 @@
                         <MudTabPanel Tag=@tab.Note.Id>
                             <TabContent>
                                 <MudText Typo="Typo.body1">
-                                    @if (tab.Note.NoteHasChanged)
+                                    @if (tab.Note.NoteHasChanged())
                                     {
                                         <i>@tab.Note.UpdatedTitle*</i>
                                     }
@@ -129,7 +129,7 @@
                                         <MudButton Variant=@Variant.Filled
                                                    Color=@Color.Secondary
                                                    @onclick=@(() => saveNoteInTab(tab))
-                                                   Disabled=@(!tab.Note.NoteHasChanged || string.IsNullOrEmpty(tab.Note.UpdatedTitle))
+                                                   Disabled=@(!tab.Note.NoteHasChanged() || string.IsNullOrEmpty(tab.Note.UpdatedTitle))
                                                    Class="ma-2"
                                                    Style="float: right"
                                                    StartIcon=@Icons.Material.Filled.Save>
@@ -141,7 +141,7 @@
                                         }
                                     </MudItem>
                                     <MudItem xs="12">
-                                        <InlineTagEditor SelectedTags=@tab.Note.Tags />
+                                        <InlineTagEditor SelectedTags=@tab.Note.UpdatedTags ParentStateChanged=@StateHasChanged/>
                                     </MudItem>
                                 </MudGrid>
                                 <MudItem Class="pa-6">
@@ -197,7 +197,7 @@
             MudSnackbar.Add(notesListFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
         }
 
-        initializePageRequestTimer();
+        // initializePageRequestTimer();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -217,7 +217,7 @@
         {
             _tabs.ForEach(async tab =>
             {
-                if (tab.Note.NoteHasChanged && !string.IsNullOrEmpty(tab.Note.UpdatedTitle))
+                if (tab.Note.NoteHasChanged() && !string.IsNullOrEmpty(tab.Note.UpdatedTitle))
                 {
                     await InvokeAsync(() => saveNoteInTab(tab));
                 }

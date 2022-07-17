@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using everest_app.Data;
 using everest_app.Shared.Services.Queries.Notes;
 using everest_common.DataTransferObjects.Notes;
@@ -65,6 +66,7 @@ namespace everest_app.Shared.Services.Repository.Notes
                 {
                     note.UpdatedTitle = note.Title;
                     note.UpdatedContent = note.Content;
+                    note.UpdatedTags = copyTagList(note.Tags.ToList());
 
                     return new RepositoryResponseWrapper<Note>()
                     {
@@ -101,24 +103,8 @@ namespace everest_app.Shared.Services.Repository.Notes
         public async Task<RepositoryResponseWrapper<SaveNoteResponseDataTransferObject>> SaveNoteAsync(Note note)
         {
             var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-            note.LastModified = DateTime.UtcNow;
-            note.Title = note.UpdatedTitle;
-            note.Content = note.UpdatedContent;
-            note.OwnerId = currentUser.Id;
 
-            foreach (var tag in note.Tags)
-            {
-                if (tag.DateCreated == DateTime.MinValue)
-                {
-                    tag.OwnerId = currentUser.Id;
-                    tag.DateCreated = DateTime.UtcNow;
-
-                    _everestDbContext.Tags.Add(tag);
-                }
-            }
-            await _everestDbContext.SaveChangesAsync();
-
-            if (string.IsNullOrEmpty(note.Title))
+            if (string.IsNullOrEmpty(note.UpdatedTitle))
             {
                 return new RepositoryResponseWrapper<SaveNoteResponseDataTransferObject>()
                 {
@@ -132,6 +118,8 @@ namespace everest_app.Shared.Services.Repository.Notes
 
             try
             {
+                var syncedTagList = await addNewTags(note.UpdatedTags?.ToList() ?? new List<Tag>(), currentUser.Id);
+
                 var existingNote = await _everestDbContext.Notes.Where(n => n.Id == note.Id).SingleOrDefaultAsync();
 
                 if (existingNote is not null)
@@ -149,10 +137,16 @@ namespace everest_app.Shared.Services.Repository.Notes
                     }
                     existingNote.Title = note.UpdatedTitle;
                     existingNote.Content = note.UpdatedContent;
-                    existingNote.Tags = note.Tags;
+                    existingNote.Tags = syncedTagList;
+                    existingNote.LastModified = DateTime.UtcNow;
                 }
                 else
                 {
+                    note.Title = note.UpdatedTitle;
+                    note.Content = note.UpdatedContent;
+                    note.Tags = syncedTagList;
+                    note.OwnerId = currentUser.Id;
+                    note.LastModified = DateTime.UtcNow;
                     await _everestDbContext.Notes.AddAsync(note);
                 }
                 await _everestDbContext.SaveChangesAsync();
@@ -161,7 +155,7 @@ namespace everest_app.Shared.Services.Repository.Notes
                 {
                     Value = new SaveNoteResponseDataTransferObject()
                     {
-                        SavedNote = note,
+                        SavedNote = existingNote ?? note,
                         NoteListItems = await _noteQueries.GetNoteListItemsAsync(_everestDbContext, currentUser.Id),
                     },
                 };
@@ -230,6 +224,44 @@ namespace everest_app.Shared.Services.Repository.Notes
                     },
                 };
             }
+        }
+
+        private async Task<List<Tag>> addNewTags(List<Tag> tags, string ownerId)
+        {
+            List<Tag> tagListToReturn = new();
+            foreach (var tag in tags)
+            {
+                var existingTag = await _everestDbContext.Tags.FindAsync(tag.Id);
+                if (existingTag is null) // Add additional info for a brand-new tag.
+                {
+                    tag.OwnerId = ownerId;
+                    tag.DateCreated = DateTime.UtcNow;
+
+                    _everestDbContext.Tags.Add(tag);
+                }
+                else
+                {
+                    existingTag.ColorHexadecimal = tag.ColorHexadecimal;
+                }
+                tagListToReturn.Add(existingTag ?? tag);
+            }
+            await _everestDbContext.SaveChangesAsync();
+            return tagListToReturn;
+        }
+
+        private List<Tag> copyTagList(List<Tag> originalList)
+        {
+            List<Tag> freshList = new();
+            foreach (var originalTag in originalList)
+            {
+                Tag freshTag = new();
+                foreach (PropertyInfo property in typeof(Tag).GetProperties().Where(p => p.CanWrite))
+                {
+                    property.SetValue(freshTag, property.GetValue(originalTag));
+                }
+                freshList.Add(freshTag);
+            }
+            return freshList;
         }
     }
 }

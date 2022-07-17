@@ -48,8 +48,11 @@
 
 @code {
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public ICollection<Tag> SelectedTags { get; set; } = new List<Tag>();
+
+    [Parameter, EditorRequired]
+    public EventCallback ParentStateChanged { get; set; }
 
     private Tag _newPlaceholderTag = new Tag();
     private bool _isActivated = false;
@@ -85,20 +88,24 @@
             {
                 // TODO: Log/maybe throw an exception.
             }
+            await ParentStateChanged.InvokeAsync();
         }
     }
 
-    private void removeTagFromList(MudChip chip)
+    private async Task removeTagFromList(MudChip chip)
     {
         SelectedTags.Remove((Tag)chip.Tag);
+        await ParentStateChanged.InvokeAsync();
     }
 
     private async Task<IEnumerable<string>> searchTags(string searchValue)
     {
+        if (searchValue is null) searchValue = string.Empty;
+
         List<Tag> tagListToFilter = new List<Tag>();
         string parsedSearchValue = EmojiStringParser.ParseEmojisInText(searchValue);
 
-        RepositoryResponseWrapper<List<Tag>> tagFetchResponseWrapper = await TagRepository.ListTagsForUserWithExclusionsAndSearchValue(SelectedTags.ToList(), parsedSearchValue);
+        RepositoryResponseWrapper<List<Tag>> tagFetchResponseWrapper = await TagRepository.ListTagsForUserWithExclusionsAndSearchValue(SelectedTags?.ToList() ?? new List<Tag>(), parsedSearchValue);
         if (tagFetchResponseWrapper.Success)
         {
             tagListToFilter = tagFetchResponseWrapper.Value;
@@ -125,12 +132,13 @@
         return tagListToFilter.Select(t => t.Name).ToList();
     }
 
-    private void changeTagColor(Tag tag)
+    private async Task changeTagColor(Tag tag)
     {
         Random random = new Random();
         int newColor = random.Next(16777215);
         string hexedColorCode = $"#{newColor.ToString("X")}";
         tag.ColorHexadecimal = hexedColorCode;
+        await ParentStateChanged.InvokeAsync();
     }
 }
 
