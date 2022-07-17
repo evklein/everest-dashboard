@@ -14,7 +14,7 @@ namespace everest_app.Shared.UI.Themes
                 White = Colors.Shades.White,
                 Primary = "#50abd6",
                 PrimaryContrastText = Colors.Grey.Darken3,
-                Secondary = new MudBlazor.Utilities.MudColor("#00c2a2"),
+                Secondary = "00c2a2",
                 SecondaryContrastText = Colors.Grey.Darken3,
                 Tertiary = "#D67A50",
                 TertiaryContrastText = Colors.Grey.Darken3,

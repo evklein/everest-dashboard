@@ -1,6 +1,6 @@
 @page "/Notes"
+@inject IDialogService DialogService
 @inject INotesRepository NotesRepository
-@inject ITagRepository TagRepository 
 @inject ISnackbar MudSnackbar
 
 @using System.Linq
@@ -26,32 +26,33 @@
                              Style="height:70vh;"
                              Class="pt-0 mr-3 overflow-auto">
                         <MudList Clickable=true>
-                            @foreach (var note in _notes.Where(n => n.Title.Contains(_fileSearchValue, StringComparison.InvariantCultureIgnoreCase)))
+                            @foreach (var noteListItem in _noteListItems.Where(n => n.NoteTitle.Contains(_fileSearchValue, StringComparison.InvariantCultureIgnoreCase)))
                             {
                                 <MudListItem Dense=true
-                                             OnClick=@(() => addNoteTab(note))>
-                                    @if (noteIsOpen(note))
+                                             OnClick=@(() => addNoteTab(noteListItem.NoteId))>
+                                    @if (noteIsOpen(noteListItem.NoteId))
                                     {
                                         <MudIcon Class="pr-2"
                                                  Icon=@Icons.Material.Filled.FileOpen
-                                                 Color=@(note.NoteHasChanged ? Color.Secondary : Color.Primary) />
+                                                 Color=@Color.Secondary />
                                     }
                                     else
                                     {
                                         <MudIcon Class="pr-2"
                                                  Icon=@Icons.Material.Filled.Feed
-                                                 Color=@(note.NoteHasChanged ? Color.Secondary : Color.Primary) />
+                                                 Color=@Color.Primary />
                                     }
 
-                                    @note.Title
+                                    @noteListItem.NoteTitle
                                     <MudIconButton Icon=@Icons.Material.Filled.Delete
                                                    Color=@Color.Error
                                                    Size=@Size.Small
                                                    Style="float:right"
-                                                   OnClick=@(() => deleteNote(note)) />
-                                    @for (int i = 0; i <= (note.Tags.Count <= 2 ? note.Tags.Count - 1 : 1); i++)
+                                                   OnClick=@(() => openDeleteDialog(noteListItem.NoteId, noteListItem.NoteTitle)) />
+                                    @for (int i = 0; i <= noteListItem.NumberOfTagsToShow - 1; i++)
                                     {
-                                        <MudChip Text=@note.Tags.ToList()[i].Name Style="@($"background-color:{note.Tags.ToList()[i].ColorHexadecimal} !important;")"></MudChip>
+                                        <MudChip Text=@noteListItem.NoteTags.ToList()[i].Name
+                                                 Style="@($"background-color:{noteListItem.NoteTags.ElementAt(i).ColorHexadecimal} !important;")" />
                                     }
                                 </MudListItem>
                             }
@@ -69,16 +70,15 @@
                                 ApplyEffectsToContainer=true
                                 @bind-ActivePanelIndex=@_latestTabIndex
                                 AddTab=@addNewNoteTab
-                                CloseTab=@((panel) => closeNoteTab(panel))
+                                CloseTab=@((panel) => closeNoteTab((Guid) panel.Tag))
                                 AddIconToolTip="Click here to add a new tab"
-                                addico
                                 CloseIconToolTip="Close this tab. All data will be lost">
                     @foreach (NoteTab tab in _tabs)
                     {
                         <MudTabPanel Tag=@tab.Note.Id>
                             <TabContent>
                                 <MudText Typo="Typo.body1">
-                                    @if (tab.Note.NoteHasChanged)
+                                    @if (tab.Note.NoteHasChanged())
                                     {
                                         <i>@tab.Note.UpdatedTitle*</i>
                                     }
@@ -116,6 +116,12 @@
                                                        Variant=@Variant.Filled>
                                                 Outline
                                             </MudButton>
+                                            <MudButton @onclick=@(() => tab.NoteView = NoteViewEnum.Split)
+                                                       Disabled=@(tab.NoteView == NoteViewEnum.Split)
+                                                       StartIcon=@Icons.Filled.VerticalSplit
+                                                       Variant=@Variant.Filled>
+                                                Split
+                                            </MudButton>
                                             <MudButton @onclick=@(() => tab.NoteView = NoteViewEnum.Markdown)
                                                        Disabled=@(tab.NoteView == NoteViewEnum.Markdown)
                                                        StartIcon=@Icons.Material.Filled.RemoveRedEye
@@ -128,29 +134,51 @@
                                              Class="mt-4">
                                         <MudButton Variant=@Variant.Filled
                                                    Color=@Color.Secondary
-                                                   @onclick=@(() => saveNote(tab.Note))
-                                                   Disabled=@(!tab.Note.NoteHasChanged || string.IsNullOrEmpty(tab.Note.UpdatedTitle))
+                                                   @onclick=@(() => saveNoteInTab(tab))
+                                                   Disabled=@(!tab.Note.NoteHasChanged() || string.IsNullOrEmpty(tab.Note.UpdatedTitle))
                                                    Class="ma-2"
                                                    Style="float: right"
                                                    StartIcon=@Icons.Material.Filled.Save>
                                             Save
                                         </MudButton>
+                                        @if (tab.Loading)
+                                        {
+                                            <MudProgressCircular Class="ma-3" Style="float: right" Color="Color.Secondary" Size="Size.Small" Indeterminate="true" />
+                                        }
                                     </MudItem>
                                     <MudItem xs="12">
-                                        <TagCreator Tags=@_availableTags SelectedTags=@tab.Note.Tags />
+                                        <InlineTagEditor SelectedTags=@tab.Note.UpdatedTags ParentStateChanged=@StateHasChanged/>
                                     </MudItem>
                                 </MudGrid>
                                 <MudItem Class="pa-6">
                                     @if (tab.NoteView == NoteViewEnum.Outline)
                                     {
                                         <MudTextField Immediate=true
-                                                      Label="Markdown"
+                                                      Label="Outline"
                                                       Variant=@Variant.Outlined
                                                       @bind-Value=@tab.Note.UpdatedContent
                                                       Lines=27 />
                                     }
+                                    @if (tab.NoteView == NoteViewEnum.Split)
+                                    {
+                                        <MudItem xs="12">
+                                            <MudGrid Spacing="1">
+                                                <MudItem xs="6">
+                                                    <MudTextField Immediate=true
+                                                                  Label="Outline"
+                                                                  Variant=@Variant.Outlined
+                                                                  @bind-Value=@tab.Note.UpdatedContent
+                                                                  Lines=27 />
+                                                </MudItem>
+                                                <MudItem xs="6" Style="border: 1px solid #cccccc; border-radius: 5px; margin-top: 10px;" Class="pa-3 mb-1">
+                                                    <MudMarkdown Value=@(String.IsNullOrEmpty(tab.Note.UpdatedContent) ? "Nothing to show." : tab.Note.UpdatedContent) />
+                                                </MudItem>
+                                            </MudGrid>
+                                        </MudItem>
+                                    }
                                     @if (tab.NoteView == NoteViewEnum.Markdown)
                                     {
+                                        <MudDivider Class="mb-2" />
                                         <MudMarkdown Value=@(String.IsNullOrEmpty(tab.Note.UpdatedContent) ? "Nothing to show." : tab.Note.UpdatedContent) />
                                     }
                                 </MudItem>
@@ -164,8 +192,7 @@
                 <MudButton @onclick=addNewNoteTab
                            StartIcon=@Icons.Material.Filled.Create
                            Variant=@Variant.Filled
-                           Color=@Color.Primary
-                >
+                           Color=@Color.Primary>
                     Start new note
                 </MudButton>
             }
@@ -178,31 +205,23 @@
     private string _fileSearchValue = string.Empty;
     private int _latestTabIndex = 0;
     private bool _indexChanged = false;
-    private List<Note> _notes = new();
+
+    private List<NoteListItem> _noteListItems = new();
     private List<NoteTab> _tabs = new();
-    private List<Tag> _availableTags = new();
 
     protected override async Task OnInitializedAsync()
     {
-        RepositoryResponseWrapper<List<Note>> notesFetchResponseWrapper = await NotesRepository.ListNotes();
-        if (notesFetchResponseWrapper.Success)
+        RepositoryResponseWrapper<List<NoteListItem>> notesListFetchResponseWrapper = await NotesRepository.ListNotes();
+        if (notesListFetchResponseWrapper.Success)
         {
-            _notes = notesFetchResponseWrapper.Value;
+            _noteListItems = notesListFetchResponseWrapper.Value;
         }
         else
         {
-            MudSnackbar.Add(notesFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
+            MudSnackbar.Add(notesListFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
         }
 
-        RepositoryResponseWrapper<List<Tag>> tagsFetchResponseWrapper = await TagRepository.ListTagsForUser();
-        if (tagsFetchResponseWrapper.Success)
-        {
-            _availableTags = tagsFetchResponseWrapper.Value;
-        }
-        else
-        {
-            MudSnackbar.Add(notesFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
-        }
+        // initializePageRequestTimer();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -215,12 +234,27 @@
         }
     }
 
+    private void initializePageRequestTimer()
+    {
+        int _autoSaveInterval = 90_000;
+        System.Threading.Timer timer = new System.Threading.Timer(async (object? stateInfo) =>
+        {
+            _tabs.ForEach(async tab =>
+            {
+                if (tab.Note.NoteHasChanged() && !string.IsNullOrEmpty(tab.Note.UpdatedTitle))
+                {
+                    await InvokeAsync(() => saveNoteInTab(tab));
+                }
+            });
+        }, new System.Threading.AutoResetEvent(false), _autoSaveInterval, _autoSaveInterval);
+    }
+
     #region Tab Behaviors
-    private bool noteIsOpen(Note note)
+    private bool noteIsOpen(Guid noteId)
     {
         try
         {
-            var tabWithSpecifiedNote = _tabs.Where(tab => tab.Note.Id == note.Id).SingleOrDefault();
+            var tabWithSpecifiedNote = _tabs.Where(tab => tab.Note.Id == noteId).SingleOrDefault();
             return tabWithSpecifiedNote is not null;
         }
         catch (Exception ex)
@@ -235,51 +269,16 @@
         doCommonTabAddLogic(newTab);
     }
 
-    private void addNoteTab(Note note)
+    private async void addNoteTab(Guid noteId)
     {
-        var newTab = new NoteTab(note);
-        if (noteIsOpen(note)) return;
-        doCommonTabAddLogic(newTab);
-    }
+        if (noteIsOpen(noteId)) return;
 
-    private void doCommonTabAddLogic(NoteTab tab)
-    {
-        _tabs.Add(tab);
-        _indexChanged = true;
-    }
-
-    private void closeNoteTab(MudTabPanel panel)
-    {
-        var tabView = _tabs.FirstOrDefault(tv => tv.Note.Id == (Guid)panel.Tag);
-        var tabNote = _notes.FirstOrDefault(n => n.Id == (Guid)panel.Tag);
-
-        if (tabNote is not null) tabNote.ResetToLastSavedState(); // Note is new and has not been saved, so does not exist in global notes list.
-        if (tabView is not null) _tabs.Remove(tabView);
-
-        StateHasChanged();
-    }
-
-    private void closeNoteTab(Note note)
-    {
-        var tabView = _tabs.FirstOrDefault(x => x.Note.Id == note.Id);
-        if (tabView is not null)
-        {
-            _tabs.Remove(tabView);
-        }
-    }
-    #endregion
-
-    #region Page requests
-    private async void saveNote(Note note)
-    {
-        RepositoryResponseWrapper<List<Note>> responseWrapper = await NotesRepository.SaveNoteAsync(note);
+        RepositoryResponseWrapper<Note> responseWrapper = await NotesRepository.GetNoteDetailsAsync(noteId);
         if (responseWrapper.Success)
         {
-            _notes = responseWrapper.Value;
-            var updatedNote = _notes.FirstOrDefault(n => n.Id == note.Id);
-            var selectedTab = _tabs.FirstOrDefault(t => t.Note.Id == note.Id);
-            if (selectedTab is not null && updatedNote is not null) selectedTab.Note = updatedNote;
-            StateHasChanged();
+            var note = responseWrapper.Value;
+            var newTab = new NoteTab(note);
+            doCommonTabAddLogic(newTab);
         }
         else
         {
@@ -287,13 +286,69 @@
         }
     }
 
-    private async void deleteNote(Note note)
+    private void doCommonTabAddLogic(NoteTab tab)
     {
-        RepositoryResponseWrapper<List<Note>> responseWrapper = await NotesRepository.DeleteNoteAsync(note);
+        _tabs.Add(tab);
+        _indexChanged = true;
+        StateHasChanged();
+    }
+
+    private void closeNoteTab(Guid noteId)
+    {
+        var tabView = _tabs.FirstOrDefault(x => x.Note.Id == noteId);
+        if (tabView is not null)
+        {
+            _tabs.Remove(tabView);
+        }
+
+        StateHasChanged(); // TODO: Is this necessary???
+    }
+    #endregion
+
+    #region Page requests
+    private async Task saveNoteInTab(NoteTab noteTab)
+    {
+        noteTab.Loading = true;
+        StateHasChanged();
+
+        RepositoryResponseWrapper<SaveNoteResponseDataTransferObject> responseWrapper = await NotesRepository.SaveNoteAsync(noteTab.Note);
         if (responseWrapper.Success)
         {
-            closeNoteTab(note);
-            _notes = responseWrapper.Value;
+            SaveNoteResponseDataTransferObject responseObject = responseWrapper.Value;
+            _noteListItems = responseObject.NoteListItems;
+
+            var updatedNote = _noteListItems.FirstOrDefault(nli => nli.NoteId == noteTab.Note.Id);
+            var selectedTab = _tabs.FirstOrDefault(t => t.Note.Id == noteTab.Note.Id);
+            if (selectedTab is not null && updatedNote is not null) selectedTab.Note = responseObject.SavedNote;
+        }
+        else
+        {
+            MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
+
+        noteTab.Loading = false;
+        StateHasChanged();
+    }
+
+    private async Task openDeleteDialog(Guid noteId, string noteTitle)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("NoteTitle", noteTitle);
+        var dialogResult = await DialogService.Show<DeleteNoteDialog>("Delete Note", parameters).Result;
+
+        if (!dialogResult.Cancelled)
+        {
+            await deleteNote(noteId);
+        }
+    }
+
+    private async Task deleteNote(Guid noteId)
+    {
+        RepositoryResponseWrapper<List<NoteListItem>> responseWrapper = await NotesRepository.DeleteNoteAsync(noteId);
+        if (responseWrapper.Success)
+        {
+            closeNoteTab(noteId);
+            _noteListItems = responseWrapper.Value;
             StateHasChanged();
         }
         else

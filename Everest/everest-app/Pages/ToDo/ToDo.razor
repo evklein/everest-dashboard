@@ -48,35 +48,30 @@
         {
             <MudItem xs="10">
                 <MudPaper Elevation="2">
-                    <MudCheckBox
-                        T="string"
-                        Label=@toDoItem.Name
-                        Checked="@toDoItem.Complete.ToString()"
-                        CheckedChanged=@(() => updateToDoItem(toDoItem))
-                        Color=@Color.Primary
-                    />
-                    <MudIconButton
-                        Icon=@Icons.Material.Filled.Delete
-                        Color=@Color.Error
-                        Size=@Size.Small
-                        Style="float:right;"
-                        OnClick=@(() => deleteToDoItem(toDoItem))
-                        Class="mt-3 mr-2"
-                    />
-                    @if (toDoItem.Complete)
-                    {
-                        <MudChip
-                            Class="mt-3"
-                            Style="float:right;"
-                            Icon=@Icons.Filled.Check
-                            IconColor=@Color.Success
-                            Label="true"
-                            Color=@Color.Default
-                        >
-                            Completed on @toDoItem.DateCompleted.ToShortDateString()
-                        </MudChip>
-                    }
-
+                    <MudCheckBox T="string"
+                                 Checked="@toDoItem.Complete.ToString()"
+                                 CheckedChanged=@(() => updateToDoItem(toDoItem))
+                                 Color=@Color.Primary
+                                 Style="width: 93%;">
+                        <MudText Typo="Typo.body1" Class="mt-2" Style="display: inline-flex;">
+                            @toDoItem.Name
+                            <MudItem Style="float: right; display: inline-flex; margin-top: -8px;">
+                                @if (toDoItem.Complete)
+                                {
+                                    <MudChip Icon=@Icons.Filled.Check
+                                             IconColor=@Color.Success
+                                             Label="true"
+                                             Color=@Color.Default>
+                                        Completed on @toDoItem.DateCompleted.ToShortDateString()
+                                    </MudChip>
+                                }
+                            </MudItem>
+                        </MudText>
+                    </MudCheckBox>
+                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" Style="float: right;">
+                        <MudMenuItem>Edit</MudMenuItem>
+                        <MudMenuItem Style="color: #b73a27" OnClick=@(() => deleteToDoItem(toDoItem))>Delete</MudMenuItem>
+                    </MudMenu>
                 </MudPaper>
             </MudItem>
         }

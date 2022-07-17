@@ -48,6 +48,8 @@
     <None Remove="Shared\UI\Components\Tags\" />
     <None Remove="Shared\Services\Repository\Tag\" />
     <None Remove="Shared\UI\Emoji\" />
+    <None Remove="Shared\Services\Queries\" />
+    <None Remove="Shared\Services\Queries\Notes\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\Notes\" />
@@ -63,6 +65,8 @@
     <Folder Include="Shared\UI\Components\Tags\" />
     <Folder Include="Shared\Services\Repository\Tags\" />
     <Folder Include="Shared\UI\Emoji\" />
+    <Folder Include="Shared\Services\Queries\" />
+    <Folder Include="Shared\Services\Queries\Notes\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\Fonts\" />

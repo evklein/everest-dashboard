@@ -24,10 +24,10 @@ namespace everest_app.Shared.UI.Emoji
                     var newEmoji = Emojis[rawEmojiSubstring];
                     parsedText = parsedText.Replace(rawEmojiSubstring, newEmoji);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // Emoji not found.
-                    continue;
+                    break;
                 }
             }
 
