@@ -2,6 +2,7 @@
 using System.Reflection;
 using everest_app.Data;
 using everest_app.Shared.Services.Queries.Notes;
+using everest_app.Shared.Services.Repository.Tags;
 using everest_common.DataTransferObjects.Notes;
 using everest_common.Models;
 using Microsoft.AspNetCore.Identity;
@@ -14,13 +15,15 @@ namespace everest_app.Shared.Services.Repository.Notes
         private readonly ApplicationDbContext _everestDbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ITagRepository _tagRepository;
         private readonly NoteQueries _noteQueries;
 
-        public NotesRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager)
+        public NotesRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager, ITagRepository tagRepository)
         {
             _everestDbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
+            _tagRepository = tagRepository;
 
             _noteQueries = new NoteQueries(); // TODO: Consider making this an injectable service.
         }
@@ -118,7 +121,7 @@ namespace everest_app.Shared.Services.Repository.Notes
 
             try
             {
-                var syncedTagList = await addNewTags(note.UpdatedTags?.ToList() ?? new List<Tag>(), currentUser.Id);
+                var syncedTagList = await _tagRepository.AddNewTags(note.UpdatedTags?.ToList() ?? new List<Tag>());
 
                 var existingNote = await _everestDbContext.Notes.Where(n => n.Id == note.Id).SingleOrDefaultAsync();
 
@@ -224,29 +227,6 @@ namespace everest_app.Shared.Services.Repository.Notes
                     },
                 };
             }
-        }
-
-        private async Task<List<Tag>> addNewTags(List<Tag> tags, string ownerId)
-        {
-            List<Tag> tagListToReturn = new();
-            foreach (var tag in tags)
-            {
-                var existingTag = await _everestDbContext.Tags.FindAsync(tag.Id);
-                if (existingTag is null) // Add additional info for a brand-new tag.
-                {
-                    tag.OwnerId = ownerId;
-                    tag.DateCreated = DateTime.UtcNow;
-
-                    _everestDbContext.Tags.Add(tag);
-                }
-                else
-                {
-                    existingTag.ColorHexadecimal = tag.ColorHexadecimal;
-                }
-                tagListToReturn.Add(existingTag ?? tag);
-            }
-            await _everestDbContext.SaveChangesAsync();
-            return tagListToReturn;
         }
 
         private List<Tag> copyTagList(List<Tag> originalList)

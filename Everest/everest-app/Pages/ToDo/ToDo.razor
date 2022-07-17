@@ -51,8 +51,8 @@
             <MudItem xs="10" Class=@(_showTags ? "mb-9" : "")>
                 <MudPaper Elevation="2">
                     <MudCheckBox T="string"
-                                 Checked="@toDoItem.Complete.ToString()"
-                                 CheckedChanged=@(() => updateToDoItem(toDoItem))
+                                 Checked=@toDoItem.Complete.ToString()
+                                 CheckedChanged=@(() => toggleCompletionOfToDoItem(toDoItem))
                                  Color=@Color.Primary
                                  Style="width: 93%;">
                         <MudText Typo="Typo.body1" Class="mt-2" Style="display: inline-flex;">
@@ -76,7 +76,7 @@
                     </MudMenu>
                     @if (_showTags)
                     {
-                        <InlineTagEditor ParentStateChanged=@StateHasChanged SelectedTags=@tags />
+                        <InlineTagEditor ParentStateChanged=@(() => updateItemAfterTagUpdate(toDoItem)) SelectedTags=@toDoItem.Tags />
                     }
                 </MudPaper>
             </MudItem>
@@ -142,9 +142,14 @@
         }
     }
 
-    private async Task updateToDoItem(ToDoItem toDoItem)
+    private async Task toggleCompletionOfToDoItem(ToDoItem toDoItem)
     {
         toDoItem.Complete = !toDoItem.Complete;
+        await updateToDoItem(toDoItem);
+    }
+
+    private async Task updateToDoItem(ToDoItem toDoItem)
+    {
         RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = await ToDoRepository.SaveToDoItem(toDoItem, _selectedDisplayPolicy);
         if (responseWrapper.Success)
         {
@@ -169,6 +174,12 @@
         {
             MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
         }
+    }
+
+    private async Task updateItemAfterTagUpdate(ToDoItem toDoItem)
+    {
+        await updateToDoItem(toDoItem);
+        StateHasChanged();
     }
 }
 
