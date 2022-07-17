@@ -19,6 +19,7 @@ namespace everest_common.Models
         public IdentityUser Owner { get; set; }
 
         public virtual ICollection<Note> Note { get; set; }
+        public virtual ICollection<ToDoItem> ToDoItems { get; set; }
     }
 }
 

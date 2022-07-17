@@ -1,26 +1,27 @@
 ﻿@page "/ToDo"
+@inject IDialogService DialogService
 @inject IToDoRepository ToDoRepository
 @inject ISnackbar MudSnackbar
- 
+
 <MudContainer MaxWidth=@MaxWidth.Medium>
     <MudGrid Spacing="2">
         <MudItem xs="4">
-            <MudCheckBox
-                @bind-Checked=@_showCompletedItems
-                Label="Show completed tasks"
-                Dense="true"
-                Color=@Color.Secondary
-            />
+            <MudCheckBox @bind-Checked=@_showCompletedItems
+                         Label="Show completed tasks"
+                         Dense="true"
+                         Color=@Color.Secondary />
+            <MudCheckBox @bind-Checked=@_showTags
+                         Label="Show tags"
+                         Dense="true"
+                         Color=@Color.Secondary />
         </MudItem>
         <MudItem xs="6">
-            <MudSelect
-                @bind-Value=@_selectedDisplayPolicy
-                Label="Show tasks completed in last..."
-                Placeholder="Select value"
-                AdornmentIcon=@Icons.Filled.CalendarMonth
-                Variant="Variant.Outlined"
-                Dense="true"
-            >
+            <MudSelect @bind-Value=@_selectedDisplayPolicy
+                       Label="Show tasks completed in last..."
+                       Placeholder="Select value"
+                       AdornmentIcon=@Icons.Filled.CalendarMonth
+                       Variant="Variant.Outlined"
+                       Dense="true">
                 <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneDay>Day</MudSelectItem>
                 <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.ThreeDays>Three days</MudSelectItem>
                 <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneWeek>Week</MudSelectItem>
@@ -30,27 +31,25 @@
             </MudSelect>
         </MudItem>
         <MudItem xs="10">
-            <MudTextField
-                @key="_textFieldKey"
-                AdornmentIcon=@Icons.Filled.Checklist
-                AdornmentColor=@Color.Primary
-                Adornment=@Adornment.Start
-                Label="Enter a task"
-                Class="pa-2"
-                @bind-Value=_newToDoItemName
-                OnKeyDown=@createNewToDoItem
-                Immediate="true"
-                Variant=@Variant.Outlined
-                AutoFocus="true"
-             />
+            <MudTextField @key="_textFieldKey"
+                          AdornmentIcon=@Icons.Filled.Checklist
+                          AdornmentColor=@Color.Primary
+                          Adornment=@Adornment.Start
+                          Label="Enter a task"
+                          Class="pa-2"
+                          @bind-Value=_newToDoItemName
+                          OnKeyDown=@createNewToDoItem
+                          Immediate="true"
+                          Variant=@Variant.Outlined
+                          AutoFocus="true" />
         </MudItem>
         @foreach (var toDoItem in _filteredtoDoItems)
         {
-            <MudItem xs="10">
+            <MudItem xs="10" Class=@(_showTags ? "mb-9" : "")>
                 <MudPaper Elevation="2">
                     <MudCheckBox T="string"
-                                 Checked="@toDoItem.Complete.ToString()"
-                                 CheckedChanged=@(() => updateToDoItem(toDoItem))
+                                 Checked=@toDoItem.Complete.ToString()
+                                 CheckedChanged=@(() => toggleCompletionOfToDoItem(toDoItem))
                                  Color=@Color.Primary
                                  Style="width: 93%;">
                         <MudText Typo="Typo.body1" Class="mt-2" Style="display: inline-flex;">
@@ -69,9 +68,13 @@
                         </MudText>
                     </MudCheckBox>
                     <MudMenu Icon="@Icons.Material.Filled.MoreVert" Style="float: right;">
-                        <MudMenuItem>Edit</MudMenuItem>
+                        <MudMenuItem OnClick=@(() => openRenameDialog(toDoItem))>Edit</MudMenuItem>
                         <MudMenuItem Style="color: #b73a27" OnClick=@(() => deleteToDoItem(toDoItem))>Delete</MudMenuItem>
                     </MudMenu>
+                    @if (_showTags)
+                    {
+                        <InlineTagEditor ParentStateChanged=@(() => updateItemAfterTagUpdate(toDoItem)) SelectedTags=@toDoItem.Tags />
+                    }
                 </MudPaper>
             </MudItem>
         }
@@ -81,11 +84,13 @@
 @code
 {
     private bool _showCompletedItems = true;
+    private bool _showTags = true;
     private ToDoHistoricalDisplayPolicy _selectedDisplayPolicy = ToDoHistoricalDisplayPolicy.OneWeek;
     private string _newToDoItemName = string.Empty;
     private List<ToDoItem> _toDoItems = new();
     private int _textFieldKey = 0;
     private List<ToDoItem> _filteredtoDoItems => _showCompletedItems ? _toDoItems : _toDoItems.Where(t => !t.Complete).ToList();
+    private List<Tag> tags = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -134,9 +139,14 @@
         }
     }
 
-    private async Task updateToDoItem(ToDoItem toDoItem)
+    private async Task toggleCompletionOfToDoItem(ToDoItem toDoItem)
     {
         toDoItem.Complete = !toDoItem.Complete;
+        await updateToDoItem(toDoItem);
+    }
+
+    private async Task updateToDoItem(ToDoItem toDoItem)
+    {
         RepositoryResponseWrapper<List<ToDoItem>> responseWrapper = await ToDoRepository.SaveToDoItem(toDoItem, _selectedDisplayPolicy);
         if (responseWrapper.Success)
         {
@@ -161,6 +171,24 @@
         {
             MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
         }
+    }
+
+    private async Task openRenameDialog(ToDoItem toDoItem)
+    {
+        var dialogOptions = new DialogOptions { MaxWidth = MaxWidth.Large };
+        var dialogResult = await DialogService.Show<ToDoItemRenameDialog>("Edit Task", dialogOptions).Result;
+
+        if (!dialogResult.Cancelled)
+        {
+            toDoItem.Name = dialogResult.Data.ToString();
+            await updateToDoItem(toDoItem);
+        }
+    }
+
+    private async Task updateItemAfterTagUpdate(ToDoItem toDoItem)
+    {
+        await updateToDoItem(toDoItem);
+        StateHasChanged();
     }
 }
 
