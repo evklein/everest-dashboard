@@ -64,7 +64,7 @@ namespace everest_app.Shared.Services.Repository.Notes
                 if (note is not null)
                 {
                     note.UpdatedTitle = note.Title;
-                    note.UpdatedContent = note.UpdatedContent;
+                    note.UpdatedContent = note.Content;
 
                     return new RepositoryResponseWrapper<Note>()
                     {

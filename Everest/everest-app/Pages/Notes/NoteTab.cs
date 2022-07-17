@@ -7,6 +7,7 @@ public class NoteTab
 {
 	public Note Note { get; set; }
 	public NoteViewEnum NoteView { get; set; } = NoteViewEnum.Outline;
+	public bool Loading { get; set; } = false;
 
 	public NoteTab(Note note)
 	{

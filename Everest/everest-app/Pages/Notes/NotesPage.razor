@@ -128,13 +128,17 @@
                                              Class="mt-4">
                                         <MudButton Variant=@Variant.Filled
                                                    Color=@Color.Secondary
-                                                   @onclick=@(() => saveNote(tab.Note))
+                                                   @onclick=@(() => saveNoteInTab(tab))
                                                    Disabled=@(!tab.Note.NoteHasChanged || string.IsNullOrEmpty(tab.Note.UpdatedTitle))
                                                    Class="ma-2"
                                                    Style="float: right"
                                                    StartIcon=@Icons.Material.Filled.Save>
                                             Save
                                         </MudButton>
+                                        @if (tab.Loading)
+                                        {
+                                            <MudProgressCircular Class="ma-3" Style="float: right" Color="Color.Secondary" Size="Size.Small" Indeterminate="true" />
+                                        }
                                     </MudItem>
                                     <MudItem xs="12">
                                         <InlineTagEditor SelectedTags=@tab.Note.Tags />
@@ -193,6 +197,8 @@
         {
             MudSnackbar.Add(notesListFetchResponseWrapper?.Error?.ErrorMessage, Severity.Error);
         }
+
+        initializePageRequestTimer();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -203,6 +209,21 @@
             StateHasChanged();
             _indexChanged = false;
         }
+    }
+
+    private void initializePageRequestTimer()
+    {
+        int _autoSaveInterval = 90_000;
+        System.Threading.Timer timer = new System.Threading.Timer(async (object? stateInfo) =>
+        {
+            _tabs.ForEach(async tab =>
+            {
+                if (tab.Note.NoteHasChanged && !string.IsNullOrEmpty(tab.Note.UpdatedTitle))
+                {
+                    await InvokeAsync(() => saveNoteInTab(tab));
+                }
+            });
+        }, new System.Threading.AutoResetEvent(false), _autoSaveInterval, _autoSaveInterval);
     }
 
     #region Tab Behaviors
@@ -262,23 +283,28 @@
     #endregion
 
     #region Page requests
-    private async void saveNote(Note note)
+    private async Task saveNoteInTab(NoteTab noteTab)
     {
-        RepositoryResponseWrapper<SaveNoteResponseDataTransferObject> responseWrapper = await NotesRepository.SaveNoteAsync(note);
+        noteTab.Loading = true;
+        StateHasChanged();
+
+        RepositoryResponseWrapper<SaveNoteResponseDataTransferObject> responseWrapper = await NotesRepository.SaveNoteAsync(noteTab.Note);
         if (responseWrapper.Success)
         {
             SaveNoteResponseDataTransferObject responseObject = responseWrapper.Value;
             _noteListItems = responseObject.NoteListItems;
 
-            var updatedNote = _noteListItems.FirstOrDefault(nli => nli.NoteId == note.Id);
-            var selectedTab = _tabs.FirstOrDefault(t => t.Note.Id == note.Id);
+            var updatedNote = _noteListItems.FirstOrDefault(nli => nli.NoteId == noteTab.Note.Id);
+            var selectedTab = _tabs.FirstOrDefault(t => t.Note.Id == noteTab.Note.Id);
             if (selectedTab is not null && updatedNote is not null) selectedTab.Note = responseObject.SavedNote;
-            StateHasChanged();
         }
         else
         {
             MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
         }
+
+        noteTab.Loading = false;
+        StateHasChanged();
     }
 
     private async void deleteNote(Guid noteId)
