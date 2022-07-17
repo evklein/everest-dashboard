@@ -23,6 +23,8 @@ namespace everest_common.Models
         public string OwnerId { get; set; }
         public IdentityUser Owner { get; set; }
 
+        public virtual ICollection<Tag> Tags { get; set; }
+
         public ToDoItem()
         {
 
