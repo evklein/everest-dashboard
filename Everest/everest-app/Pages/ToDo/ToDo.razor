@@ -5,12 +5,14 @@
 <MudContainer MaxWidth=@MaxWidth.Medium>
     <MudGrid Spacing="2">
         <MudItem xs="4">
-            <MudCheckBox
-                @bind-Checked=@_showCompletedItems
-                Label="Show completed tasks"
-                Dense="true"
-                Color=@Color.Secondary
-            />
+            <MudCheckBox @bind-Checked=@_showCompletedItems
+                         Label="Show completed tasks"
+                         Dense="true"
+                         Color=@Color.Secondary />
+            <MudCheckBox @bind-Checked=@_showTags
+                         Label="Show tags"
+                         Dense="true"
+                         Color=@Color.Secondary />
         </MudItem>
         <MudItem xs="6">
             <MudSelect
@@ -46,7 +48,7 @@
         </MudItem>
         @foreach (var toDoItem in _filteredtoDoItems)
         {
-            <MudItem xs="10">
+            <MudItem xs="10" Class=@(_showTags ? "mb-9" : "")>
                 <MudPaper Elevation="2">
                     <MudCheckBox T="string"
                                  Checked="@toDoItem.Complete.ToString()"
@@ -72,6 +74,10 @@
                         <MudMenuItem>Edit</MudMenuItem>
                         <MudMenuItem Style="color: #b73a27" OnClick=@(() => deleteToDoItem(toDoItem))>Delete</MudMenuItem>
                     </MudMenu>
+                    @if (_showTags)
+                    {
+                        <InlineTagEditor ParentStateChanged=@StateHasChanged SelectedTags=@tags />
+                    }
                 </MudPaper>
             </MudItem>
         }
@@ -81,11 +87,13 @@
 @code
 {
     private bool _showCompletedItems = true;
+    private bool _showTags = true;
     private ToDoHistoricalDisplayPolicy _selectedDisplayPolicy = ToDoHistoricalDisplayPolicy.OneWeek;
     private string _newToDoItemName = string.Empty;
     private List<ToDoItem> _toDoItems = new();
     private int _textFieldKey = 0;
     private List<ToDoItem> _filteredtoDoItems => _showCompletedItems ? _toDoItems : _toDoItems.Where(t => !t.Complete).ToList();
+    private List<Tag> tags = new();
 
     protected override async Task OnInitializedAsync()
     {
