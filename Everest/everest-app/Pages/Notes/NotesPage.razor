@@ -1,4 +1,5 @@
 @page "/Notes"
+@inject IDialogService DialogService
 @inject INotesRepository NotesRepository
 @inject ISnackbar MudSnackbar
 
@@ -31,9 +32,9 @@
                                              OnClick=@(() => addNoteTab(noteListItem.NoteId))>
                                     @if (noteIsOpen(noteListItem.NoteId))
                                     {
-                                    <MudIcon Class="pr-2"
-                                             Icon=@Icons.Material.Filled.FileOpen
-                                             Color=@Color.Secondary />
+                                        <MudIcon Class="pr-2"
+                                                 Icon=@Icons.Material.Filled.FileOpen
+                                                 Color=@Color.Secondary />
                                     }
                                     else
                                     {
@@ -47,12 +48,11 @@
                                                    Color=@Color.Error
                                                    Size=@Size.Small
                                                    Style="float:right"
-                                                   OnClick=@(() => deleteNote(noteListItem.NoteId)) />
+                                                   OnClick=@(() => openDeleteDialog(noteListItem.NoteId, noteListItem.NoteTitle)) />
                                     @for (int i = 0; i <= (noteListItem.NoteTags.Count <= 2 ? noteListItem.NoteTags.Count - 1 : 1); i++)
                                     {
                                         <MudChip Text=@noteListItem.NoteTags.ToList()[i].Name
-                                                 Style="@($"background-color:{noteListItem.NoteTags.ToList()[i].ColorHexadecimal} !important;")"
-                                        />
+                                                 Style="@($"background-color:{noteListItem.NoteTags.ToList()[i].ColorHexadecimal} !important;")" />
                                     }
                                 </MudListItem>
                             }
@@ -168,8 +168,7 @@
                 <MudButton @onclick=addNewNoteTab
                            StartIcon=@Icons.Material.Filled.Create
                            Variant=@Variant.Filled
-                           Color=@Color.Primary
-                >
+                           Color=@Color.Primary>
                     Start new note
                 </MudButton>
             }
@@ -307,7 +306,19 @@
         StateHasChanged();
     }
 
-    private async void deleteNote(Guid noteId)
+    private async Task openDeleteDialog(Guid noteId, string noteTitle)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("NoteTitle", noteTitle);
+        var dialogResult = await DialogService.Show<DeleteNoteDialog>("Delete Note", parameters).Result;
+
+        if (!dialogResult.Cancelled)
+        {
+            await deleteNote(noteId);
+        }
+    }
+
+    private async Task deleteNote(Guid noteId)
     {
         RepositoryResponseWrapper<List<NoteListItem>> responseWrapper = await NotesRepository.DeleteNoteAsync(noteId);
         if (responseWrapper.Success)

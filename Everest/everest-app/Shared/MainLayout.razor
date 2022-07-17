@@ -8,7 +8,9 @@
 <PageTitle>Everest</PageTitle>
 
 <MudThemeProvider Theme=@EverestThemes.Classic @bind-IsDarkMode=_isDarkTheme />
-<MudDialogProvider />
+<MudDialogProvider CloseButton="true"
+                   Position="DialogPosition.Center"
+                   CloseOnEscapeKey="true" />
 <MudSnackbarProvider />
 
 <AuthorizeView>
