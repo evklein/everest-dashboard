@@ -116,6 +116,12 @@
                                                        Variant=@Variant.Filled>
                                                 Outline
                                             </MudButton>
+                                            <MudButton @onclick=@(() => tab.NoteView = NoteViewEnum.Split)
+                                                       Disabled=@(tab.NoteView == NoteViewEnum.Split)
+                                                       StartIcon=@Icons.Filled.VerticalSplit
+                                                       Variant=@Variant.Filled>
+                                                Split
+                                            </MudButton>
                                             <MudButton @onclick=@(() => tab.NoteView = NoteViewEnum.Markdown)
                                                        Disabled=@(tab.NoteView == NoteViewEnum.Markdown)
                                                        StartIcon=@Icons.Material.Filled.RemoveRedEye
@@ -148,10 +154,27 @@
                                     @if (tab.NoteView == NoteViewEnum.Outline)
                                     {
                                         <MudTextField Immediate=true
-                                                      Label="Markdown"
+                                                      Label="Outline"
                                                       Variant=@Variant.Outlined
                                                       @bind-Value=@tab.Note.UpdatedContent
                                                       Lines=27 />
+                                    }
+                                    @if (tab.NoteView == NoteViewEnum.Split)
+                                    {
+                                        <MudItem xs="12">
+                                            <MudGrid Spacing="1">
+                                                <MudItem xs="6">
+                                                    <MudTextField Immediate=true
+                                                                  Label="Outline"
+                                                                  Variant=@Variant.Outlined
+                                                                  @bind-Value=@tab.Note.UpdatedContent
+                                                                  Lines=27 />
+                                                </MudItem>
+                                                <MudItem xs="6" Style="border: 1px solid #cccccc; border-radius: 5px; margin-top: 10px;" Class="pa-3">
+                                                    <MudMarkdown Value=@(String.IsNullOrEmpty(tab.Note.UpdatedContent) ? "Nothing to show." : tab.Note.UpdatedContent) />
+                                                </MudItem>
+                                            </MudGrid>
+                                        </MudItem>
                                     }
                                     @if (tab.NoteView == NoteViewEnum.Markdown)
                                     {
