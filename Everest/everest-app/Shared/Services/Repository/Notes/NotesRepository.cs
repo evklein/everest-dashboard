@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Reflection;
 using everest_app.Data;
+using everest_app.Shared.Services.Queries.Notes;
+using everest_common.DataTransferObjects.Notes;
 using everest_common.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,55 +14,99 @@ namespace everest_app.Shared.Services.Repository.Notes
         private readonly ApplicationDbContext _everestDbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly NoteQueries _noteQueries;
 
         public NotesRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager)
         {
             _everestDbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
+
+            _noteQueries = new NoteQueries(); // TODO: Consider making this an injectable service.
         }
 
-        public async Task<RepositoryResponseWrapper<List<Note>>> ListNotes()
+        public async Task<RepositoryResponseWrapper<List<NoteListItem>>> ListNotes()
         {
             var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-            var notes = _everestDbContext.Notes.Include(n => n.Tags).Where(n => n.OwnerId.Equals(currentUser.Id)).ToList();
-            notes.ForEach((note) =>
+
+            try
             {
-                note.UpdatedTitle = note.Title;
-                note.UpdatedContent = note.Content;
-                note.Tags = note.Tags ?? new List<Tag>();
-            });
+                var noteListItems = await _noteQueries.GetNoteListItemsAsync(_everestDbContext, currentUser.Id);
 
-            RepositoryResponseWrapper<List<Note>> responseWrapper = new()
-            {
-                Value = notes,
-            };
-            return responseWrapper;
-        }
-
-        public async Task<RepositoryResponseWrapper<List<Note>>> SaveNoteAsync(Note note)
-        {
-            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-            note.LastModified = DateTime.UtcNow;
-            note.Title = note.UpdatedTitle;
-            note.Content = note.UpdatedContent;
-            note.OwnerId = currentUser.Id;
-
-            foreach (var tag in note.Tags)
-            {
-                if (tag.DateCreated == DateTime.MinValue)
-                {
-                    tag.OwnerId = currentUser.Id;
-                    tag.DateCreated = DateTime.UtcNow;
-
-                    _everestDbContext.Tags.Add(tag);
-                }
+                 return new RepositoryResponseWrapper<List<NoteListItem>>
+                 {
+                    Value = noteListItems,
+                };
             }
-            await _everestDbContext.SaveChangesAsync();
-
-            if (string.IsNullOrEmpty(note.Title))
+            catch (Exception ex)
             {
-                return new RepositoryResponseWrapper<List<Note>>()
+                return new RepositoryResponseWrapper<List<NoteListItem>>()
+                {
+                    Success = false,
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error getting list of notes: Unknown exception",
+                        InnerException = ex,
+                    },
+                };
+            }
+        }
+
+        public async Task<RepositoryResponseWrapper<Note>> GetNoteDetailsAsync(Guid noteId)
+        {
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+
+            try
+            {
+                var note = await _everestDbContext.Notes.Include(n => n.Tags)
+                                                        .Where(n => n.OwnerId == currentUser.Id)
+                                                        .Where(n => n.Id == noteId)
+                                                        .SingleOrDefaultAsync();
+                if (note is not null)
+                {
+                    note.UpdatedTitle = note.Title;
+                    note.UpdatedContent = note.Content;
+                    note.UpdatedTags = copyTagList(note.Tags.ToList());
+
+                    return new RepositoryResponseWrapper<Note>()
+                    {
+                        Value = note,
+                    };
+                }
+                else
+                {
+                    return new RepositoryResponseWrapper<Note>()
+                    {
+                        Success = false,
+                        Error = new RepositoryResponseError()
+                        {
+                            ErrorMessage = "Error getting note: Note could not be found.",
+                        },
+                    };
+                }
+                                                        
+            }
+            catch (Exception ex)
+            {
+                return new RepositoryResponseWrapper<Note>()
+                {
+                    Success = false,
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error getting note: Unknown exception.",
+                        InnerException = ex,
+                    },
+                };
+            }
+        }
+
+        public async Task<RepositoryResponseWrapper<SaveNoteResponseDataTransferObject>> SaveNoteAsync(Note note)
+        {
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+
+            if (string.IsNullOrEmpty(note.UpdatedTitle))
+            {
+                return new RepositoryResponseWrapper<SaveNoteResponseDataTransferObject>()
                 {
                     Success = false,
                     Error = new RepositoryResponseError()
@@ -71,13 +118,15 @@ namespace everest_app.Shared.Services.Repository.Notes
 
             try
             {
+                var syncedTagList = await addNewTags(note.UpdatedTags?.ToList() ?? new List<Tag>(), currentUser.Id);
+
                 var existingNote = await _everestDbContext.Notes.Where(n => n.Id == note.Id).SingleOrDefaultAsync();
 
                 if (existingNote is not null)
                 {
                     if (!existingNote.OwnerId.Equals(currentUser.Id))
                     {
-                        return new RepositoryResponseWrapper<List<Note>>()
+                        return new RepositoryResponseWrapper<SaveNoteResponseDataTransferObject>()
                         {
                             Success = false,
                             Error = new RepositoryResponseError()
@@ -88,19 +137,32 @@ namespace everest_app.Shared.Services.Repository.Notes
                     }
                     existingNote.Title = note.UpdatedTitle;
                     existingNote.Content = note.UpdatedContent;
-                    existingNote.Tags = note.Tags;
+                    existingNote.Tags = syncedTagList;
+                    existingNote.LastModified = DateTime.UtcNow;
                 }
                 else
                 {
+                    note.Title = note.UpdatedTitle;
+                    note.Content = note.UpdatedContent;
+                    note.Tags = syncedTagList;
+                    note.OwnerId = currentUser.Id;
+                    note.LastModified = DateTime.UtcNow;
                     await _everestDbContext.Notes.AddAsync(note);
                 }
                 await _everestDbContext.SaveChangesAsync();
 
-                return await ListNotes();
+                return new RepositoryResponseWrapper<SaveNoteResponseDataTransferObject>
+                {
+                    Value = new SaveNoteResponseDataTransferObject()
+                    {
+                        SavedNote = existingNote ?? note,
+                        NoteListItems = await _noteQueries.GetNoteListItemsAsync(_everestDbContext, currentUser.Id),
+                    },
+                };
             }
             catch (Exception ex)
             {
-                return new RepositoryResponseWrapper<List<Note>>()
+                return new RepositoryResponseWrapper<SaveNoteResponseDataTransferObject>()
                 {
                     Success = false,
                     Error = new RepositoryResponseError()
@@ -112,44 +174,47 @@ namespace everest_app.Shared.Services.Repository.Notes
             }
         }
 
-        public async Task<RepositoryResponseWrapper<List<Note>>> DeleteNoteAsync(Note note)
+        public async Task<RepositoryResponseWrapper<List<NoteListItem>>> DeleteNoteAsync(Guid noteId)
         {
             var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-            if (!note.OwnerId.Equals(currentUser.Id))
-            {
-                return new RepositoryResponseWrapper<List<Note>>()
-                {
-                    Success = false,
-                    Error = new RepositoryResponseError()
-                    {
-                        ErrorMessage = "Error deleting note: Note does not belong to your user",
-                    },
-                };
-            }
-
-            Note noteToDelete = await _everestDbContext.Notes.FindAsync(note.Id);
-
-            if (noteToDelete is null)
-            {
-                return new RepositoryResponseWrapper<List<Note>>()
-                {
-                    Success = false,
-                    Error = new RepositoryResponseError()
-                    {
-                        ErrorMessage = "Error deleting note: note could not be found",
-                    },
-                };
-            }
 
             try
             {
-                _everestDbContext.Notes.Remove(noteToDelete);
-                await _everestDbContext.SaveChangesAsync();
-                return await ListNotes();
+                var noteToDelete = await _everestDbContext.Notes.FindAsync(noteId);
+
+                if (noteToDelete is not null)
+                {
+                    if (!noteToDelete.OwnerId.Equals(currentUser.Id))
+                    {
+                        return new RepositoryResponseWrapper<List<NoteListItem>>()
+                        {
+                            Success = false,
+                            Error = new RepositoryResponseError()
+                            {
+                                ErrorMessage = "Error deleting note: Note does not belong to your user",
+                            },
+                        };
+                    }
+
+                    _everestDbContext.Notes.Remove(noteToDelete);
+                    await _everestDbContext.SaveChangesAsync();
+                    return await ListNotes();
+                }
+                else
+                {
+                    return new RepositoryResponseWrapper<List<NoteListItem>>()
+                    {
+                        Success = false,
+                        Error = new RepositoryResponseError()
+                        {
+                            ErrorMessage = "Error deleting note: note could not be found",
+                        },
+                    };
+                }
             }
             catch (Exception ex)
             {
-                return new RepositoryResponseWrapper<List<Note>>()
+                return new RepositoryResponseWrapper<List<NoteListItem>>()
                 {
                     Success = false,
                     Error = new RepositoryResponseError()
@@ -159,6 +224,44 @@ namespace everest_app.Shared.Services.Repository.Notes
                     },
                 };
             }
+        }
+
+        private async Task<List<Tag>> addNewTags(List<Tag> tags, string ownerId)
+        {
+            List<Tag> tagListToReturn = new();
+            foreach (var tag in tags)
+            {
+                var existingTag = await _everestDbContext.Tags.FindAsync(tag.Id);
+                if (existingTag is null) // Add additional info for a brand-new tag.
+                {
+                    tag.OwnerId = ownerId;
+                    tag.DateCreated = DateTime.UtcNow;
+
+                    _everestDbContext.Tags.Add(tag);
+                }
+                else
+                {
+                    existingTag.ColorHexadecimal = tag.ColorHexadecimal;
+                }
+                tagListToReturn.Add(existingTag ?? tag);
+            }
+            await _everestDbContext.SaveChangesAsync();
+            return tagListToReturn;
+        }
+
+        private List<Tag> copyTagList(List<Tag> originalList)
+        {
+            List<Tag> freshList = new();
+            foreach (var originalTag in originalList)
+            {
+                Tag freshTag = new();
+                foreach (PropertyInfo property in typeof(Tag).GetProperties().Where(p => p.CanWrite))
+                {
+                    property.SetValue(freshTag, property.GetValue(originalTag));
+                }
+                freshList.Add(freshTag);
+            }
+            return freshList;
         }
     }
 }

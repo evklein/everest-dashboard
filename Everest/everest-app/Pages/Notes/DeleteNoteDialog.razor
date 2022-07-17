@@ -1,0 +1,22 @@
+﻿<MudDialog>
+    <DialogContent>
+        Are you sure you want to delete <b>@NoteTitle</b>?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick=@cancel>Cancel</MudButton>
+        <MudButton Color="Color.Error" OnClick=@confirmDelete>Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string NoteTitle { get; set; }
+
+    private void cancel() => MudDialog.Cancel();
+    private void confirmDelete() => MudDialog.Close(DialogResult.Ok(true));
+}
+
