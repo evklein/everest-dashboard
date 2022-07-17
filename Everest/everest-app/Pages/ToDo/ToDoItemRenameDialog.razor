@@ -1,0 +1,27 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudTextField Style="width: 500px;"
+                      @bind-Value=@newToDoItemName
+                      AutoFocus="true"
+                      Label="Task name"
+                      Variant=@Variant.Text
+                      AdornmentIcon=@Icons.Filled.Edit
+                      AdornmentColor=@Color.Primary />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick=@cancel>Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick=@confirmDelete>Rename</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    private string newToDoItemName = string.Empty;
+
+    private void cancel() => MudDialog.Cancel();
+    private void confirmDelete() => MudDialog.Close(DialogResult.Ok(newToDoItemName));
+}
+

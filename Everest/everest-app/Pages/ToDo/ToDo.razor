@@ -1,7 +1,8 @@
 ﻿@page "/ToDo"
+@inject IDialogService DialogService
 @inject IToDoRepository ToDoRepository
 @inject ISnackbar MudSnackbar
- 
+
 <MudContainer MaxWidth=@MaxWidth.Medium>
     <MudGrid Spacing="2">
         <MudItem xs="4">
@@ -15,14 +16,12 @@
                          Color=@Color.Secondary />
         </MudItem>
         <MudItem xs="6">
-            <MudSelect
-                @bind-Value=@_selectedDisplayPolicy
-                Label="Show tasks completed in last..."
-                Placeholder="Select value"
-                AdornmentIcon=@Icons.Filled.CalendarMonth
-                Variant="Variant.Outlined"
-                Dense="true"
-            >
+            <MudSelect @bind-Value=@_selectedDisplayPolicy
+                       Label="Show tasks completed in last..."
+                       Placeholder="Select value"
+                       AdornmentIcon=@Icons.Filled.CalendarMonth
+                       Variant="Variant.Outlined"
+                       Dense="true">
                 <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneDay>Day</MudSelectItem>
                 <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.ThreeDays>Three days</MudSelectItem>
                 <MudSelectItem OnClick=@updateToDoList Value=@ToDoHistoricalDisplayPolicy.OneWeek>Week</MudSelectItem>
@@ -32,19 +31,17 @@
             </MudSelect>
         </MudItem>
         <MudItem xs="10">
-            <MudTextField
-                @key="_textFieldKey"
-                AdornmentIcon=@Icons.Filled.Checklist
-                AdornmentColor=@Color.Primary
-                Adornment=@Adornment.Start
-                Label="Enter a task"
-                Class="pa-2"
-                @bind-Value=_newToDoItemName
-                OnKeyDown=@createNewToDoItem
-                Immediate="true"
-                Variant=@Variant.Outlined
-                AutoFocus="true"
-             />
+            <MudTextField @key="_textFieldKey"
+                          AdornmentIcon=@Icons.Filled.Checklist
+                          AdornmentColor=@Color.Primary
+                          Adornment=@Adornment.Start
+                          Label="Enter a task"
+                          Class="pa-2"
+                          @bind-Value=_newToDoItemName
+                          OnKeyDown=@createNewToDoItem
+                          Immediate="true"
+                          Variant=@Variant.Outlined
+                          AutoFocus="true" />
         </MudItem>
         @foreach (var toDoItem in _filteredtoDoItems)
         {
@@ -71,7 +68,7 @@
                         </MudText>
                     </MudCheckBox>
                     <MudMenu Icon="@Icons.Material.Filled.MoreVert" Style="float: right;">
-                        <MudMenuItem>Edit</MudMenuItem>
+                        <MudMenuItem OnClick=@(() => openRenameDialog(toDoItem))>Edit</MudMenuItem>
                         <MudMenuItem Style="color: #b73a27" OnClick=@(() => deleteToDoItem(toDoItem))>Delete</MudMenuItem>
                     </MudMenu>
                     @if (_showTags)
@@ -173,6 +170,18 @@
         else
         {
             MudSnackbar.Add(responseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
+    }
+
+    private async Task openRenameDialog(ToDoItem toDoItem)
+    {
+        var dialogOptions = new DialogOptions { MaxWidth = MaxWidth.Large };
+        var dialogResult = await DialogService.Show<ToDoItemRenameDialog>("Edit Task", dialogOptions).Result;
+
+        if (!dialogResult.Cancelled)
+        {
+            toDoItem.Name = dialogResult.Data.ToString();
+            await updateToDoItem(toDoItem);
         }
     }
 

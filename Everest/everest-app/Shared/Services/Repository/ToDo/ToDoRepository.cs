@@ -59,6 +59,18 @@ namespace everest_app.Shared.Services.Repository.ToDo
         {
             var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
 
+            if (string.IsNullOrEmpty(toDoItem.Name))
+            {
+                return new RepositoryResponseWrapper<List<ToDoItem>>()
+                {
+                    Success = false,
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error saving To-Do item: invalid name",
+                    },
+                };
+            }
+
             try
             {
                 var syncedTagList = await _tagRepository.AddNewTags(toDoItem.Tags.ToList());
