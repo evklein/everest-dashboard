@@ -50,6 +50,7 @@
     <None Remove="Shared\UI\Emoji\" />
     <None Remove="Shared\Services\Queries\" />
     <None Remove="Shared\Services\Queries\Notes\" />
+    <None Remove="Pages\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\Notes\" />
@@ -67,6 +68,7 @@
     <Folder Include="Shared\UI\Emoji\" />
     <Folder Include="Shared\Services\Queries\" />
     <Folder Include="Shared\Services\Queries\Notes\" />
+    <Folder Include="Pages\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\Fonts\" />

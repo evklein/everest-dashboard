@@ -22,7 +22,7 @@ namespace everest_app.Shared.Services.Repository.Tags
         public async Task<RepositoryResponseWrapper<Tag>> GetTag(string name)
         {
             var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-
+            
             try
             {
                 var tag = _everestDbContext.Tags.Where(t => t.OwnerId == currentUser.Id)
@@ -54,6 +54,33 @@ namespace everest_app.Shared.Services.Repository.Tags
             try
             {
                 var tagsForUsers = _everestDbContext.Tags.Where(t => t.OwnerId == currentUser.Id).ToList();
+                return new RepositoryResponseWrapper<List<Tag>>()
+                {
+                    Value = tagsForUsers,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new RepositoryResponseWrapper<List<Tag>>()
+                {
+                    Success = false,
+                    Error = new RepositoryResponseError()
+                    {
+                        ErrorMessage = "Error getting Tags: unknown exception",
+                        InnerException = ex,
+                    },
+                };
+            }
+        }
+
+        public async Task<RepositoryResponseWrapper<List<Tag>>> ListTagsAsAdmin()
+        {
+            try
+            {
+                var tagsForUsers = await _everestDbContext.Tags.Include(t => t.Owner)
+                                                               .Include(t => t.Note)
+                                                               .Include(t => t.ToDoItems)
+                                                               .ToListAsync();
                 return new RepositoryResponseWrapper<List<Tag>>()
                 {
                     Value = tagsForUsers,
