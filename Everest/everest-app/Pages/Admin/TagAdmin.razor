@@ -1,0 +1,79 @@
+﻿@inject ITagRepository TagRepository
+@inject ISnackbar MudSnackbar
+
+<MudTable Items=@_tags
+          Loading=@_loading
+          LoadingProgressColor=Color.Secondary
+          Dense="false"
+          Hover="true"
+          Bordered="false"
+          Striped="true"
+          Filter="new Func<Tag,bool>(FilterFunc1)">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Tags</MudText>
+        <MudSpacer />
+        <MudTextField Immediate="true" @bind-Value="filterString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <ColGroup>
+        <col style="width:350px;" />
+        <col />
+        <col />
+        <col />
+        <col />
+    </ColGroup>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<Tag, object>(t => t.Name)">Tag</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Tag, object>(t => t.ColorHexadecimal)">Color</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Tag, object>(t => t.DateCreated)">Date Created</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Tag, object>(t => t.Owner.UserName)">Owner</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Tag, object>(t => t.Note.Count + t.ToDoItems.Count)">Uses</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Tag">
+            <MudChip Style="@($"background-color:{context.ColorHexadecimal} !important;")">
+                @context.Name
+            </MudChip>
+        </MudTd>
+        <MudTd DataLabel="Color">@context.ColorHexadecimal</MudTd>
+        <MudTd DataLabel="Date Created">@context.DateCreated.ToShortDateString()</MudTd>
+        <MudTd DataLabel="Owner">@context.Owner.UserName</MudTd>
+        <MudTd DataLabel="Uses">
+            @(context.Note.Count + context.ToDoItems.Count)
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private string filterString = string.Empty;
+    private List<Tag> _tags = new List<Tag>();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        RepositoryResponseWrapper<List<Tag>> fetchTagsResponseWrapper = await TagRepository.ListTagsAsAdmin();
+        if (fetchTagsResponseWrapper.Success)
+        {
+            _tags = fetchTagsResponseWrapper.Value.OrderBy(t => t.Name).ToList();
+        }
+        else
+        {
+            MudSnackbar.Add(fetchTagsResponseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
+
+        _loading = false;
+        StateHasChanged();
+    }
+
+    private bool FilterFunc1(Tag tag) => FilterFunc(tag, filterString);
+
+    private bool FilterFunc(Tag tag, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (tag.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (tag.Owner.UserName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase))
+            return true;
+        return false;
+    }
+}
