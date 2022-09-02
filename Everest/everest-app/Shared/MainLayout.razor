@@ -33,6 +33,7 @@
                 <MudNavLink Href="/" Icon=@Icons.Filled.Dashboard>Dashboard</MudNavLink>
                 <MudNavLink Href="/ToDo" Icon=@Icons.Filled.Checklist>To-Do</MudNavLink>
                 <MudNavLink Href="/Notes" Icon=@Icons.Material.Filled.Feed>Notes</MudNavLink>
+                <MudNavLink Href="/Admin" Icon=@Icons.Filled.Shield>Admin</MudNavLink>
                 <MudSwitch @bind-Checked=@_isDarkTheme Color=@Color.Primary Label=@_themeLabel Class="ma-2" />
                 <form method="post" action="Identity/Account/LogOut" style="margin-left:15px;position:fixed;bottom:20px;color:white;">
                     <button type="submit">
@@ -46,7 +47,7 @@
             </MudMainContent>
         </MudLayout>
         <MudText Style="position:fixed;bottom:5px;right:5px;font-family:'BespokeSlab-Regular';font-size:14px;" Color=@Color.Secondary>
-            Everest v0.4.1 | © Evan Klein, 2022 | <MudLink Color=@Color.Secondary style="font-family:'BespokeSlab-Regular';font-size:14px;" Href="https://github.com/evklein/everest-dashboard">Source</MudLink>
+            Everest v0.4.2 | © Evan Klein, 2022 | <MudLink Color=@Color.Secondary style="font-family:'BespokeSlab-Regular';font-size:14px;" Href="https://github.com/evklein/everest-dashboard">Source</MudLink>
         </MudText>
     </Authorized>
 </AuthorizeView>
