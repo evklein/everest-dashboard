@@ -14,9 +14,6 @@ namespace everest_common.Models
         public string OwnerId { get; set; }
         public IdentityUser Owner { get; set; }
 
-        public Guid UserAgentId { get; set; }
-        public UserAgent UserAgent { get; set; }
-
         public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
 }
