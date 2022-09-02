@@ -16,6 +16,7 @@ using everest_app.Shared.Services.Repository.ToDo;
 using everest_app.Shared.Services.Repository.Tags;
 using everest_common.DataTransferObjects.Notes;
 using Newtonsoft.Json;
+using everest_app.Shared.Services.Repository.UserAgents;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<INotesRepository, NotesRepository>();
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<IUserAgentRepository, UserAgentRepository>();
 
 var app = builder.Build();
 
