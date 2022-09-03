@@ -12,8 +12,8 @@ using everest_app.Data;
 namespace everest_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220902210459_UserAgentItems")]
-    partial class UserAgentItems
+    [Migration("20220903142417_AddUserAgentTable")]
+    partial class AddUserAgentTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,16 +121,20 @@ namespace everest_app.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("LastPing")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PrivateKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublicKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

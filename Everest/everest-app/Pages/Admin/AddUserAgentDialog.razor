@@ -1,0 +1,58 @@
+﻿@inject IUserAgentRepository UserAgentRepository
+@using System.Security.Cryptography;
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo=@Typo.h6>
+            Add User Agent
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Style="width: 500px;" Value="@_userAgent.Id.ToString()" Label="User Agent ID" ReadOnly="true" />
+        <MudTextField Style="width: 500px; " Value="@_userAgent.PublicKey" Label="Public Key" ReadOnly="true" />
+        <MudTextField Style="width: 500px; " Value="@_userAgent.PrivateKey" Label="Private Key" ReadOnly="true" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick=@cancel>Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick=@addNewUserAgent>Add</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private UserAgent _userAgent = new();
+
+    protected override void OnInitialized()
+    {
+        var encryptionScheme = getEncryptionScheme();
+        _userAgent.PrivateKey = encryptionScheme.Item1;
+        _userAgent.PublicKey = encryptionScheme.Item2;
+    }
+
+    private (string, string) getEncryptionScheme()
+    {
+        RSACryptoServiceProvider rsa = new();
+        return (rsa.ToXmlString(true), rsa.ToXmlString(false));
+    }
+
+    private async Task addNewUserAgent()
+    {
+        var updatedUserAgentList = await UserAgentRepository.AddUserAgent(_userAgent);
+
+        if (updatedUserAgentList.Success)
+        {
+            MudDialog.Close(DialogResult.Ok(updatedUserAgentList.Value));
+        }
+        else
+        {
+            MudDialog.Close(DialogResult.Cancel);
+        }
+    }
+
+    private void cancel()
+    {
+        MudDialog.Cancel();
+    }
+}
+

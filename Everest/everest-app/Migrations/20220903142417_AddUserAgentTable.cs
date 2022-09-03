@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace everest_app.Migrations
 {
-    public partial class UserAgentItems : Migration
+    public partial class AddUserAgentTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,8 @@ namespace everest_app.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PrivateKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PublicKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastPing = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },

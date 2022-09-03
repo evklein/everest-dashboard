@@ -1,5 +1,6 @@
 ﻿@inject IUserAgentRepository UserAgentRepository
 @inject ISnackbar MudSnackbar
+@inject IDialogService DialogService
 
 <MudTable Items=@_userAgents
           Loading=@_loading
@@ -10,6 +11,8 @@
           Striped="true">
     <ToolBarContent>
         <MudText Typo="Typo.h6">User Agents</MudText>
+        <MudSpacer />
+        <MudButton Variant="Variant.Filled" Color="@Color.Secondary" StartIcon="@Icons.Filled.Add" @onclick=@openAddUserAgentModal>Register User Agent</MudButton>
     </ToolBarContent>
     <ColGroup>
         <col style="width:350px;" />
@@ -19,13 +22,13 @@
     </ColGroup>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.Id)">Tag</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.Key)">Key</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.PublicKey)">Key</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.LastPing)">Last Ping</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.Owner.UserName)">Owner</MudTableSortLabel></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Id">@context.Id</MudTd>
-        <MudTd DataLabel="Key">@context.Key</MudTd>
+        <MudTd DataLabel="Key">@context.PublicKey</MudTd>
         <MudTd DataLabel="Last Ping">@context.LastPing</MudTd>
         <MudTd DataLabel="Owner">@context.Owner.UserName</MudTd>
     </RowTemplate>
@@ -35,6 +38,7 @@
     private string filterString = string.Empty;
     private List<UserAgent> _userAgents = new List<UserAgent>();
     private bool _loading = true;
+    private bool _addUserAgentModalOpen = false;
 
     protected override void OnInitialized()
     {
@@ -50,5 +54,18 @@
 
         _loading = false;
         StateHasChanged();
+    }
+
+    private async Task openAddUserAgentModal()
+    {
+
+        var dialog = DialogService.Show<AddUserAgentDialog>("Add User Agent");
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            _userAgents = (List<UserAgent>) result.Data;
+            MudSnackbar.Add("User agent added successfully", Severity.Success);
+        }
     }
 }

@@ -47,6 +47,9 @@ namespace everest_app.Shared.Services.Repository.UserAgents
                 };
             }
 
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+            userAgent.OwnerId = currentUser.Id;
+
             await _everestDbContext.UserAgents.AddAsync(userAgent);
             await _everestDbContext.SaveChangesAsync();
 
