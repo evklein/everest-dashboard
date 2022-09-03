@@ -1,6 +1,7 @@
 ﻿using System;
 using everest_app.Data;
 using everest_app.Shared.Services.Repository.Tags;
+using everest_common.Enumerations;
 using everest_common.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -56,69 +57,28 @@ namespace everest_app.Shared.Services.Repository.UserAgents
             return GetUserAgents();
         }
 
-        //public async Task<RepositoryResponseWrapper<List<ToDoItem>>> SaveToDoItem(ToDoItem toDoItem, ToDoHistoricalDisplayPolicy displayPolicy)
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+        public RepositoryResponseWrapper<List<UserAgent>> FindCurrentlyConnectedUserAgents(UserAgentStaleness staleness = UserAgentStaleness.FiveMinutes)
+        {
+            var numberOfMinutes = staleness switch
+            {
+                UserAgentStaleness.OneMinute => 1,
+                UserAgentStaleness.FiveMinutes => 5,
+                UserAgentStaleness.ThirtyMinutes => 30,
+                UserAgentStaleness.OneHour => 60,
+                _ => 1,
+            };
 
-        //    if (string.IsNullOrEmpty(toDoItem.Name))
-        //    {
-        //        return new RepositoryResponseWrapper<List<ToDoItem>>()
-        //        {
-        //            Success = false,
-        //            Error = new RepositoryResponseError()
-        //            {
-        //                ErrorMessage = "Error saving To-Do item: invalid name",
-        //            },
-        //        };
-        //    }
+            var timeout = new TimeSpan(0, numberOfMinutes, 0);
+            var userAgentsWithRecentPings = _everestDbContext.UserAgents
+                                                             .ToList() 
+                                                             .Where(ua => DateTime.UtcNow - ua.LastPing < timeout)
+                                                             .ToList();
 
-        //    try
-        //    {
-        //        var syncedTagList = await _tagRepository.AddNewTags(toDoItem.Tags.ToList());
-
-        //        var existingToDoItem = await _everestDbContext.ToDoItems.FindAsync(toDoItem.Id);
-
-        //        if (existingToDoItem is not null)
-        //        {
-        //            if (!existingToDoItem.OwnerId.Equals(currentUser.Id))
-        //            {
-        //                return new RepositoryResponseWrapper<List<ToDoItem>>()
-        //                {
-        //                    Success = false,
-        //                    Error = new RepositoryResponseError()
-        //                    {
-        //                        ErrorMessage = "Error saving new To-Do item: you are not the owner of this item",
-        //                    },
-        //                };
-        //            }
-
-        //            existingToDoItem.Complete = toDoItem.Complete;
-        //            existingToDoItem.DateCompleted = toDoItem.Complete ? DateTime.UtcNow : DateTime.MinValue;
-        //            existingToDoItem.Tags = syncedTagList;
-        //        }
-        //        else
-        //        {
-        //            toDoItem.OwnerId = currentUser.Id;
-        //            toDoItem.Tags = syncedTagList;
-        //            await _everestDbContext.ToDoItems.AddAsync(toDoItem);
-        //        }
-        //        await _everestDbContext.SaveChangesAsync();
-        //        return await ListToDoItems(displayPolicy);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new RepositoryResponseWrapper<List<ToDoItem>>()
-        //        {
-        //            Success = false,
-        //            Error = new RepositoryResponseError()
-        //            {
-        //                ErrorMessage = "Error saving new To-Do item: unknown exception",
-        //                InnerException = ex,
-        //            },
-        //        };
-        //    }
-        //}
-
+            return new RepositoryResponseWrapper<List<UserAgent>>()
+            {
+                Value = userAgentsWithRecentPings,
+            };
+        }
     }
 }
 

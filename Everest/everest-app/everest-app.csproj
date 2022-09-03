@@ -53,6 +53,7 @@
     <None Remove="Middleware\" />
     <None Remove="Shared\Services\Repository\UserAgents\" />
     <None Remove="Pages\Admin\" />
+    <None Remove="Pages\Dashboard\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\Notes\" />
@@ -73,6 +74,7 @@
     <Folder Include="Middleware\" />
     <Folder Include="Shared\Services\Repository\UserAgents\" />
     <Folder Include="Pages\Admin\" />
+    <Folder Include="Pages\Dashboard\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\Fonts\" />
