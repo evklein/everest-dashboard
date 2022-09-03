@@ -17,6 +17,7 @@ using everest_app.Shared.Services.Repository.Tags;
 using everest_common.DataTransferObjects.Notes;
 using Newtonsoft.Json;
 using everest_app.Shared.Services.Repository.UserAgents;
+using everest_app.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,14 +81,14 @@ app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
-
+app.UseUserAgentMiddleware();
 
 // Disable new registrations.
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGet("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Login", true, true)));
     endpoints.MapPost("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Login", true, true)));
-    endpoints.MapGet("/Hello", () =>  JsonConvert.SerializeObject(new NoteListItem { NoteId = Guid.NewGuid(), NoteTitle = "title", NoteTags = new() }));
+    //endpoints.MapGet("/PingUserAgent", (context) => Task.Factory.StartNew(() => ));
 });
 
 app.Run();
