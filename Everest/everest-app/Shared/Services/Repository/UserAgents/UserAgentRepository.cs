@@ -71,7 +71,7 @@ namespace everest_app.Shared.Services.Repository.UserAgents
             var timeout = new TimeSpan(0, numberOfMinutes, 0);
             var userAgentsWithRecentPings = _everestDbContext.UserAgents
                                                              .ToList() 
-                                                             .Where(ua => DateTime.UtcNow - ua.LastPing < timeout)
+                                                             .Where(ua => DateTime.UtcNow - ua.LastConnectionActivity < timeout)
                                                              .ToList();
 
             return new RepositoryResponseWrapper<List<UserAgent>>()

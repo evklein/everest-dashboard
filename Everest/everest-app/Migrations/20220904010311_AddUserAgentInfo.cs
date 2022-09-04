@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace everest_app.Migrations
 {
-    public partial class AddUserAgentTable : Migration
+    public partial class AddUserAgentInfo : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,35 +16,14 @@ namespace everest_app.Migrations
                 nullable: true);
 
             migrationBuilder.CreateTable(
-                name: "UserAgentDirectives",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Profile = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SecondsToRun = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserAgentDirectives", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserAgentDirectives_AspNetUsers_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserAgents",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PrivateKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PublicKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastPing = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastConnectionActivity = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EverestPrivateKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EverestPublicKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserAgentPublicKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -58,6 +37,34 @@ namespace everest_app.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserAgentDirectives",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Profile = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SecondsToRun = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserAgentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAgentDirectives", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserAgentDirectives_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserAgentDirectives_UserAgents_UserAgentId",
+                        column: x => x.UserAgentId,
+                        principalTable: "UserAgents",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Tags_UserAgentDirectiveId",
                 table: "Tags",
@@ -67,6 +74,11 @@ namespace everest_app.Migrations
                 name: "IX_UserAgentDirectives_OwnerId",
                 table: "UserAgentDirectives",
                 column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAgentDirectives_UserAgentId",
+                table: "UserAgentDirectives",
+                column: "UserAgentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserAgents_OwnerId",

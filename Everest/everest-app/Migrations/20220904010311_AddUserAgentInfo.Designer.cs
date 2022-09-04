@@ -12,8 +12,8 @@ using everest_app.Data;
 namespace everest_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220903142417_AddUserAgentTable")]
-    partial class AddUserAgentTable
+    [Migration("20220904010311_AddUserAgentInfo")]
+    partial class AddUserAgentInfo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,18 +121,22 @@ namespace everest_app.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("LastPing")
+                    b.Property<string>("EverestPrivateKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EverestPublicKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastConnectionActivity")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("PrivateKey")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PublicKey")
+                    b.Property<string>("UserAgentPublicKey")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -167,9 +171,14 @@ namespace everest_app.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("UserAgentId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
+
+                    b.HasIndex("UserAgentId");
 
                     b.ToTable("UserAgentDirectives");
                 });
@@ -462,6 +471,10 @@ namespace everest_app.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("everest_common.Models.UserAgent", null)
+                        .WithMany("Directives")
+                        .HasForeignKey("UserAgentId");
+
                     b.Navigation("Owner");
                 });
 
@@ -544,6 +557,11 @@ namespace everest_app.Migrations
                         .HasForeignKey("ToDoItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("everest_common.Models.UserAgent", b =>
+                {
+                    b.Navigation("Directives");
                 });
 
             modelBuilder.Entity("everest_common.Models.UserAgentDirective", b =>

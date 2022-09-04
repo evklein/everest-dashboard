@@ -16,20 +16,24 @@ namespace everest_app.Middleware
         {
             if (context.Request.Path.Value.ToUpper().Equals("/PINGUSERAGENT"))
             {
-                await Ping(context);
+                await Ping(context, userAgentRepository);
                 return;
             }
 
             await _next(context);
         }
 
-        public async Task Ping(HttpContext httpContext)
+        public async Task Ping(HttpContext context, IUserAgentRepository userAgentRepository)
         {
-            var body = httpContext.Request.Body;
-            httpContext.Response.StatusCode = 401; //UnAuthorized
-            await httpContext.Response.WriteAsync("Invalid User Key");
-            return;
+            if (context.Request.Method == "GET")
+            {
 
+            }
+            else
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync("Bad Request");
+            }
         }
 
         public string GetCurrentDirectives()

@@ -22,14 +22,16 @@
     </ColGroup>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.Id)">Tag</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.PublicKey)">Key</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.LastPing)">Last Ping</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.EverestPublicKey)">Everest Public Key</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.UserAgentPublicKey)">User Agent Public Key</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.LastConnectionActivity)">Last Ping</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.Owner.UserName)">Owner</MudTableSortLabel></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Id">@context.Id</MudTd>
-        <MudTd DataLabel="Key">@context.PublicKey</MudTd>
-        <MudTd DataLabel="Last Ping">@context.LastPing</MudTd>
+        <MudTd DataLabel="Key">@context.EverestPublicKey</MudTd>
+        <MudTd DataLabel="Key">@context.UserAgentPublicKey</MudTd>
+        <MudTd DataLabel="Last Ping">@context.LastConnectionActivity</MudTd>
         <MudTd DataLabel="Owner">@context.Owner.UserName</MudTd>
     </RowTemplate>
 </MudTable>
