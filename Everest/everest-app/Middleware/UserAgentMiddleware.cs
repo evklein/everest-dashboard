@@ -1,5 +1,6 @@
 ﻿using System;
 using everest_app.Shared.Services.Repository.UserAgents;
+using everest_common.Models;
 
 namespace everest_app.Middleware
 {
@@ -14,20 +15,38 @@ namespace everest_app.Middleware
 
         public async Task InvokeAsync(HttpContext context, IUserAgentRepository userAgentRepository)
         {
-            if (context.Request.Path.Value.ToUpper().Equals("/PINGUSERAGENT"))
+            string agentRequestEndpoint = context.Request.Path.Value?.Trim('/').ToUpper();
+            switch (agentRequestEndpoint)
             {
-                await Ping(context, userAgentRepository);
-                return;
+                case "PINGUSERAGENT":
+                    await Ping(context, userAgentRepository);
+                    break;
+                default:
+                    await _next(context);
+                    break;
             }
-
-            await _next(context);
         }
 
         public async Task Ping(HttpContext context, IUserAgentRepository userAgentRepository)
         {
             if (context.Request.Method == "GET")
             {
-
+                var queryArgs = context.Request.QueryString.Value?.Trim('?').Split('=');
+                if (queryArgs[0] == "agent_id")
+                {
+                    Guid userAgentId = new Guid(queryArgs[1]);
+                    var userAgentDirectives = await userAgentRepository.GetCurrentDirectivesForUserAgent(userAgentId);
+                    if (userAgentDirectives.Success)
+                    {
+                        context.Response.StatusCode = 200;
+                        await context.Response.WriteAsJsonAsync<List<UserAgentDirective>>(userAgentDirectives.Value ?? new List<UserAgentDirective>());
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("Bad Request");
+                    }
+                }
             }
             else
             {

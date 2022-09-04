@@ -4,6 +4,7 @@ using everest_app.Shared.Services.Repository.Tags;
 using everest_common.Enumerations;
 using everest_common.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace everest_app.Shared.Services.Repository.UserAgents
 {
@@ -77,6 +78,29 @@ namespace everest_app.Shared.Services.Repository.UserAgents
             return new RepositoryResponseWrapper<List<UserAgent>>()
             {
                 Value = userAgentsWithRecentPings,
+            };
+        }
+
+        public async Task<RepositoryResponseWrapper<List<UserAgentDirective>>> GetCurrentDirectivesForUserAgent(Guid userAgentId)
+        {
+            UserAgent userAgent = await _everestDbContext.UserAgents.Include(ua => ua.Directives)
+                                                                      .Where(ua => ua.Id == userAgentId)
+                                                                      .SingleOrDefaultAsync();
+            if (userAgent is null)
+            {
+                return new RepositoryResponseWrapper<List<UserAgentDirective>>
+                {
+                    Success = false,
+                    Error = new()
+                    {
+                        ErrorMessage = "Error in GetCurrentDirectivesForUserAgent: User Agent not found",
+                    },
+                };
+            }
+
+            return new RepositoryResponseWrapper<List<UserAgentDirective>>
+            {
+                Value = userAgent.Directives.ToList(),
             };
         }
     }
