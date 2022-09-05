@@ -6,6 +6,7 @@ namespace everest_common.Models
     public class UserAgent
     {
         public Guid Id { get; set; } = Guid.NewGuid();
+        public string ReadableName = string.Empty;
         public DateTime LastConnectionActivity { get; set; } = DateTime.MinValue;
 
         public string EverestPrivateKey { get; set; } = string.Empty;
@@ -15,8 +16,6 @@ namespace everest_common.Models
 
         public string OwnerId { get; set; }
         public IdentityUser Owner { get; set; }
-
-        public virtual ICollection<UserAgentDirective> Directives { get; set; } = new List<UserAgentDirective>();
     }
 }
 

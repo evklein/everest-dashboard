@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace everest_app.Migrations
 {
-    public partial class AddUserAgentInfo : Migration
+    public partial class AddUserAgentAndDirectives : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -43,6 +43,7 @@ namespace everest_app.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Profile = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SecondsToRun = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),

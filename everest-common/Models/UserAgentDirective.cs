@@ -1,4 +1,5 @@
-﻿using everest_common.Enumerations;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using everest_common.Enumerations;
 using Microsoft.AspNetCore.Identity;
 
 namespace everest_common.Models
@@ -7,12 +8,16 @@ namespace everest_common.Models
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public string Profile { get; set; } = string.Empty;
         public UInt64? SecondsToRun { get; set; }
         public UserAgentDirectiveStatus Status { get; set; } = UserAgentDirectiveStatus.NotRunning;
 
         public string OwnerId { get; set; }
         public IdentityUser Owner { get; set; }
+
+        public Guid? UserAgentId { get; set; }
+        public UserAgent? UserAgent { get; set; }
 
         public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }

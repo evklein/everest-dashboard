@@ -151,6 +151,10 @@ namespace everest_app.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -469,11 +473,13 @@ namespace everest_app.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("everest_common.Models.UserAgent", null)
-                        .WithMany("Directives")
+                    b.HasOne("everest_common.Models.UserAgent", "UserAgent")
+                        .WithMany()
                         .HasForeignKey("UserAgentId");
 
                     b.Navigation("Owner");
+
+                    b.Navigation("UserAgent");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -555,11 +561,6 @@ namespace everest_app.Migrations
                         .HasForeignKey("ToDoItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("everest_common.Models.UserAgent", b =>
-                {
-                    b.Navigation("Directives");
                 });
 
             modelBuilder.Entity("everest_common.Models.UserAgentDirective", b =>

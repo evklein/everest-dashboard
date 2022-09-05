@@ -1,0 +1,59 @@
+﻿@inject IUserAgentRepository UserAgentRepository
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo=@Typo.h6>
+            Add Directive
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.FiberNew" Style="width: 400px;" @bind-Value="@_directive.Name" Label="Name" ReadOnly="false" />
+        <MudTextField Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Description" Style="width: 400px;" @bind-Value="@_directive.Description" Label="Description" ReadOnly="false" />
+        <MudTextField Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentText="seconds" AdornmentColor="Color.Info" Style="width: 400px;" @bind-Value="@_directive.SecondsToRun" Label="Seconds to run (Optional)" ReadOnly="false" />
+        <MudSelect T="Guid?" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.DeviceHub" Label="User Agent" @bind-Value=@_directive.UserAgentId>
+            @foreach (var userAgent in UserAgents)
+            {
+                <MudSelectItem Value="@userAgent.Id">@userAgent.ReadableName</MudSelectItem>
+            }
+        </MudSelect>
+        <MudTextField Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Terminal" Style="width: 400px;" @bind-Value="@_directive.Profile" Label="Profile" ReadOnly="false" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick=@cancel>Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick=@addNewUserAgent Disabled=@isAddButtonDisabled()>Add</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public List<UserAgent> UserAgents { get; set; } = new List<UserAgent>();
+
+    private UserAgentDirective _directive = new();
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    private async Task addNewUserAgent()
+    {
+        MudDialog.Close(DialogResult.Ok(_directive));
+    }
+
+    private void cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private bool isAddButtonDisabled()
+    {
+        return string.IsNullOrEmpty(_directive.Name) ||
+               //string.IsNullOrEmpty(_directive.Description) ||
+               string.IsNullOrEmpty(_directive.Profile) ||
+               _directive.UserAgentId is null;
+               
+    }
+}
+

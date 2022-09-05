@@ -1,16 +1,39 @@
-﻿<MudGrid Class="mt-1 px-8" Spacing="0">
+﻿@inject IDialogService DialogService
+@inject IUserAgentRepository UserAgentRepository
+@inject ISnackbar Snackbar
+
+<MudGrid Class="px-8" Spacing="0">
     <MudItem xs="12">
         <MudText Typo="Typo.h3">Dashboard</MudText>
     </MudItem>
     <MudItem xs="12">
         <UserAgentStatus />
+        <MudButton Variant="Variant.Filled" @onclick=@openAddDirectiveDialog Color="@Color.Secondary" StartIcon="@Icons.Filled.Add">New Directive</MudButton>
     </MudItem>
-    <MudItem xs="6">
-        <MudText Typo="Typo.body1">Welcome to the Everest Dashboard. There's currently no pinned modules.</MudText>
+    <MudItem xs="3">
+        <Directive />
     </MudItem>
 </MudGrid>
 
 @code
 {
+    private List<UserAgent> _currentlyConnectedUserAgents = new List<UserAgent>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        _currentlyConnectedUserAgents = UserAgentRepository.FindCurrentlyConnectedUserAgents().Value;
+    }
+
+    private async Task openAddDirectiveDialog()
+    {
+        if (_currentlyConnectedUserAgents.Any())
+        {
+            var dialog = DialogService.Show<AddDirectiveDialog>();
+            var result = await dialog.Result;
+        }
+        else
+        {
+            Snackbar.Add("No User Agents connected, cannot create new directives.", Severity.Warning);
+        }
+    }
 }

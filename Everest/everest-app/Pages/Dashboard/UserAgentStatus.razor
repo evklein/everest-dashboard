@@ -6,11 +6,11 @@
 }
 @if (_currentlyConnectedUserAgents.Any())
 {
-    <MudAlert Severity=@Severity.Success>@_currentlyConnectedUserAgents.Count User Agent(s) currently connected.</MudAlert>
+    <MudAlert Class="ma-3" Severity=@Severity.Success>@_currentlyConnectedUserAgents.Count User Agent(s) currently connected.</MudAlert>
 }
 else
 {
-    <MudAlert Severity=@Severity.Warning>No User Agents currently connected.</MudAlert>
+    <MudAlert Class="ma-3" Severity=@Severity.Warning>No User Agents currently connected.</MudAlert>
 }
 
 @code {

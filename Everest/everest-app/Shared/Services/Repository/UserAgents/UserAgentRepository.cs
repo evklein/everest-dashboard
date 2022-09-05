@@ -83,10 +83,10 @@ namespace everest_app.Shared.Services.Repository.UserAgents
 
         public async Task<RepositoryResponseWrapper<List<UserAgentDirective>>> GetCurrentDirectivesForUserAgent(Guid userAgentId)
         {
-            UserAgent userAgent = await _everestDbContext.UserAgents.Include(ua => ua.Directives)
-                                                                      .Where(ua => ua.Id == userAgentId)
-                                                                      .SingleOrDefaultAsync();
-            if (userAgent is null)
+            var userAgentDirectives = await _everestDbContext.UserAgentDirectives
+                                                                .Where(uad => uad.UserAgentId == userAgentId)
+                                                                .ToListAsync();
+            if (!userAgentDirectives.Any())
             {
                 return new RepositoryResponseWrapper<List<UserAgentDirective>>
                 {
@@ -100,7 +100,7 @@ namespace everest_app.Shared.Services.Repository.UserAgents
 
             return new RepositoryResponseWrapper<List<UserAgentDirective>>
             {
-                Value = userAgent.Directives.ToList(),
+                Value = userAgentDirectives,
             };
         }
     }
