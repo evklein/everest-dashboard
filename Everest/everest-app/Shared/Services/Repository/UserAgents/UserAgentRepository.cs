@@ -86,21 +86,42 @@ namespace everest_app.Shared.Services.Repository.UserAgents
             var userAgentDirectives = await _everestDbContext.UserAgentDirectives
                                                                 .Where(uad => uad.UserAgentId == userAgentId)
                                                                 .ToListAsync();
-            if (!userAgentDirectives.Any())
-            {
-                return new RepositoryResponseWrapper<List<UserAgentDirective>>
-                {
-                    Success = false,
-                    Error = new()
-                    {
-                        ErrorMessage = "Error in GetCurrentDirectivesForUserAgent: User Agent not found",
-                    },
-                };
-            }
+            //if (!userAgentDirectives.Any())
+            //{
+            //    return new RepositoryResponseWrapper<List<UserAgentDirective>>
+            //    {
+            //        Success = false,
+            //        Error = new()
+            //        {
+            //            ErrorMessage = "Error in GetCurrentDirectivesForUserAgent: User Agent not found",
+            //        },
+            //    };
+            //}
 
             return new RepositoryResponseWrapper<List<UserAgentDirective>>
             {
                 Value = userAgentDirectives,
+            };
+        }
+
+        public async Task<RepositoryResponseWrapper<List<UserAgentDirective>>> PingUserAgent(Guid userAgentId)
+        {
+            var userAgent = await _everestDbContext.UserAgents.FindAsync(userAgentId);
+            if (userAgent is not null)
+            {
+                userAgent.LastConnectionActivity = DateTime.UtcNow;
+                await _everestDbContext.SaveChangesAsync();
+
+                return await GetCurrentDirectivesForUserAgent(userAgentId);
+            }
+
+            return new RepositoryResponseWrapper<List<UserAgentDirective>>
+            {
+                Success = false,
+                Error = new RepositoryResponseError
+                {
+                    ErrorMessage = "Error in PingUserAgent: User Agent is not registred.",
+                },
             };
         }
     }

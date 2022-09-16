@@ -35,7 +35,7 @@ namespace everest_app.Middleware
                 if (queryArgs[0] == "agent_id")
                 {
                     Guid userAgentId = new Guid(queryArgs[1]);
-                    var userAgentDirectives = await userAgentRepository.GetCurrentDirectivesForUserAgent(userAgentId);
+                    var userAgentDirectives = await userAgentRepository.PingUserAgent(userAgentId);
                     if (userAgentDirectives.Success)
                     {
                         context.Response.StatusCode = 200;
