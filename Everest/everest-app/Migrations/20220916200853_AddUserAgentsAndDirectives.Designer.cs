@@ -12,8 +12,8 @@ using everest_app.Data;
 namespace everest_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220905212813_AddUserAgentAndDirectives")]
-    partial class AddUserAgentAndDirectives
+    [Migration("20220916200853_AddUserAgentsAndDirectives")]
+    partial class AddUserAgentsAndDirectives
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

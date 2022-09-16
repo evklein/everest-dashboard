@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace everest_app.Migrations
 {
-    public partial class AddUserAgentAndDirectives : Migration
+    public partial class AddUserAgentsAndDirectives : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
