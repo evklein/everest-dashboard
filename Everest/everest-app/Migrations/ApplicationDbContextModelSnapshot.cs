@@ -134,6 +134,10 @@ namespace everest_app.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ReadableName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserAgentPublicKey")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

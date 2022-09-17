@@ -20,6 +20,7 @@ namespace everest_app.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReadableName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastConnectionActivity = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EverestPrivateKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EverestPublicKey = table.Column<string>(type: "nvarchar(max)", nullable: false),

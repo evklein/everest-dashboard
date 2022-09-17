@@ -12,7 +12,7 @@ using everest_app.Data;
 namespace everest_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220916200853_AddUserAgentsAndDirectives")]
+    [Migration("20220917201528_AddUserAgentsAndDirectives")]
     partial class AddUserAgentsAndDirectives
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -135,6 +135,10 @@ namespace everest_app.Migrations
                     b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ReadableName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserAgentPublicKey")
                         .IsRequired()
