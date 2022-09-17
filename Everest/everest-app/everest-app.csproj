@@ -50,7 +50,10 @@
     <None Remove="Shared\UI\Emoji\" />
     <None Remove="Shared\Services\Queries\" />
     <None Remove="Shared\Services\Queries\Notes\" />
+    <None Remove="Middleware\" />
+    <None Remove="Shared\Services\Repository\UserAgents\" />
     <None Remove="Pages\Admin\" />
+    <None Remove="Pages\Dashboard\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\Notes\" />
@@ -68,7 +71,10 @@
     <Folder Include="Shared\UI\Emoji\" />
     <Folder Include="Shared\Services\Queries\" />
     <Folder Include="Shared\Services\Queries\Notes\" />
+    <Folder Include="Middleware\" />
+    <Folder Include="Shared\Services\Repository\UserAgents\" />
     <Folder Include="Pages\Admin\" />
+    <Folder Include="Pages\Dashboard\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\Fonts\" />

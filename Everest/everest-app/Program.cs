@@ -14,6 +14,10 @@ using System.Configuration;
 using MudBlazor;
 using everest_app.Shared.Services.Repository.ToDo;
 using everest_app.Shared.Services.Repository.Tags;
+using everest_common.DataTransferObjects.Notes;
+using Newtonsoft.Json;
+using everest_app.Shared.Services.Repository.UserAgents;
+using everest_app.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +45,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<INotesRepository, NotesRepository>();
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<IUserAgentRepository, UserAgentRepository>();
 
 var app = builder.Build();
 
@@ -76,11 +81,14 @@ app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
+app.UseUserAgentMiddleware();
+
 // Disable new registrations.
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGet("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Login", true, true)));
     endpoints.MapPost("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Login", true, true)));
+    //endpoints.MapGet("/PingUserAgent", (context) => Task.Factory.StartNew(() => ));
 });
 
 app.Run();

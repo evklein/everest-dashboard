@@ -1,0 +1,29 @@
+﻿@inject IUserAgentRepository UserAgentRepository
+
+@if (_loading)
+{
+    <MudProgressCircular Class="ma-3" Color="Color.Secondary" Size="Size.Small" Indeterminate="true" />
+}
+@if (_currentlyConnectedUserAgents.Any())
+{
+    <MudAlert Class="ma-3" Severity=@Severity.Success>@_currentlyConnectedUserAgents.Count User Agent(s) currently connected.</MudAlert>
+}
+else
+{
+    <MudAlert Class="ma-3" Severity=@Severity.Warning>No User Agents currently connected.</MudAlert>
+}
+
+@code {
+    private List<UserAgent> _currentlyConnectedUserAgents = new();
+    private bool _loading = true;
+
+    protected async override Task OnInitializedAsync()
+    {
+        //initializeUserAgentFetch();
+        _loading = true;
+        var responseWrapper = UserAgentRepository.FindCurrentlyConnectedUserAgents();
+        _currentlyConnectedUserAgents = responseWrapper.Value;
+        _loading = false;
+    }
+}
+

@@ -10,6 +10,9 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<ToDoItem> ToDoItems { get; set; }
     public DbSet<Tag> Tags { get; set; }
 
+    public DbSet<UserAgent> UserAgents { get; set; }
+    public DbSet<UserAgentDirective> UserAgentDirectives { get; set; }
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {

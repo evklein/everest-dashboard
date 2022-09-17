@@ -1,0 +1,77 @@
+﻿@inject IUserAgentRepository UserAgentRepository
+@inject ISnackbar MudSnackbar
+@inject IDialogService DialogService
+
+<MudTable Items=@_userAgents
+          Loading=@_loading
+          LoadingProgressColor=Color.Secondary
+          Dense="false"
+          Hover="true"
+          Bordered="false"
+          Striped="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">User Agents</MudText>
+        <MudSpacer />
+        <MudButton Variant="Variant.Filled" Color="@Color.Secondary" StartIcon="@Icons.Filled.Add" @onclick=@openAddUserAgentModal>Register User Agent</MudButton>
+    </ToolBarContent>
+    <ColGroup>
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+    </ColGroup>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.Id)">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.ReadableName)">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.EverestPublicKey)">Everest Public Key</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.UserAgentPublicKey)">User Agent Public Key</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.LastConnectionActivity)">Last Ping</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.Owner.UserName)">Owner</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Name">@context.ReadableName</MudTd>
+        <MudTd DataLabel="Key">@context.EverestPublicKey</MudTd>
+        <MudTd DataLabel="Key">@context.UserAgentPublicKey</MudTd>
+        <MudTd DataLabel="Last Ping">@context.LastConnectionActivity</MudTd>
+        <MudTd DataLabel="Owner">@context.Owner.UserName</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private string filterString = string.Empty;
+    private List<UserAgent> _userAgents = new List<UserAgent>();
+    private bool _loading = true;
+    private bool _addUserAgentModalOpen = false;
+
+    protected override void OnInitialized()
+    {
+        RepositoryResponseWrapper<List<UserAgent>> fetchUserAgentsResponseWrapper = UserAgentRepository.GetUserAgents();
+        if (fetchUserAgentsResponseWrapper.Success)
+        {
+            _userAgents = fetchUserAgentsResponseWrapper.Value.OrderBy(t => t.Id).ToList();
+        }
+        else
+        {
+            MudSnackbar.Add(fetchUserAgentsResponseWrapper?.Error?.ErrorMessage, Severity.Error);
+        }
+
+        _loading = false;
+        StateHasChanged();
+    }
+
+    private async Task openAddUserAgentModal()
+    {
+
+        var dialog = DialogService.Show<AddUserAgentDialog>("Add User Agent");
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            _userAgents = (List<UserAgent>) result.Data;
+            MudSnackbar.Add("User agent added successfully", Severity.Success);
+        }
+    }
+}

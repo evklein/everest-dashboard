@@ -1,0 +1,63 @@
+﻿<MudCard>
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            @getCardAvatar()
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body1">@_directive.Name</MudText>
+            <MudText Typo="Typo.body2">@getCardStatusText()</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText Typo="Typo.body2">@_directive.Description</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        @if (_directive.Status == UserAgentDirectiveStatus.NotRunning)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" />
+            <MudIconButton Icon="@Icons.Material.Filled.RestartAlt" Color="Color.Info" />
+        }
+        @if (_directive.Status == UserAgentDirectiveStatus.Running)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" />
+        }
+        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" />
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter]
+    public UserAgentDirective _directive { get; set; } = new UserAgentDirective()
+    {
+        Name = "Cron Job",
+        Status = UserAgentDirectiveStatus.Running,
+        Description = "A quick and easy Cron job which runs and then shuts down.",
+    };
+
+    private RenderFragment getCardAvatar()
+    {
+        return _directive.Status switch
+        {
+        UserAgentDirectiveStatus.NotRunning =>@<MudAvatar Color=@Color.Error><MudIcon Icon=@Icons.Filled.Cancel /></MudAvatar>,
+        UserAgentDirectiveStatus.Running => @<MudAvatar Color=@Color.Success><MudIcon Icon=@Icons.Filled.Check /></MudAvatar>,
+        UserAgentDirectiveStatus.Queued => @<MudProgressCircular Color="Color.Success" Size="Size.Small" Indeterminate="true" />,
+        UserAgentDirectiveStatus.Dequeued => @<MudProgressCircular Color= "Color.Warning" Size= "Size.Small" Indeterminate= "true" />,
+        _ => @<MudAvatar Color=@Color.Info><MudIcon Icon=@Icons.Filled.QuestionMark /></MudAvatar>,
+        };
+    }
+
+    private string getCardStatusText()
+    {
+        return _directive.Status switch
+        {
+            UserAgentDirectiveStatus.NotRunning => "Not running",
+            UserAgentDirectiveStatus.Running => "Running",
+            UserAgentDirectiveStatus.Queued => "Queued for run",
+            UserAgentDirectiveStatus.Dequeued => "Dequeued",
+            _ => "???",
+        };
+    }
+}
