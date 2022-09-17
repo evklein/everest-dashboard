@@ -9,8 +9,9 @@
     </TitleContent>
     <DialogContent>
         <MudTextField Style="width: 500px;" Value="@_userAgent.Id.ToString()" Label="User Agent ID" ReadOnly="true" />
-        <MudTextField Style="width: 500px; " Value="@_userAgent.EverestPublicKey" Label="Public Key" ReadOnly="true" />
-        <MudTextField Style="width: 500px; " @bind-Value="@_userAgent.UserAgentPublicKey" Label="Private Key" ReadOnly="false" />
+        <MudTextField Style="width: 500px;" @bind-Value="@_userAgent.ReadableName" Label="Readable Name" ReadOnly="false" />
+        <MudTextField Style="width: 500px; " Value="@_userAgent.EverestPublicKey" Label="Everest Public Key" ReadOnly="true" />
+        <MudTextField Style="width: 500px; " @bind-Value="@_userAgent.UserAgentPublicKey" Label="User Agent Public Key" ReadOnly="false" />
     </DialogContent>
     <DialogActions>
         <MudButton OnClick=@cancel>Cancel</MudButton>

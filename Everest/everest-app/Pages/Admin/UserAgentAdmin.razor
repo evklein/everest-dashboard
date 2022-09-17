@@ -15,13 +15,16 @@
         <MudButton Variant="Variant.Filled" Color="@Color.Secondary" StartIcon="@Icons.Filled.Add" @onclick=@openAddUserAgentModal>Register User Agent</MudButton>
     </ToolBarContent>
     <ColGroup>
-        <col style="width:350px;" />
+        <col />
+        <col />
+        <col />
         <col />
         <col />
         <col />
     </ColGroup>
     <HeaderContent>
-        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.Id)">Tag</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.Id)">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.ReadableName)">Name</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.EverestPublicKey)">Everest Public Key</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.UserAgentPublicKey)">User Agent Public Key</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<UserAgent, object>(t => t.LastConnectionActivity)">Last Ping</MudTableSortLabel></MudTh>
@@ -29,6 +32,7 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Name">@context.ReadableName</MudTd>
         <MudTd DataLabel="Key">@context.EverestPublicKey</MudTd>
         <MudTd DataLabel="Key">@context.UserAgentPublicKey</MudTd>
         <MudTd DataLabel="Last Ping">@context.LastConnectionActivity</MudTd>
