@@ -24,12 +24,13 @@ jobs:
 
       - name: Build with dotnet
         run: |
-          cd Everest/everest-app
-          dotnet restore
+          cd Everest
           dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: |
+          cd Everest
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
